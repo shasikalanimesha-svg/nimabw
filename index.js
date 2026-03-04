@@ -156,7 +156,7 @@ async function startBot() {
 		}
 	}
 	
-	const nima = WAConnection({
+	const bot = WAConnection({
 		version,
 		logger: level,
 		getMessage,
@@ -210,7 +210,7 @@ async function startBot() {
 			setTimeout(async () => {
 				pairingStarted = true;
 				console.log('Requesting Pairing Code...')
-				let code = await nima.requestPairingCode(phoneNumber);
+				let code = await bot.requestPairingCode(phoneNumber);
 				console.log(chalk.blue('Your Pairing Code :'), chalk.green(code), '\n', chalk.yellow('Expires in 15 second'));
 			}, 3000)
 		}
@@ -250,7 +250,7 @@ async function startBot() {
 			}
 		}
 		if (connection == 'open') {
-			console.log('Connected to : ' + JSON.stringify(nima.user, null, 2));
+			console.log('Connected to : ' + JSON.stringify(bot.user, null, 2));
 			let botNumber = await bot.decodeJid(bot.user.id);
 			if (global.db?.set[botNumber] && !global.db?.set[botNumber]?.join) {
 				if (my.ch.length > 0 && my.ch.includes('@newsletter')) {
