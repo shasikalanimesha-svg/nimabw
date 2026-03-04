@@ -19,7 +19,7 @@ global.listv = ['•','●','■','✿','▲','➩','➢','➣','➤','✦','✧
 global.tempatDB = 'database.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.tempatStore = 'baileys_store.json' // Taruh url mongodb di sini jika menggunakan mongodb. Format : 'mongodb+srv://...'
 global.pairing_code = true
-global.number_bot = '' // Kalo pake panel bisa masukin nomer di sini, jika belum ambil session. Format : '628xx'
+global.number_bot = '94726800969' // Kalo pake panel bisa masukin nomer di sini, jika belum ambil session. Format : '628xx'
 
 global.fake = {
 	anonim: 'https://ibb.co/rKyYj3Rr',
@@ -50,9 +50,9 @@ global.money = {
 
 global.mess = {
 	key: 'Apikey mu telah habis silahkan kunjungi\nhttps://naze.biz.id',
-	owner: 'Fitur Khusus Owner!',
-	admin: 'Fitur Khusus Admin!',
-	botAdmin: 'Bot Bukan Admin!',
+	owner: 'CREATED BY NIMESHA',
+	admin: 'CREATED BY NIMESHA',
+	botAdmin: 'NIMESHA MADHUSHAN',
 	group: 'Gunakan Di Group!',
 	private: 'Gunakan Di Privat Chat!',
 	limit: 'Limit Anda Telah Habis!',
@@ -82,4 +82,5 @@ fs.watchFile(file, () => {
 	require(file)
 
 });
+
 
