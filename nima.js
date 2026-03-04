@@ -4435,7 +4435,7 @@ module.exports = bot = async (bot, m, msg, store) => {
 			if ((!isCmd || isCreator) && budy.toLowerCase() != undefined) {
 				if (m.chat.endsWith('broadcast')) return
 				if (!(budy.toLowerCase() in db.database)) return
-				await nima.relayMessage(m.chat, db.database[budy.toLowerCase()], {})
+				await bot.relayMessage(m.chat, db.database[budy.toLowerCase()], {})
 			}
 		}
 	} catch (e) {
@@ -4448,7 +4448,7 @@ module.exports = bot = async (bot, m, msg, store) => {
 		if (errorCache[errorKey].length >= 3) return;
 		errorCache[errorKey].push(now);
 		m.reply('Error: ' + (e?.name || e?.code || e?.output?.statusCode || e?.status || 'Tidak diketahui') + '\nLog Error Telah dikirim ke Owner\n\n')
-		return nima.sendFromOwner(ownerNumber, `Halo sayang, sepertinya ada yang error nih, jangan lupa diperbaiki ya\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
+		return bot.sendFromOwner(ownerNumber, `Halo sayang, sepertinya ada yang error nih, jangan lupa diperbaiki ya\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
 	}
 }
 
