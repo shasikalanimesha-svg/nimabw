@@ -307,11 +307,11 @@ async function startBot() {
 	});
 	
 	bot.ev.on('messages.upsert', async (message) => {
-		await MessagesUpsert(nima, message, global.store);
+		await MessagesUpsert(bot, message, global.store);
 	});
 	
 	bot.ev.on('group-participants.update', async (update) => {
-		await GroupParticipantsUpdate(nima, update, global.store);
+		await GroupParticipantsUpdate(bot, update, global.store);
 	});
 	
 	bot.ev.on('groups.update', (update) => {
