@@ -286,8 +286,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (db.users[m.sender]?.ban && !isCreator) return
 		
 		// Filter Set Api Key
-		if (cases.includes(command) && isCmd && (command !== 'setapikey') && global.APIKeys[global.APIs.naze] === 'YOUR_API_KEY') {
-			return m.reply('Silahkan Ganti Apikey yang ada\ndi File settings.js dengan apikey mu\nAgar semua fitur bisa digunakan dengan normal\n\nAmbil Key di : https://naze.biz.id/profile\nKemudian Gunakan Perintah\n.setapikey <key_nya>');
+		if (cases.includes(command) && isCmd && (command !== 'setapikey') && global.APIKeys[global.APIs.naze] === 'nz-8ce9753907') {
+			return m.reply('.setapikey nz-8ce9753907');
 		}
 		
 		// Mengetik & Anti Spam & Hit
@@ -4458,4 +4458,5 @@ fs.watchFile(file, () => {
 	console.log(chalk.redBright(`Update ${__filename}`))
 	delete require.cache[file]
 	require(file)
+
 });
