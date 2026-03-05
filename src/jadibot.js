@@ -26,7 +26,7 @@ async function JadiBot(conn, from, m, store) {
 					return msg?.message || ''
 				}
 				return {
-					conversation: 'Halo Saya Adalah Bot'
+					conversation: 'හෙලෝ, මම බොට් කෙනෙක්' // 
 				}
 			}
 			
@@ -66,7 +66,7 @@ async function JadiBot(conn, from, m, store) {
 						client[from].pairingStarted = true;
 						exec('rm -rf ./database/jadibot/' + from + '/*');
 						let code = await client[from].requestPairingCode(from.replace(/[^0-9]/g, ''));
-						m.reply(`Your Pairing Code : ${code?.match(/.{1,4}/g)?.join('-') || code}`);
+						m.reply(`ඔබේ Pairing Code එක : ${code?.match(/.{1,4}/g)?.join('-') || code}`); // මුල් පිටපත: Your Pairing Code
 					}, 3000);
 				}
 				if (connection === 'close') {
@@ -75,13 +75,13 @@ async function JadiBot(conn, from, m, store) {
 					if ([DisconnectReason.connectionLost, DisconnectReason.connectionClosed, DisconnectReason.restartRequired, DisconnectReason.timedOut, DisconnectReason.badSession, DisconnectReason.connectionReplaced].includes(reason)) {
 						JadiBot(conn, from, m, store)
 					} else if (reason === DisconnectReason.loggedOut) {
-						m.reply('Scan again and Run...');
+						m.reply('නැවත Scan කර ක්‍රියාත්මක කරන්න...'); // 
 						StopJadiBot(conn, from, m)
 					} else if (reason === DisconnectReason.Multidevicemismatch) {
-						m.reply('Scan again...');
+						m.reply('නැවත Scan කරන්න...'); // 
 						StopJadiBot(conn, from, m)
 					} else {
-						m.reply('Anda Sudah Tidak Lagi Menjadi Bot!')
+						m.reply('ඔබ දැන් තවදුරටත් බොට් කෙනෙකු ලෙස ක්‍රියා නොකරයි!') //
 					}
 				}
 				if (connection == 'open') {
@@ -124,7 +124,8 @@ async function JadiBot(conn, from, m, store) {
 				if (db.set[botNumber].anticall) {
 					for (let id of call) {
 						if (id.status === 'offer') {
-							let msg = await client[from].sendMessage(id.from, { text: `Saat Ini, Kami Tidak Dapat Menerima Panggilan ${id.isVideo ? 'Video' : 'Suara'}.\nJika @${id.from.split('@')[0]} Memerlukan Bantuan, Silakan Hubungi Owner :)`, mentions: [id.from]});
+							// සිංහල පරිවර්තනය: දැනට අපට ඇමතුම් ලබාගත නොහැක. උදව් අවශ්‍ය නම් අයිතිකරු (Owner) අමතන්න.
+							let msg = await client[from].sendMessage(id.from, { text: `දැනට අපට ${id.isVideo ? 'වීඩියෝ' : 'කටහඬ'} ඇමතුම් ලබාගත නොහැක.\n@${id.from.split('@')[0]} ඔබට උදව් අවශ්‍ය නම්, කරුණාකර Owner අමතන්න :)`, mentions: [id.from]});
 							await client[from].sendContact(id.from, global.owner, msg);
 							await client[from].rejectCall(id.id, id.from)
 						}
@@ -158,7 +159,7 @@ async function JadiBot(conn, from, m, store) {
 
 async function StopJadiBot(conn, from, m) {
 	if (!Object.keys(client).includes(from)) {
-		return conn.sendMessage(m.chat, { text: 'Anda Tidak Sedang jadibot!' }, { quoted: m })
+		return conn.sendMessage(m.chat, { text: 'ඔබ දැනට Jadibot භාවිතා කරන්නේ නැත!' }, { quoted: m })
 	}
 	try {
 		client[from].end('Stop')
@@ -168,11 +169,11 @@ async function StopJadiBot(conn, from, m) {
 	}
 	delete client[from]
 	exec(`rm -rf ./database/jadibot/${from}`)
-	return m.reply('Sukses Keluar Dari Sessi Jadi bot')
+	return m.reply('Jadibot සේවාවෙන් සාර්ථකව ඉවත් විය.')
 }
 
 async function ListJadiBot(conn, m) {
-	let teks = 'List Jadi Bot :\n\n'
+	let teks = 'සක්‍රිය බොට් ලැයිස්තුව (List Jadi Bot) :\n\n'
 	for (let jadibot of Object.values(client)) {
 		teks += (jadibot.user?.id ? `- @${conn.decodeJid(jadibot.user.id).split('@')[0]}\n` : '')
 	}
