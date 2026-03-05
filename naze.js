@@ -109,7 +109,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		const qmsg = (quoted.msg || quoted)
 		const author = set.author = global.author || 'nima';
 		const packname = set.packname = global.packname || 'Bot WhatsApp';
-		const botname = set.botname = global.botname || 'Hitori Bot';
+		const botname = set.botname = global.botname || 'Nima Bot';
 		const hari = moment.tz('Asia/Colombo').locale('id').format('dddd');
 		const tanggal = moment.tz('Asia/Colombo').locale('id').format('DD/MM/YYYY');
 		const jam = moment.tz('Asia/Colombo').locale('id').format('HH:mm:ss');
