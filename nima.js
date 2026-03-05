@@ -3812,7 +3812,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						set.template = parseInt(Number(args[1]))
 						m.reply('Sukses Mengubah Template Menu')
 					} else m.reply(`Silahkan Pilih Templat:\n- 1 (Button Menu)\n- 2 (List Menu)\n- 3 (Document Menu)`)
-				} else await templateMenu(naze, set.template, m, prefix, setv, db, { botNumber, author, packname, isVip, isPremium })
+				} else await templateMenu(naze, set.template, m, prefix, setv, db, { botNumber, author, packname, isVip, isPremium, my })
 			}
 			break
 			case 'allmenu': {
