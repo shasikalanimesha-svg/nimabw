@@ -15,25 +15,25 @@ app.all('/', (req, res) => {
 				version: packageInfo.version,
 				author: packageInfo.author,
 				description: packageInfo.description,
-				uptime: `${Math.floor(uptime)} seconds`
+				uptime: `${Math.floor(uptime)} තත්පර`
 			});
 		});
-	} else res.json({ error: 'Process not running with IPC' });
+	} else res.json({ error: 'ක්‍රියාවලිය (Process) IPC සමඟ ධාවනය නොවේ' });
 });
 
 app.all('/process', (req, res) => {
 	const { send } = req.query;
-	if (!send) return res.status(400).json({ error: 'Missing send query' });
+	if (!send) return res.status(400).json({ error: 'යොමු කිරීමට අවශ්‍ය විමසුම (query) ඇතුළත් කර නැත' });
 	if (process.send) {
 		process.send(send)
-		res.json({ status: 'Send', data: send });
-	} else res.json({ error: 'Process not running with IPC' });
+		res.json({ status: 'යවන ලදී (Sent)', data: send });
+	} else res.json({ error: 'ක්‍රියාවලිය (Process) IPC සමඟ ධාවනය නොවේ' });
 });
 
 app.all('/chat', (req, res) => {
 	const { message, to } = req.query;
-	if (!message || !to) return res.status(400).json({ error: 'Missing message or to query' });
-	res.json({ status: 200, mess: 'does not start' })
+	if (!message || !to) return res.status(400).json({ error: 'පණිවිඩය හෝ යොමු කළ යුතු ලිපිනය ඇතුළත් කර නැත' });
+	res.json({ status: 200, mess: 'තවමත් ආරම්භ වී නොමැත' })
 });
 
 module.exports = { app, server, PORT };

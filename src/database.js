@@ -16,7 +16,7 @@ class MongoDB {
 		mongoose.connection.on('disconnected', async () => {
 			if (this.isReconnecting) return
 			this.isReconnecting = true
-			console.warn('❗ MongoDB connection lost. Attempting to reconnect in 5 seconds...');
+			console.warn('❗ MongoDB සම්බන්ධතාවය බිඳ වැටුණි. තත්පර 5කින් නැවත සම්බන්ධ වීමට උත්සාහ කරයි...');
 			await new Promise(resolve => setTimeout(resolve, 5000));
 			await this.connect();
 		});
@@ -24,13 +24,13 @@ class MongoDB {
 	
 	connect = async (retries = 5, delay = 2000) => {
 		if (mongoose.connection.readyState === 1 || this.isConnecting) {
-			console.log('✅ MongoDB is already connected.');
+			console.log('✅ MongoDB දැනටමත් සම්බන්ධ වී ඇත.');
 			return;
 		}
 		this.isConnecting = true;
 		while (retries > 0) {
 			try {
-				console.log(`🔄 Attempting to connect to MongoDB... (Attempt ${6 - retries}/5)`);
+				console.log(`🔄 MongoDB වෙත සම්බන්ධ වීමට උත්සාහ කරයි... (උත්සාහය ${6 - retries}/5)`);
 				if (mongoose.connection.readyState === 0) {
 					await mongoose.connect(this.url, { ...this.options });
 				}
@@ -40,18 +40,18 @@ class MongoDB {
 					})
 					this._model = mongoose.models.data || mongoose.model('data', schema);
 				}
-				console.log('✅ Successfully connected to MongoDB.');
+				console.log('✅ MongoDB වෙත සාර්ථකව සම්බන්ධ විය.');
 				this.isConnecting = false;
 				this.isReconnecting = false;
 				return;
 			} catch (e) {
-				console.error(`❌ MongoDB connection failed: ${e.message}`);
+				console.error(`❌ MongoDB සම්බන්ධතාවය අසාර්ථකයි: ${e.message}`);
 				await new Promise((res) => setTimeout(res, delay));
 				retries--;
 			}
 		}
 		this.isConnecting = false;
-		throw new Error('❌ MongoDB connection failed after multiple attempts.');
+		throw new Error('❌ කිහිප වතාවක් උත්සාහ කළද MongoDB සම්බන්ධතාවය අසාර්ථක විය.');
 	}
 	
 	read = async () => {
@@ -128,7 +128,7 @@ class JsonDB {
 			if (fs.existsSync(this.file)) fs.copyFileSync(this.file, this.file + '.bak')
 			if (Object.keys(this.data).length > 0) fs.writeFileSync(this.file, JSON.stringify(this.data, null, 2))
 		} catch (e) {
-			console.error('❌ Write Database failed: ', e);
+			console.error('❌ දත්ත ගබඩාවට ලිවීමට නොහැකි විය: ', e);
 		} finally {
 			this.isWriting = false;
 			if (this.writePending) {
@@ -193,7 +193,7 @@ const checkExpired = (_dir, conn) => {
 				if (conn) {
 					conn.groupLeave(_dir[i].id).catch(e => {});
 				}
-				console.log(`Expired: ${_dir[i].id}`);
+				console.log(`කාලය අවසන් විය (Expired): ${_dir[i].id}`);
 				_dir.splice(i, 1);
 			}
 		}
@@ -217,7 +217,7 @@ module.exports = {
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
 	fs.unwatchFile(file)
-	console.log(chalk.redBright(`Update ${__filename}`))
+	console.log(chalk.redBright(`යාවත්කාලීන කරන ලදී (Updated): ${__filename}`))
 	delete require.cache[file]
 	require(file)
 });

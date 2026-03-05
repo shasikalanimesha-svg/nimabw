@@ -15,9 +15,9 @@ const { getBuffer, getSizeMedia, fetchJson, sleep, axiosss, fixBytes } = require
 const { jidNormalizedUser, proto, getBinaryNodeChildren, getBinaryNodeChildString, getBinaryNodeChild, generateMessageIDV2, jidEncode, encodeSignedDeviceIdentity, generateWAMessageContent, generateForwardMessageContent, prepareWAMessageMedia, delay, areJidsSameUser, extractMessageContent, generateMessageID, downloadContentFromMessage, generateWAMessageFromContent, jidDecode, generateWAMessage, toBuffer, getContentType, getDevice } = require('baileys');
 
 /*
-	* Create By Naze
-	* Follow https://github.com/nazedev
-	* Whatsapp : https://whatsapp.com/channel/0029VaWOkNm7DAWtkvkJBK43
+	* Create By Nimesha
+	* Follow https://github.com/nimesha206
+	* Whatsapp : https://whatsapp.com/channel/0029Vb68g1c3LdQLQDkbAQ3M
 */
 
 async function GroupUpdate(naze, m, store) {
@@ -35,18 +35,18 @@ async function GroupUpdate(naze, m, store) {
 		const normalizedTarget = clearParse(m.messageStubParameters[0]);
 		const type = m.messageStubType;
 		const messages = {
-			1: 'mereset link grup!',
-			21: `mengubah Subject Grup menjadi :\n*${normalizedTarget}*`,
-			22: 'telah mengubah icon grup.',
-			23: 'mereset link grup!',
-			24: `mengubah deskripsi grup.\n\n${normalizedTarget}`,
-			25: `telah mengatur agar *${normalizedTarget == 'on' ? 'hanya admin' : 'semua peserta'}* yang dapat mengedit info grup.`,
-			26: `telah *${normalizedTarget == 'on' ? 'menutup' : 'membuka'}* grup!\nSekarang ${normalizedTarget == 'on' ? 'hanya admin yang' : 'semua peserta'} dapat mengirim pesan.`,
-			29: `telah menjadikan @${normalizedTarget?.id?.split('@')?.[0]} sebagai admin.`,
-			30: `telah memberhentikan @${normalizedTarget?.id?.split('@')?.[0]} dari admin.`,
-			72: `mengubah durasi pesan sementara menjadi *@${normalizedTarget}*`,
-			123: 'menonaktifkan pesan sementara.',
-			132: 'mereset link grup!',
+			1: 'සමූහයේ ලින්ක් එක අලුත් කරන ලදී!',
+			21: `සමූහයේ නම මෙලෙස වෙනස් කරන ලදී :\n*${normalizedTarget}*`,
+			22: 'සමූහයේ රූපය (icon) වෙනස් කරන ලදී.',
+			23: 'සමූහයේ ලින්ක් එක අලුත් කරන ලදී!',
+			24: `සමූහයේ විස්තරය වෙනස් කරන ලදී.\n\n${normalizedTarget}`,
+			25: `සමූහයේ තොරතුරු වෙනස් කිරීමේ හැකියාව *${normalizedTarget == 'on' ? 'පරිපාලකවරුන්ට පමණක්' : 'සෑම සාමාජිකයෙකුටම'}* ලබා දෙන ලදී.`,
+			26: `සමූහය *${normalizedTarget == 'on' ? 'වසා දමන ලදී' : 'විවෘත කරන ලදී'}*!\nදැන් පණිවිඩ යැවිය හැක්කේ ${normalizedTarget == 'on' ? 'පරිපාලකවරුන්ට පමණක්' : 'සෑම සාමාජිකයෙකුටම'} වේ.`,
+			29: `@${normalizedTarget?.id?.split('@')?.[0]} ව පරිපාලකයෙකු (Admin) ලෙස පත් කරන ලදී.`,
+			30: `@${normalizedTarget?.id?.split('@')?.[0]} ව පරිපාලක (Admin) ධුරයෙන් ඉවත් කරන ලදී.`,
+			72: `තාවකාලික පණිවිඩ කාලය (Ephemeral) *@${normalizedTarget}* ලෙස වෙනස් කරන ලදී.`,
+			123: 'තාවකාලික පණිවිඩ අක්‍රිය කරන ලදී.',
+			132: 'සමූහයේ ලින්ක් එක අලුත් කරන ලදී!',
 		}
 		if (naze.public && global.db?.groups?.[m.chat]?.setinfo && messages[type]) {
 			await naze.sendMessage(m.chat, { text: `${admin} ${messages[type]}`, mentions: [m.sender, ...((normalizedTarget?.id || normalizedTarget)?.includes('@') ? [`${normalizedTarget.id || normalizedTarget}`] : [])]}, { ephemeralExpiration: m.expiration || m?.metadata?.ephemeralDuration || store?.messages[m.chat]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 })
@@ -116,7 +116,7 @@ async function GroupParticipantsUpdate(naze, { id, participants, author, action 
 				}
 				let messageText;
 				if (action === 'add') {
-					if (db.groups[id].welcome) messageText = db.groups[id]?.text?.setwelcome || `Welcome to ${metadata.subject}\n@`;
+					if (db.groups[id].welcome) messageText = db.groups[id]?.text?.setwelcome || `${metadata.subject} වෙත සාදරයෙන් පිළිගනිමු\n@`;
 					if (!participant) {
 						clearTimeout(groupMetadataTimers[id])
 						groupMetadataTimers[id] = setTimeout(async () => {
@@ -124,7 +124,7 @@ async function GroupParticipantsUpdate(naze, { id, participants, author, action 
 						}, 5000);
 					}
 				} else if (action === 'remove') {
-					if (db.groups[id].leave) messageText = db.groups[id]?.text?.setleave || `@\nLeaving From ${metadata.subject}`;
+					if (db.groups[id].leave) messageText = db.groups[id]?.text?.setleave || `@\n${metadata.subject} වෙතින් ඉවත් වන ලදී.`;
 					if ((jidNormalizedUser(naze.user.lid) == jidNormalizedUser(jid)) || (jidNormalizedUser(naze.user.id) == jidNormalizedUser(jid))) {
 						delete store.messages[id];
 						delete store.presences[id];
@@ -132,10 +132,10 @@ async function GroupParticipantsUpdate(naze, { id, participants, author, action 
 					}
 					if(metadata) metadata.participants = metadata.participants.filter(p => !participants.includes(metadata.addressingMode === 'lid' ? jidNormalizedUser(p.lid) : jidNormalizedUser(p.id)));
 				} else if (action === 'promote') {
-					if (db.groups[id].promote) messageText = db.groups[id]?.text?.setpromote || `@\nPromote From ${metadata.subject}\nBy @admin`;
+					if (db.groups[id].promote) messageText = db.groups[id]?.text?.setpromote || `@\n${metadata.subject} හි පරිපාලකයෙකු ලෙස උසස් කරන ලදී.\nBy @admin`;
 					updateAdminStatus(participants, metadata.participants, 'admin');
 				} else if (action === 'demote') {
-					if (db.groups[id].demote) messageText = db.groups[id]?.text?.setdemote || `@\nDemote From ${metadata.subject}\nBy @admin`;
+					if (db.groups[id].demote) messageText = db.groups[id]?.text?.setdemote || `@\n${metadata.subject} හි පරිපාලක ධුරයෙන් ඉවත් කරන ලදී.\nBy @admin`;
 					updateAdminStatus(participants, metadata.participants, null);
 				}
 				if (messageText && naze.public) {
@@ -144,7 +144,7 @@ async function GroupParticipantsUpdate(naze, { id, participants, author, action 
 						contextInfo: {
 							mentionedJid: [jid, author],
 							externalAdReply: {
-								title: action == 'add' ? 'Welcome' : action == 'remove' ? 'Leaving' : action.charAt(0).toUpperCase() + action.slice(1),
+								title: action == 'add' ? 'සාදරයෙන් පිළිගනිමු' : action == 'remove' ? 'සමුගැනීම' : action.charAt(0).toUpperCase() + action.slice(1),
 								mediaType: 1,
 								previewType: 0,
 								thumbnailUrl: profile,
@@ -174,7 +174,7 @@ async function LoadDataBase(naze, m) {
 		global.db.set[botNumber] = setBot;
 		
 		const defaultSetBot = {
-			lang: 'id',
+			lang: 'si', // මෙතැන 'id' වෙනුවට 'si' (Sinhala) ලෙස වෙනස් කළා
 			limit: 0,
 			money: 0,
 			status: 0,
@@ -191,10 +191,10 @@ async function LoadDataBase(naze, m) {
 			multiprefix: false,
 			privateonly: true,
 			didyoumean: true,
-			author: global.author || 'Nazedev',
+			author: global.author || 'Nimesha',
 			autobackup: false,
-			botname: global.botname || 'Hitori Bot',
-			packname: global.packname || 'Bot WhatsApp',
+			botname: global.botname || 'Miss Chuti',
+			packname: global.packname || 'Nimesha',
 			template: 'documentMessage',
 			owner: global.owner,
 		};
@@ -307,10 +307,10 @@ async function MessagesUpsert(naze, message, store) {
 		require('../nima')(naze, m, msg, store);
 		if (db?.set?.[botNumber]?.readsw && msg.key.remoteJid === 'status@broadcast') {
 			await naze.readMessages([msg.key]);
-			if (/protocolMessage/i.test(type)) await naze.sendFromOwner(global.db?.set?.[botNumber]?.owner || global.owner, 'Status dari @' + msg.key.participant.split('@')[0] + ' Telah dihapus', msg, { mentions: [msg.key.participant] });
+			if (/protocolMessage/i.test(type)) await naze.sendFromOwner(global.db?.set?.[botNumber]?.owner || global.owner, '@' + msg.key.participant.split('@')[0] + ' ගේ ස්ටේටස් (Status) එක මකා දමා ඇත.', msg, { mentions: [msg.key.participant] });
 			if (/(audioMessage|imageMessage|videoMessage|extendedTextMessage)/i.test(type)) {
-				let keke = (type == 'extendedTextMessage') ? `Story Teks Berisi : ${msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : ''}` : (type == 'imageMessage') ? `Story Gambar ${msg.message.imageMessage.caption ? 'dengan Caption : ' + msg.message.imageMessage.caption : ''}` : (type == 'videoMessage') ? `Story Video ${msg.message.videoMessage.caption ? 'dengan Caption : ' + msg.message.videoMessage.caption : ''}` : (type == 'audioMessage') ? 'Story Audio' : '\nTidak diketahui cek saja langsung'
-				await naze.sendFromOwner(global.db?.set?.[botNumber]?.owner || global.owner, `Melihat story dari @${msg.key.participant.split('@')[0]}\n${keke}`, msg, { mentions: [msg.key.participant] });
+				let keke = (type == 'extendedTextMessage') ? `ස්ටේටස් ලේඛනය (Text Story): ${msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : ''}` : (type == 'imageMessage') ? `ස්ටේටස් ඡායාරූපය ${msg.message.imageMessage.caption ? 'විස්තරය (Caption) සමඟ: ' + msg.message.imageMessage.caption : ''}` : (type == 'videoMessage') ? `ස්ටේටස් වීඩියෝව ${msg.message.videoMessage.caption ? 'විස්තරය (Caption) සමඟ: ' + msg.message.videoMessage.caption : ''}` : (type == 'audioMessage') ? 'ස්ටේටස් හඬ පටය (Audio Story)' : '\nනොදන්නා ස්ටේටස් වර්ගයකි, කරුණාකර පරීක්ෂා කරන්න.'
+				await naze.sendFromOwner(global.db?.set?.[botNumber]?.owner || global.owner, `@${msg.key.participant.split('@')[0]} ගේ ස්ටේටස් එක නරඹන ලදී.\n${keke}`, msg, { mentions: [msg.key.participant] });
 			}
 		}
 	} catch (e) {
@@ -373,10 +373,10 @@ async function Solving(naze, store) {
 		for (let i of kon) {
 			list.push({
 				displayName: await naze.getName(i + '@s.whatsapp.net'),
-				vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await naze.getName(i + '@s.whatsapp.net')}\nFN:${await naze.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.ADR:;;Indonesia;;;;\nitem2.X-ABLabel:Region\nEND:VCARD` //vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await naze.getName(i + '@s.whatsapp.net')}\nFN:${await naze.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.EMAIL;type=INTERNET:whatsapp@gmail.com\nitem2.X-ABLabel:Email\nitem3.URL:https://instagram.com/naze_dev\nitem3.X-ABLabel:Instagram\nitem4.ADR:;;Indonesia;;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
+				vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await naze.getName(i + '@s.whatsapp.net')}\nFN:${await naze.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:ජංගම\nitem2.ADR:;;ශ්‍රී ලංකාව;;;;\nitem2.X-ABLabel:කලාපය\nEND:VCARD`
 			})
 		}
-		naze.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 });
+		naze.sendMessage(jid, { contacts: { displayName: `සම්බන්ධතා ${list.length}`, contacts: list }, ...opts }, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 });
 	}
 	
 	naze.profilePictureUrl = async (jid, type = 'image', timeoutMs) => {
@@ -529,7 +529,7 @@ async function Solving(naze, store) {
 		return hasil
 	}
 	
-	naze.sendGroupInviteV4 = async (jid, participant, inviteCode, inviteExpiration, groupName = 'Unknown Subject', caption = 'Invitation to join my WhatsApp group', jpegThumbnail = null, options = {}) => {
+	naze.sendGroupInviteV4 = async (jid, participant, inviteCode, inviteExpiration, groupName = 'නොදන්නා විෂයකි', caption = 'මගේ WhatsApp සමූහයට එකතු වීමට ආරාධනා පත්‍රයකි', jpegThumbnail = null, options = {}) => {
 		const msg = proto.Message.create({
 			groupInviteMessage: {
 				inviteCode,
@@ -598,7 +598,7 @@ async function Solving(naze, store) {
 			res,
 			filename,
 			size: await getSizeMedia(data),
-			...type,
+...type,
 			data
 		}
 	}
@@ -624,7 +624,7 @@ async function Solving(naze, store) {
 		if (isWebpSticker) {
 			pathFile = await writeExif(data, {
 				packname: options.packname || db?.set?.[botNumber]?.packname || 'Bot WhatsApp',
-				author: options.author || db?.set?.[botNumber]?.author || 'Nazedev',
+				author: options.author || db?.set?.[botNumber]?.author || 'Nimesha',
 				categories: options.categories || [],
 			})
 			await fs.unlinkSync(filename);
@@ -642,9 +642,9 @@ async function Solving(naze, store) {
 	naze.sendAlbumMessage = async (jid, content = {}, options = {}) => {
 		const { album, mentions, contextInfo, ...others } = content;
 		for (const media of album) {
-			if (!media.image && !media.video) throw new TypeError(`album[i] must have image or video property`);
+			if (!media.image && !media.video) throw new TypeError(`ඇල්බමය තුළ අනිවාර්යයෙන්ම ඡායාරූප හෝ වීඩියෝ තිබිය යුතුය.`);
 		}
-		if (album.length < 2) throw new RangeError("Minimum 2 media");
+		if (album.length < 2) throw new RangeError("අවම වශයෙන් මාධ්‍ය ගොනු 2ක් අවශ්‍ය වේ.");
 		const medias = await generateWAMessageFromContent(jid, {
 			albumMessage: {
 				expectedImageCount: album.filter(m => m.image).length,
@@ -795,8 +795,8 @@ async function Solving(naze, store) {
 		const { type: rawType = 'INFO', name, description = '', picture = null, react, id, newsletter_id = key, ...media } = content;
 		const type = rawType.toUpperCase();
 		if (react) {
-			if (!(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) throw [{ message: 'Use Id Newsletter', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			if (!id) throw [{ message: 'Use Id Newsletter Message', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
+			if (!(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) throw [{ message: 'කරුණාකර නිවැරදි Newsletter Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
+			if (!id) throw [{ message: 'කරුණාකර Newsletter පණිවිඩ Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
 			const hasil = await naze.query({
 				tag: 'message',
 				attrs: {
@@ -826,7 +826,7 @@ async function Solving(naze, store) {
 			})
 			return anu
 		} else {
-			if ((/(FOLLOW|UNFOLLOW|DELETE)/.test(type)) && !(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) return [{ message: 'Use Id Newsletter', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
+			if ((/(FOLLOW|UNFOLLOW|DELETE)/.test(type)) && !(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) return [{ message: 'කරුණාකර නිවැරදි Newsletter Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
 			const _query = await naze.query({
 				tag: 'iq',
 				attrs: {
@@ -908,8 +908,8 @@ async function Solving(naze, store) {
 
 /*
 	* Create By Naze
-	* Follow https://github.com/nazedev
-	* Whatsapp : https://whatsapp.com/channel/0029VaWOkNm7DAWtkvkJBK43
+	* Follow https://github.com/nimesha206
+	* Whatsapp : https://whatsapp.com/channel/0029Vb68g1c3LdQLQDkbAQ3M
 */
 
 async function Serialize(naze, msg, store) {
@@ -1086,10 +1086,8 @@ module.exports = {
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
 	fs.unwatchFile(file)
-	console.log(chalk.redBright(`Update ${__filename}`))
+	console.log(chalk.redBright(`යාවත්කාලීන කරන ලදී (Updated): ${__filename}`))
 	delete require.cache[file]
 	require(file)
 
 });
-
-
