@@ -1910,11 +1910,11 @@ def shell():
                         raise
         sys.exit(0)
 
-    printer('*🌁 ᴛᴇsᴛɪɴɢ ғʀᴏᴍ %(isp)s...*\n' % speedtest.config['client'],
+    printer('*🌁 පරීක්ෂණය සිදු කරන්නේ %(isp)s වෙතින්...*\n' % speedtest.config['client'],
             quiet)
 
     if not args.mini:
-        printer('📑 ʀᴇᴛʀɪᴇᴠɪɴɢ speedtest.net sᴇʀᴠᴇʀ ʟɪsᴛ...', quiet)
+        printer('📑 speedtest.net සර්වර් ලැයිස්තුව ලබා ගනිමින් පවතී...', quiet)
         try:
             speedtest.get_servers(servers=args.server, exclude=args.exclude)
         except NoMatchedServers:
@@ -1934,15 +1934,15 @@ def shell():
         if args.server and len(args.server) == 1:
             printer('📚 Retrieving information for the selected server...', quiet)
         else:
-            printer('🔍 sᴇʟᴇᴄᴛɪɴɢ ʙᴇsᴛ sᴇʀᴠᴇʀ ʙᴀsᴇᴅ ᴏɴ ᴘɪɴɢ...', quiet)
+            printer('🔍 වේගය අනුව හොඳම සර්වරය තෝරා ගනිමින් පවතී...', quiet)
         speedtest.get_best_server()
     elif args.mini:
         speedtest.get_best_server(speedtest.set_mini_server(args.mini))
 
     results = speedtest.results
 
-    printer('\n..................................................\n🏠 *ʜᴏsᴛᴇᴅ ʙʏ :* %(sponsor)s\n🌍 *ʟᴏᴄᴀᴛɪᴏɴ :* %(name)s [%(d)0.2f km] '
-            '\n⚡ *ᴘɪɴɢ :* %(latency)s ms' % results.server, quiet)
+    printer('n..................................................\n🏠 *සත්කාරකත්වය :* %(sponsor)s\n🌍 *ස්ථානය :* %(name)s [%(d)0.2f km]'
+            '\n⚡ *පිං (Ping) :* %(latency)s ms' % results.server, quiet)
 
     if args.download:
         printer('', quiet,
@@ -1951,22 +1951,22 @@ def shell():
             callback=callback,
             threads=(None, 1)[args.single]
         )
-        printer('*📥 ᴅᴏᴡɴʟᴏᴀᴅ:* %0.2f M%s/s' %
+        printer('*📥 බාගත කිරීමේ වේගය:* %0.2f M%s/s' %
                 ((results.download / 1000.0 / 1000.0) / args.units[1],
                  args.units[0]),
                 quiet)
     else:
-        printer('Skipping download test', quiet)
+        printer('බාගත කිරීමේ වේගය පරීක්ෂාව මගහරිමින්', quiet)
 
     if args.upload:
         speedtest.upload()
-        printer('*📤 ᴜᴘʟᴏᴀᴅ:* %0.2f M%s/s' %
+        printer('*📤 උඩුගත කිරීමේ වේගය:* %0.2f M%s/s' %
                 ((results.upload / 1000.0 / 1000.0) / args.units[1],
                  args.units[0]),
                 quiet)
-        printer("\n..................................................\n↬ ᴘᴏᴡᴇʀᴇᴅ ʙʏ *sᴘᴇᴇᴅᴛᴇsᴛ Ookla*")
+        printer("\n..................................................\n↬ බලගැන්වුම *Speedtest Ookla* මගිනි*")
     else:
-        printer('Skipping upload test', quiet)
+        printer('උඩුගත කිරීමේ වේගය පරීක්ෂාව මගහරිමින්', quiet)
 
     printer('Results:\n%r' % results.dict(), debug=True)
 
@@ -1974,7 +1974,7 @@ def shell():
         results.share()
 
     if args.simple:
-        printer('Ping: %s ms\nDownload: %0.2f M%s/s\nUpload: %0.2f M%s/s' %
+        printer('Ping: %s ms\nබාගැනීම: %0.2f M%s/s\nඋඩුගත කිරීම: %0.2f M%s/s' %
                 (results.ping,
                  (results.download / 1000.0 / 1000.0) / args.units[1],
                  args.units[0],

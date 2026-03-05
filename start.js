@@ -8,7 +8,7 @@ function start() {
 		stdio: ['inherit', 'inherit', 'inherit', 'ipc']
 	}).on('message', data => {
 		if (data === 'reset') {
-			console.log(chalk.yellow.bold('[BOT] Restarting...'))
+			console.log(chalk.yellow.bold('[BOT] නැවත පණ ගන්වමින් පවතී...'))
 			p.kill()
 			start()
 		} else if (data === 'uptime') {
@@ -16,10 +16,10 @@ function start() {
 		}
 	}).on('exit', code => {
 		if (code !== 0) {
-			console.error(chalk.red.bold(`[BOT] Exited with code: ${code}`))
+			console.error(chalk.red.bold(`[BOT] දෝෂ කේතය ${code} සමඟ ක්‍රියාවලිය නැවතුණි. නැවත ආරම්භ කරමින්...`))
 			start()
 		} else {
-			console.log(chalk.green.bold('[BOT] Process exited cleanly. Goodbye!'))
+			console.log(chalk.green.bold('[BOT] ක්‍රියාවලිය සාර්ථකව අවසන් විය. සමුගනිමු!'))
 			process.exit(0)
 		}
 	})

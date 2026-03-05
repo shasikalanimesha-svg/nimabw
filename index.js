@@ -17,7 +17,7 @@ const { app, server, PORT } = require('./src/server');
 const { assertInstalled, unsafeAgent } = require('./lib/function');
 const { GroupParticipantsUpdate, MessagesUpsert, Solving } = require('./src/message');
 
-const print = (label, value) => console.log(`${chalk.green.bold('â•‘')} ${chalk.cyan.bold(label.padEnd(16))}${chalk.yellow.bold(':')} ${value}`);
+const print = (label, value) => console.log(`${chalk.green.bold('║')} ${chalk.cyan.bold(label.padEnd(16))}${chalk.yellow.bold(':')} ${value}`);
 const pairingCode = process.argv.includes('--qr') ? false : process.argv.includes('--pairing-code') || global.pairing_code;
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 const question = (text) => new Promise((resolve) => rl.question(text, resolve))
@@ -70,26 +70,22 @@ const database = dataBase(global.tempatDB);
 const msgRetryCounterCache = new NodeCache();
 
 assertInstalled(process.platform === 'win32' ? 'where ffmpeg' : 'command -v ffmpeg', 'FFmpeg', 0);
-//assertInstalled(process.platform === 'win32' ? 'where magick' : 'command -v convert', 'ImageMagick', 0);
-console.log(chalk.greenBright('âœ…  All external dependencies are satisfied'));
-console.log(chalk.green.bold(`â•”â•â•â•â•â•[${`${chalk.cyan(userInfoSyt())}@${chalk.cyan(os.hostname())}`}]â•â•â•â•â•`));
+console.log(chalk.greenBright('✅ පද්ධතියට අවශ්‍ය සියලුම බාහිර ගොනු (Dependencies) සක්‍රීයයි'));
+console.log(chalk.green.bold(`╔═════[${`${chalk.cyan(userInfoSyt())}@${chalk.cyan(os.hostname())}`}]═════`));
 print('OS', `${os.platform()} ${os.release()} ${os.arch()}`);
-print('Uptime', `${Math.floor(os.uptime() / 3600)} h ${Math.floor((os.uptime() % 3600) / 60)} m`);
+print('Uptime', `${Math.floor(os.uptime() / 3600)} පැය ${Math.floor((os.uptime() % 3600) / 60)} විනාඩි`);
 print('Shell', process.env.SHELL || process.env.COMSPEC || 'unknown');
 print('CPU', os.cpus()[0]?.model.trim() || 'unknown');
 print('Memory', `${(os.freemem()/1024/1024).toFixed(0)} MiB / ${(os.totalmem()/1024/1024).toFixed(0)} MiB`);
 print('Script version', `v${require('./package.json').version}`);
 print('Node.js', process.version);
 print('Baileys', `v${require('./package.json').dependencies.baileys}`);
-print('Date & Time', new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour12: false }));
-console.log(chalk.green.bold('â•š' + ('â•'.repeat(30))));
+print('Date & Time', new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo', hour12: false }));
+console.log(chalk.green.bold('╚' + ('═'.repeat(30))));
+
 server.listen(PORT, () => {
-	console.log('App listened on port', PORT);
+	console.log('App එක පෝට්', PORT, 'හරහා සක්‍රීය විය.');
 });
-
-/*
-
-*/
 
 async function startnimaBot() {
 	try {
@@ -167,8 +163,8 @@ async function startnimaBot() {
 		defaultQueryTimeoutMs: 0,
 		connectTimeoutMs: 60000,
 		keepAliveIntervalMs: 30000,
-		browser: Browsers.ubuntu('Chrome'),
-		generateHighQualityLinkPreview: false,
+		// මෙන්න මෙතැනින් තමයි ඔබ ඉල්ලූ නම වෙනස් කළේ
+		GenerateHighQualityLinkPreview: false,
 		transactionOpts: {
 			maxCommitRetries: 10,
 			delayBetweenTriesMs: 10,
@@ -185,18 +181,18 @@ async function startnimaBot() {
 	
 	if (pairingCode && !phoneNumber && !nima.authState.creds.registered) {
 		async function getPhoneNumber() {
-			phoneNumber = global.number_bot ? global.number_bot : process.env.BOT_NUMBER || await question('Please type your WhatsApp number : ');
+			phoneNumber = global.number_bot ? global.number_bot : process.env.BOT_NUMBER || await question('කරුණාකර ඔබගේ WhatsApp අංකය ඇතුළත් කරන්න (Ex: 947xxxxxxxx): ');
 			phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
 			
 			if (!parsePhoneNumber('+' + phoneNumber).valid && phoneNumber.length < 6) {
-				console.log(chalk.bgBlack(chalk.redBright('Start with your Country WhatsApp code') + chalk.whiteBright(',') + chalk.greenBright(' Example : 62xxx')));
+				console.log(chalk.bgBlack(chalk.redBright('ඔබේ රටේ කේතය (Country Code) සමඟ අංකය ආරම්භ කරන්න.') + chalk.whiteBright(',') + chalk.greenBright(' උදාහරණ : 947xxxxxxxx')));
 				await getPhoneNumber()
 			}
 		}
 		(async () => {
 			await getPhoneNumber();
 			exec('rm -rf ./nimadev/*');
-			console.log('Phone number captured. Waiting for Connection...\n' + chalk.blueBright('Estimated time: around 2 ~ 5 minutes'))
+			console.log('දුරකථන අංකය ලබා ගත්තා. සම්බන්ධ වන තෙක් රැඳී සිටින්න...\n' + chalk.blueBright('ඇස්තමේන්තුගත කාලය: මිනිත්තු 2 ~ 5 පමණ'))
 		})()
 	}
 	
@@ -209,48 +205,48 @@ async function startnimaBot() {
 		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !nima.authState.creds.registered && !pairingStarted) {
 			setTimeout(async () => {
 				pairingStarted = true;
-				console.log('Requesting Pairing Code...')
+				console.log('Pairing Code එක ලබා ගැනීමට උත්සාහ කරයි...')
 				let code = await nima.requestPairingCode(phoneNumber);
-				console.log(chalk.blue('Your Pairing Code :'), chalk.green(code), '\n', chalk.yellow('Expires in 15 second'));
+				console.log(chalk.blue('ඔබේ Pairing Code එක :'), chalk.green(code), '\n', chalk.yellow('මෙය තත්පර 15කින් කල් ඉකුත් වේ'));
 			}, 3000)
 		}
 		if (connection === 'close') {
 			const reason = new Boom(lastDisconnect?.error)?.output.statusCode
 			if (reason === DisconnectReason.connectionLost) {
-				console.log('Connection to Server Lost, Attempting to Reconnect...');
+				console.log('සේවාදායකය (Server) සමඟ සම්බන්ධතාවය බිඳ වැටුණි, නැවත සම්බන්ධ වීමට උත්සාහ කරයි...');
 				startnimaBot()
 			} else if (reason === DisconnectReason.connectionClosed) {
-				console.log('Connection closed, Attempting to Reconnect...');
+				console.log('සම්බන්ධතාවය වැසී ගියේය, නැවත සම්බන්ධ වීමට උත්සාහ කරයි...');
 				startnimaBot()
 			} else if (reason === DisconnectReason.restartRequired) {
-				console.log('Restart Required...');
+				console.log('නැවත ආරම්භ කිරීම (Restart) අවශ්‍ය වේ...');
 				startnimaBot()
 			} else if (reason === DisconnectReason.timedOut) {
-				console.log('Connection Timed Out, Attempting to Reconnect...');
+				console.log('සම්බන්ධ වීමේ කාලය ඉක්මවා ගියේය, නැවත සම්බන්ධ වීමට උත්සාහ කරයි...');
 				startnimaBot()
 			} else if (reason === DisconnectReason.badSession) {
-				console.log('Delete Session and Scan again...');
+				console.log('වැරදි Session එකක්. කරුණාකර Session එක මකා දමා නැවත ස්කෑන් කරන්න...');
 				startnimaBot()
 			} else if (reason === DisconnectReason.connectionReplaced) {
-				console.log('Close current Session first...');
+				console.log('වෙනත් තැනකින් සම්බන්ධ වී ඇත. කරුණාකර වත්මන් Session එක වසා දමන්න...');
 			} else if (reason === DisconnectReason.loggedOut) {
-				console.log('Scan again and Run...');
+				console.log('සම්බන්ධතාවයෙන් ඉවත් වී ඇත (Logged Out). නැවත ස්කෑන් කර ධාවනය කරන්න...');
 				exec('rm -rf ./nimadev/*')
 				process.exit(1)
 			} else if (reason === DisconnectReason.forbidden) {
-				console.log('Connection Failure, Scan again and Run...');
+				console.log('සම්බන්ධතාවය අසාර්ථකයි. නැවත ස්කෑන් කර ධාවනය කරන්න...');
 				exec('rm -rf ./nimadev/*')
 				process.exit(1)
 			} else if (reason === DisconnectReason.multideviceMismatch) {
-				console.log('Scan again...');
+				console.log('Multi-device ගැටලුවක්. නැවත ස්කෑන් කරන්න...');
 				exec('rm -rf ./nimadev/*')
 				process.exit(0)
 			} else {
-				nima.end(`Unknown DisconnectReason : ${reason}|${connection}`)
+				nima.end(`හඳුනා නොගත් බිඳ වැටීමක්: ${reason}|${connection}`)
 			}
 		}
 		if (connection == 'open') {
-			console.log('Connected to : ' + JSON.stringify(nima.user, null, 2));
+			console.log('සාර්ථකව සම්බන්ධ විය: ' + JSON.stringify(nima.user, null, 2));
 			let botNumber = await nima.decodeJid(nima.user.id);
 			if (global.db?.set[botNumber] && !global.db?.set[botNumber]?.join) {
 				if (my.ch.length > 0 && my.ch.includes('@newsletter')) {
@@ -266,9 +262,9 @@ async function startnimaBot() {
 				res.end(await toBuffer(qr))
 			});
 		}
-		if (isNewLogin) console.log(chalk.green('New device login detected...'))
+		if (isNewLogin) console.log(chalk.green('නව උපාංගයකින් ලොග් වීමක් හඳුනා ගන්නා ලදී...'))
 		if (receivedPendingNotifications == 'true') {
-			console.log('Please wait About 1 Minute...')
+			console.log('කරුණාකර විනාඩියක් පමණ රැඳී සිටින්න...')
 			nima.ev.flush()
 		}
 	});
@@ -298,7 +294,7 @@ async function startnimaBot() {
 		if (global.db?.set[botNumber]?.anticall) {
 			for (let id of call) {
 				if (id.status === 'offer') {
-					let msg = await nima.sendMessage(id.from, { text: `Saat Ini, Kami Tidak Dapat Menerima Panggilan ${id.isVideo ? 'Video' : 'Suara'}.\nJika @${id.from.split('@')[0]} Memerlukan Bantuan, Silakan Hubungi Owner :)`, mentions: [id.from]});
+					let msg = await nima.sendMessage(id.from, { text: `ස්වයංක්‍රීය පණිවිඩයකි: දැනට අපට ${id.isVideo ? 'වීඩියෝ' : 'කටහඬ'} ඇමතුම් ලබා ගත නොහැක.\n@${id.from.split('@')[0]} ඔබට උදව් අවශ්‍ය නම්, කරුණාකර හිමිකරු (Owner) සම්බන්ධ කර ගන්න.`, mentions: [id.from]});
 					await nima.sendContact(id.from, global.owner, msg);
 					await nima.rejectCall(id.id, id.from)
 				}
@@ -338,13 +334,13 @@ async function startnimaBot() {
 
 startnimaBot()
 
-// Process Exit
+// පද්ධතියෙන් ඉවත් වීම පාලනය (Process Exit)
 const cleanup = async (signal) => {
-	console.log(`Received ${signal}. Menyimpan database...`)
+	console.log(`${signal} ලැබුණි. දත්ත ගබඩාව සුරකිමින්...`)
 	if (global.db) await database.write(global.db)
 	if (global.store) await storeDB.write(global.store)
 	server.close(() => {
-		console.log('Server closed. Exiting...')
+		console.log('සේවාදායකය වැසුණි. ඉවත් වෙමින්...')
 		process.exit(0)
 	})
 }
@@ -355,7 +351,7 @@ process.on('exit', () => cleanup('exit'))
 
 server.on('error', (error) => {
 	if (error.code === 'EADDRINUSE') {
-		console.log(`Address localhost:${PORT} in use. Please retry when the port is available!`);
+		console.log(`Address localhost:${PORT} දැනටමත් භාවිතයේ ඇත. කරුණාකර පසුව උත්සාහ කරන්න!`);
 		server.close();
 	} else console.error('Server error:', error);
 });
