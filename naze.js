@@ -7,7 +7,7 @@ process.once('unhandledRejection', console.error)
 	* Whatsapp : https://whatsapp.com/channel/0029VaWOkNm7DAWtkvkJBK43
 */
 
-require('./සැකසුම්');
+require('./settings');
 const fs = require('fs');
 const os = require('os');
 const util = require('util');
@@ -36,13 +36,13 @@ const { ytMp4, ytMp3 } = require('./lib/scraper');
 const templateMenu = require('./lib/template_මෙනු');
 const { toAudio, toPTT, toVideo } = require('./lib/converter');
 const { GroupUpdate, LoadDataBase } = require('./src/message');
-const { Jadiබෝට්ටුව, StopJadiබෝට්ටුව, ListJadiබෝට්ටුව } = require('./src/jadibot');
-const { cmdAdd, cmdDel, cmdAddHit, එක් කරන්නExpired, getPosition, getExpired, getStatus, checkStatus, getAllExpired, checkExpired } = require('./src/database');
-const { rdGame, iGame, tGame, gameSlot, gameCasinoSolo, gameSamgongSolo, gameMerampok, gameBegal, daily, buy, setLimit, එක් කරන්නLimit, එක් කරන්නMoney, setMoney, transfer, Blackjack, SnakeLඑක් කරන්නer } = require('./lib/game');
+const { Jadiබොට්, StopJadiබොට්, ListJadiබොට් } = require('./src/jadibot');
+const { cmdAdd, cmdDel, cmdAddHit, addExpired, getPosition, getExpired, getStatus, checkStatus, getAllExpired, checkExpired } = require('./src/database');
+const { rdGame, iGame, tGame, gameSlot, gameCasinoSolo, gameSamgongSolo, gameMerampok, gameBegal, daily, buy, setLimit, addLimit, addMoney, setMoney, transfer, Blackjack, SnakeLadder } = require('./lib/game');
 const { getRandom, getBuffer, fetchJson, runtime, clockString, sleep, isUrl, formatDate, formatp, generateProfilePicture, errorCache, normalize, updateSettings, parseMention, fixBytes, similarity, pickRandom, tarBackup } = require('./lib/function');
 
 const menfesTimeouts = new Map();
-const සැකසුම්Path = path.join(__dirname, 'සැකසුම්.js');
+const settingsPath = path.join(__dirname, 'settings.js');
 const cases = db.cases ? db.cases : (db.cases = [...fs.readFileSync('./naze.js', 'utf-8').matchAll(/case\s+['"]([^'"]+)['"]/g)].map(match => match[1]));
 
 module.exports = naze = async (naze, m, msg, store) => {
@@ -90,16 +90,16 @@ module.exports = naze = async (naze, m, msg, store) => {
 		(m.type == 'extendedTextපණිවිඩය') ? m.message.extendedTextපණිවිඩය.text :
 		(m.type == 'reactionපණිවිඩය') ? m.message.reactionපණිවිඩය.text :
 		(m.type == 'buttonsResponseපණිවිඩය') ? m.message.buttonsResponseපණිවිඩය.selectedButtonId :
-		(m.type == 'ලැයිස්තුවResponseපණිවිඩය') ? m.message.ලැයිස්තුවResponseපණිවිඩය.singleSelectපිළිතුර.selectedRowId :
+		(m.type == 'listResponseපණිවිඩය') ? m.message.listResponseපණිවිඩය.singleSelectපිළිතුර.selectedRowId :
 		(m.type == 'templateButtonපිළිතුරපණිවිඩය') ? m.message.templateButtonපිළිතුරපණිවිඩය.selectedId :
 		(m.type == 'interactiveResponseපණිවිඩය'  && m.quoted) ? (m.message.interactiveResponseපණිවිඩය?.nativeFlowResponseපණිවිඩය ? JSON.parse(m.message.interactiveResponseපණිවිඩය.nativeFlowResponseපණිවිඩය.paramsJson).id : '') :
-		(m.type == 'messageContextInfo') ? (m.message.buttonsResponseපණිවිඩය?.selectedButtonId || m.message.ලැයිස්තුවResponseපණිවිඩය?.singleSelectපිළිතුර.selectedRowId || '') :
+		(m.type == 'messageContextInfo') ? (m.message.buttonsResponseපණිවිඩය?.selectedButtonId || m.message.listResponseපණිවිඩය?.singleSelectපිළිතුර.selectedRowId || '') :
 		(m.type == 'editedපණිවිඩය') ? (m.message.editedපණිවිඩය?.message?.protocolපණිවිඩය?.editedපණිවිඩය?.extendedTextපණිවිඩය?.text || m.message.editedපණිවිඩය?.message?.protocolපණිවිඩය?.editedපණිවිඩය?.conversation || '') :
 		(m.type == 'protocolපණිවිඩය') ? (m.message.protocolපණිවිඩය?.editedපණිවිඩය?.extendedTextපණිවිඩය?.text || m.message.protocolපණිවිඩය?.editedපණිවිඩය?.conversation || m.message.protocolපණිවිඩය?.editedපණිවිඩය?.imageපණිවිඩය?.caption || m.message.protocolපණිවිඩය?.editedපණිවිඩය?.videoපණිවිඩය?.caption || '') : '') || '';
 		
 		const budy = (typeof m.text == 'string' ? m.text : '')
 		const isCreator = isහිමිකරු = ownerNumber.filter(v => typeof v === 'string').map(v => v.replace(/[^0-9]/g, '')).includes(m.sender.split('@')[0])
-		const prefix = isCreator ? (/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(body) ? body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : ලැයිස්තුවprefix.find(a => body?.startsWith(a)) || '') : set.multiprefix ? (/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(body) ? body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : ලැයිස්තුවprefix.find(a => body?.startsWith(a)) || '¿') : ලැයිස්තුවprefix.find(a => body?.startsWith(a)) || '¿'
+		const prefix = isCreator ? (/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(body) ? body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : listprefix.find(a => body?.startsWith(a)) || '') : set.multiprefix ? (/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@()#,'"*+÷/\%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(body) ? body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : listprefix.find(a => body?.startsWith(a)) || '¿') : listprefix.find(a => body?.startsWith(a)) || '¿'
 		const isCmd = body.startsWith(prefix)
 		const args = body.trim().split(/ +/).slice(1)
 		const quoted = m.quoted ? m.quoted : m
@@ -107,19 +107,19 @@ module.exports = naze = async (naze, m, msg, store) => {
 		const text = q = args.join(' ')
 		const mime = (quoted.msg || quoted).mimetype || ''
 		const qmsg = (quoted.msg || quoted)
-		const author = set.author = global.author || 'Miss Chutidev';
-		const packname = set.packname = global.packname || 'බෝට්ටුව WhatsApp';
-		const botname = set.botname = global.botname || 'Hitori බෝට්ටුව';
-		const hari = moment.tz('Asia/Jakarta').locale('id').format('dddd');
-		const tanggal = moment.tz('Asia/Jakarta').locale('id').format('DD/MM/YYYY');
-		const jam = moment.tz('Asia/Jakarta').locale('id').format('HH:mm:ss');
+		const author = set.author = global.author || 'Miss Chuti';
+		const packname = set.packname = global.packname || 'බොට් WhatsApp';
+		const botname = set.botname = global.botname || 'Hitori බොට්';
+		const hari = moment.tz('Asia/Colombo').locale('id').format('dddd');
+		const tanggal = moment.tz('Asia/Colombo').locale('id').format('DD/MM/YYYY');
+		const jam = moment.tz('Asia/Colombo').locale('id').format('HH:mm:ss');
 		const ucapanWaktu = jam < '05:00:00' ? 'Selamat Pagi 🌉' : jam < '11:00:00' ? 'Selamat Pagi 🌄' : jam < '15:00:00' ? 'Selamat Siang 🏙' : jam < '18:00:00' ? 'Selamat Sore 🌅' : jam < '19:00:00' ? 'Selamat Sore 🌃' : jam < '23:59:00' ? 'Selamat Malam 🌌' : 'Selamat Malam 🌌';
 		const almost = 0.66
 		const time = Date.now()
 		const time_now = new Date()
 		const time_end = 60000 - (time_now.getSeconds() * 1000 + time_now.getMilliseconds());
 		const readmore = String.fromCharCode(8206).repeat(999)
-		const setv = pickRandom(ලැයිස්තුවv)
+		const setv = pickRandom(listv)
 		
 		const isVip = isCreator || (db.පරිශීලකයින්[m.sender] ? db.පරිශීලකයින්[m.sender].vip : false)
 		const isBan = isCreator || (db.පරිශීලකයින්[m.sender] ? db.පරිශීලකයින්[m.sender].ban : false)
@@ -201,13 +201,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			
 			// Anti Hidetag
-			if (!m.key.fromMe && m.mentionedJid?.length === m.metadata.participanis?.length && db.කණ්ඩායම්[m.chat].antihidetag && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (!m.key.fromMe && m.mentionedJid?.length === m.metadata.participanis?.length && db.කණ්ඩායම්[m.chat].antihidetag && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
 				await m.reply('*Anti Hidetag Sedang Aktif❗*')
 			}
 			
 			// Anti Tag Sw
-			if (!m.key.fromMe && db.කණ්ඩායම්[m.chat].antitagsw && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (!m.key.fromMe && db.කණ්ඩායම්[m.chat].antitagsw && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				if (m.type === 'groupStatusMentionපණිවිඩය' || m.message?.groupStatusMentionපණිවිඩය || m.message?.protocolපණිවිඩය?.type === 25 || Object.keys(m.message).length === 1 && Object.keys(m.message)[0] === 'messageContextInfo') {
 					if (!db.කණ්ඩායම්[m.chat].tagsw[m.sender]) {
 						db.කණ්ඩායම්[m.chat].tagsw[m.sender] = 1
@@ -224,7 +224,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			
 			// Anti Toxic
-			if (!m.key.fromMe && db.කණ්ඩායම්[m.chat].antitoxic && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (!m.key.fromMe && db.කණ්ඩායම්[m.chat].antitoxic && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				if (budy.toLowerCase().split(/\s+/).some(word => badWords.includes(word))) {
 					await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
 					await naze.relayපණිවිඩය(m.chat, { extendedTextපණිවිඩය: { text: `Terdeteksi @${m.sender.split('@')[0]} Berkata Toxic\nMohon gunakan bahasa yang sopan.`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedපණිවිඩය: { conversation: '*Anti Toxic❗*'}, ...m.key }}}, {})
@@ -232,7 +232,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			
 			// Anti Delete
-			if (m.type === 'protocolපණිවිඩය' && m.msg?.type === 0 && db.කණ්ඩායම්[m.chat].antidelete && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (m.type === 'protocolපණිවිඩය' && m.msg?.type === 0 && db.කණ්ඩායම්[m.chat].antidelete && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				if (store?.messages?.[m.chat]?.array) {
 					const chats = store.messages[m.chat].array.find(a => a.key.id === m.msg.key.id);
 					if (!chats?.message) return
@@ -250,7 +250,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			
 			// Anti Link Group
-			if (db.කණ්ඩායම්[m.chat].antilink && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (db.කණ්ඩායම්[m.chat].antilink && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				if (budy.match('chat.whatsapp.com/')) {
 					await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
 					await naze.relayපණිවිඩය(m.chat, { extendedTextපණිවිඩය: { text: `Terdeteksi @${m.sender.split('@')[0]} Mengirim Link Group\nMaaf Link Harus Di Hapus..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedපණිවිඩය: { conversation: '*Anti Link❗*'}, ...m.key }}}, {})
@@ -258,7 +258,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			
 			// Anti Virtex Group
-			if (db.කණ්ඩායම්[m.chat].antivirtex && !isCreator && m.isබෝට්ටුවපරිපාලක && !m.isපරිපාලක) {
+			if (db.කණ්ඩායම්[m.chat].antivirtex && !isCreator && m.isබොට්පරිපාලක && !m.isපරිපාලක) {
 				if (budy.length > 4500) {
 					await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
 					await naze.relayපණිවිඩය(m.chat, { extendedTextපණිවිඩය: { text: `Terdeteksi @${m.sender.split('@')[0]} Mengirim Virtex..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedපණිවිඩය: { conversation: '*Anti Virtex❗*'}, ...m.key }}}, {})
@@ -277,12 +277,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (m.message && m.key.remoteJid !== 'තත්වය@broadcast') {
 			if ((set.autoread && naze.public) || isCreator) {
 				naze.readපණිවිඩයs([m.key]);
-				console.log(chalk.black(chalk.bgWවාරයe('[ PESAN ]:'), chalk.bgGreen(new Date), chalk.bgHex('#00EAD3')(budy || m.type), chalk.bgHex('#AF26EB')(m.key.id) + '\n' + chalk.bgCyanBright('[ DARI ] :'), chalk.bgYellow(m.pushName || (isCreator ? 'බෝට්ටුව' : 'Anonim')), chalk.bgHex('#FF449F')(m.sender), chalk.bgHex('#FF5700')(m.isGroup ? m.metadata.subject : m.chat.endsWith('@newsletter') ? 'Newsletter' : 'Private Chat'), chalk.bgBlue('(' + m.chat + ')')));
+				console.log(chalk.black(chalk.bgWවාරයe('[ PESAN ]:'), chalk.bgGreen(new Date), chalk.bgHex('#00EAD3')(budy || m.type), chalk.bgHex('#AF26EB')(m.key.id) + '\n' + chalk.bgCyanBright('[ DARI ] :'), chalk.bgYellow(m.pushName || (isCreator ? 'බොට්' : 'Anonim')), chalk.bgHex('#FF449F')(m.sender), chalk.bgHex('#FF5700')(m.isGroup ? m.metadata.subject : m.chat.endsWith('@newsletter') ? 'Newsletter' : 'Private Chat'), chalk.bgBlue('(' + m.chat + ')')));
 			}
 		}
 		
-		// Filter බෝට්ටුව & Ban
-		if (m.isබෝට්ටුව) return
+		// Filter බොට් & Ban
+		if (m.isබොට්) return
 		if (db.පරිශීලකයින්[m.sender]?.ban && !isCreator) return
 		
 		// Filter Set Api Key
@@ -322,7 +322,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 		}
 		
-		if (isCmd && !isCreator) antiSpam.එක් කරන්නFilter(m.sender)
+		if (isCmd && !isCreator) antiSpam.addFilter(m.sender)
 		
 		// Cmd Media
 		let fileSha256;
@@ -350,7 +350,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (this.intervalSholat) clearInterval(this.intervalSholat); 
 		setTimeout(() => {
 			this.intervalSholat = setInterval(async() => {
-				const sekarang = moment.tz('Asia/Jakarta');
+				const sekarang = moment.tz('Asia/Colombo');
 				const jamSholat = sekarang.format('HH:mm');
 				const hariIni = sekarang.format('YYYY-MM-DD');
 				const detik = sekarang.format('ss');
@@ -358,8 +358,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 				for (const [sholat, waktu] of Object.entries(jadwalSholat)) {
 					if (jamSholat === waktu && this.waktusholat[sholat] !== hariIni) {
 						this.waktusholat[sholat] = hariIni
-						for (const [idnya, සැකසුම්] of Object.entries(db.කණ්ඩායම්)) {
-							if (සැකසුම්.waktusholat) {
+						for (const [idnya, settings] of Object.entries(db.කණ්ඩායම්)) {
+							if (settings.waktusholat) {
 								await naze.sendපණිවිඩය(idnya, { text: `Waktu *${sholat}* telah tiba, ambilah air wudhu dan segeralah shalat🙂.\n\n*${waktu.slice(0, 5)}*\n_untuk wilayah Jakarta dan sekitarnya._` }, { ephemeralExpiration: m.expiration || store?.messages[idnya]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 }).catch(e => {})
 							}
 						}
@@ -680,8 +680,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 		// Ular Tangga
 		if (m.isGroup && (!isCmd || isCreator) && (m.chat in ulartangga)) {
 			if (m.quoted && ulartangga[m.chat].id == m.quoted.id) {
-				if (!(ulartangga[m.chat] instanceof SnakeLඑක් කරන්නer)) {
-					ulartangga[m.chat] = Object.assign(new SnakeLඑක් කරන්නer(ulartangga[m.chat]), ulartangga[m.chat]);
+				if (!(ulartangga[m.chat] instanceof SnakeLadder)) {
+					ulartangga[m.chat] = Object.assign(new SnakeLadder(ulartangga[m.chat]), ulartangga[m.chat]);
 				}
 				if (/^(roll|kocok)/i.test(budy.toLowerCase())) {
 					const player = ulartangga[m.chat].players.findIndex(a => a.id == m.sender)
@@ -699,8 +699,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 					const newMap = await ulartangga[m.chat].drawBoard(ulartangga[m.chat].map.url, ulartangga[m.chat].players);
 					if (ulartangga[m.chat].players[player].move === 100) {
 						teks += `@${m.sender.split('@')[0]} Menang\nHadiah:\n- Limit + 50\n- Money + 100.000`;
-						එක් කරන්නLimit(50, m.sender, db);
-						එක් කරන්නMoney(100000, m.sender, db);
+						addLimit(50, m.sender, db);
+						addMoney(100000, m.sender, db);
 						delete ulartangga[m.chat];
 						return m.reply({ image: newMap, caption: teks, mentions: [m.sender] });
 					}
@@ -821,8 +821,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.reply(mess.wait)
 				await naze.groupAcceptInvite(result[1]).catch((res) => {
 					if (res.data == 400) return m.reply('Grup Tidak Di Temukan❗');
-					if (res.data == 401) return m.reply('බෝට්ටුව Di Kick Dari Grup Tersebut❗');
-					if (res.data == 409) return m.reply('බෝට්ටුව Sudah Join Di Grup Tersebut❗');
+					if (res.data == 401) return m.reply('බොට් Di Kick Dari Grup Tersebut❗');
+					if (res.data == 409) return m.reply('බොට් Sudah Join Di Grup Tersebut❗');
 					if (res.data == 410) return m.reply('Url Grup Telah Di Setel Ulang❗');
 					if (res.data == 500) return m.reply('Grup Penuh❗');
 				})
@@ -849,30 +849,30 @@ module.exports = naze = async (naze, m, msg, store) => {
 				} else m.reply(`Contoh: ${prefix + command} 123xxx@g.us|3EB0xxx`)
 			}
 			break
-			case 'blokir': case 'අවහිර කරන්න': {
+			case 'blokir': case 'block': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const numbersOnly = m.isGroup ? (text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender) : m.chat
-					await naze.updateBlockStatus(numbersOnly, 'අවහිර කරන්න').then((a) => m.reply(mess.done)).catch((err) => m.reply('Gagal!'))
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+					await naze.updateBlockStatus(numbersOnly, 'block').then((a) => m.reply(mess.done)).catch((err) => m.reply('Gagal!'))
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
-			case 'ලැයිස්තුවඅවහිර කරන්න': {
-				let anu = await naze.fetchBlockලැයිස්තුව()
+			case 'listblock': {
+				let anu = await naze.fetchBlocklist()
 				m.reply(`Total Block : ${anu.length}\n` + anu.map(v => '• ' + v.replace(/@.+/, '')).join`\n`)
 			}
 			break
-			case 'openblokir': case 'unblokir': case 'openඅවහිර කරන්න': case 'unඅවහිර කරන්න': {
+			case 'openblokir': case 'unblokir': case 'openblock': case 'unblock': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const numbersOnly = m.isGroup ? (text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender) : m.chat
-					await naze.updateBlockStatus(numbersOnly, 'unඅවහිර කරන්න').then((a) => m.reply(mess.done)).catch((err) => m.reply('Gagal!'))
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+					await naze.updateBlockStatus(numbersOnly, 'unblock').then((a) => m.reply(mess.done)).catch((err) => m.reply('Gagal!'))
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'ban': case 'banned': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!text) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx`)
+				if (!text) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx`)
 				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 				const nmrnya = naze.findJidByLid(klss, store, true)
@@ -884,7 +884,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'unban': case 'unbanned': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!text) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx`)
+				if (!text) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx`)
 				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 				const nmrnya = naze.findJidByLid(klss, store, true)
@@ -899,16 +899,16 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (command == 'mute') {
 					db.කණ්ඩායම්[m.chat].mute = true
-					m.reply('බෝට්ටුව Telah Di Mute Di Grup Ini!')
+					m.reply('බොට් Telah Di Mute Di Grup Ini!')
 				} else if (command == 'unmute') {
 					db.කණ්ඩායම්[m.chat].mute = false
 					m.reply('Sukses Unmute')
 				}
 			}
 			break
-			case 'එක් කරන්නowner': {
+			case 'addowner': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!text || isNaN(text)) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx`)
+				if (!text || isNaN(text)) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx`)
 				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 				const nmrnya = naze.findJidByLid(klss, store, true)
@@ -923,22 +923,22 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'delowner': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!text || isNaN(text)) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx`)
+				if (!text || isNaN(text)) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx`)
 				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 				const nmrnya = naze.findJidByLid(klss, store, true)
 				const onWa = await naze.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
-				let ලැයිස්තුව = set.owner
-				const index = ලැයිස්තුව.findIndex(o => o === nmrnya);
+				let list = set.owner
+				const index = list.findIndex(o => o === nmrnya);
 				if (index === -1) return m.reply('හිමිකරු tidak ditemukan di daftar!')
-				ලැයිස්තුව.splice(index, 1)
+				list.splice(index, 1)
 				m.reply('Sukses Delete හිමිකරු')
 			}
 			break
-			case 'එක් කරන්නuang': case 'එක් කරන්නmoney': {
+			case 'adduang': case 'addmoney': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx 1000`)
+				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx 1000`)
 				if (args[1].length > 15) return m.reply('Jumlah Money Maksimal 15 digit angka!')
 				const findJid = naze.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = args[0].replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
@@ -946,14 +946,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const onWa = await naze.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
 				if (db.පරිශීලකයින්[nmrnya] && db.පරිශීලකයින්[nmrnya].money >= 0) {
-					එක් කරන්නMoney(args[1], nmrnya, db)
+					addMoney(args[1], nmrnya, db)
 					m.reply('Sukses Add Uang')
 				} else m.reply('User tidak terdaftar di database!')
 			}
 			break
-			case 'එක් කරන්නlimit': {
+			case 'addlimit': {
 				if (!isCreator) return m.reply(mess.owner)
-				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 62xxx 10`)
+				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag Nomernya!\nExample:\n${prefix + command} 94xxx 10`)
 				if (args[1].length > 10) return m.reply('Jumlah Limit Maksimal 10 digit angka!')
 				const findJid = naze.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = args[0].replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
@@ -961,12 +961,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const onWa = await naze.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
 				if (db.පරිශීලකයින්[nmrnya] && db.පරිශීලකයින්[nmrnya].limit >= 0) {
-					එක් කරන්නLimit(args[1], nmrnya, db)
+					addLimit(args[1], nmrnya, db)
 					m.reply('Sukses Add limit')
 				} else m.reply('User tidak terdaftar di database!')
 			}
 			break
-			case 'ලැයිස්තුවpc': {
+			case 'listpc': {
 				if (!isCreator) return m.reply(mess.owner)
 				let anu = Object.keys(store.messages).filter(a => a.endsWith('.net') || a.endsWith('lid'));
 				let teks = `● *LIST PERSONAL CHAT*\n\nTotal Chat : ${anu.length} Chat\n\n`
@@ -980,7 +980,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				await m.reply(teks)
 			}
 			break
-			case 'ලැයිස්තුවgc': {
+			case 'listgc': {
 				if (!isCreator) return m.reply(mess.owner)
 				let anu = Object.keys(store.messages).filter(a => a.endsWith('@g.us'));
 				let teks = `● *LIST GROUP CHAT*\n\nTotal Group : ${anu.length} Group\n\n`
@@ -992,7 +992,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					} catch (e) {
 						metadata = (store.groupMetadata[i] = await naze.groupMetadata(i).catch(e => ({})))
 					}
-					teks += metadata?.subject ? `${setv} *Nama :* ${metadata.subject}\n${setv} *පරිපාලක :* ${metadata.owner ? `@${metadata.owner.split('@')[0]}` : '-' }\n${setv} *ID :* ${metadata.id}\n${setv} *Dibuat :* ${moment(metadata.creation * 1000).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')}\n${setv} *Member :* ${metadata.participants.length}\n\n=====================\n\n` : ''
+					teks += metadata?.subject ? `${setv} *Nama :* ${metadata.subject}\n${setv} *පරිපාලක :* ${metadata.owner ? `@${metadata.owner.split('@')[0]}` : '-' }\n${setv} *ID :* ${metadata.id}\n${setv} *Dibuat :* ${moment(metadata.creation * 1000).tz('Asia/Colombo').format('DD/MM/YYYY HH:mm:ss')}\n${setv} *Member :* ${metadata.participants.length}\n\n=====================\n\n` : ''
 				}
 				await m.reply(teks)
 			}
@@ -1008,7 +1008,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				await naze.sendපණිවිඩය(group.id, { text: 'Done' })
 			}
 			break
-			case 'එක් කරන්නsewa': case 'sewa': {
+			case 'addsewa': case 'sewa': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`Example:\n${prefix + command} https://chat.whatsapp.com/xxx | waktu\n${prefix + command} https://chat.whatsapp.com/xxx | 30 hari`)
 				let [teks1, teks2] = text.split('|')?.map(x => x.trim()) || [];
@@ -1019,12 +1019,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 					await naze.groupAcceptInvite(urlny[1])
 				} catch (e) {
 					if (e.data == 400) return m.reply('Grup Tidak Di Temukan❗');
-					if (e.data == 401) return m.reply('බෝට්ටුව Di Kick Dari Grup Tersebut❗');
+					if (e.data == 401) return m.reply('බොට් Di Kick Dari Grup Tersebut❗');
 					if (e.data == 410) return m.reply('Url Grup Telah Di Setel Ulang❗');
 					if (e.data == 500) return m.reply('Grup Penuh❗');
 				}
 				await naze.groupGetInviteInfo(urlny[1]).then(a => {
-					එක් කරන්නExpired({ url: urlny[1], expired: (teks2?.replace(/[^0-9]/g, '') || 30) + 'd', id: a.id }, sewa)
+					addExpired({ url: urlny[1], expired: (teks2?.replace(/[^0-9]/g, '') || 30) + 'd', id: a.id }, sewa)
 					m.reply('Sukses Menambahkan Sewa Selama ' + (teks2?.replace(/[^0-9]/g, '') || 30) + ' hari\nOtomatis Keluar Saat Waktu Habis!')
 				}).catch(e => m.reply('Gagal Menambahkan Sewa!'))
 			}
@@ -1047,7 +1047,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				} else m.reply(`${text} Tidak Terdaftar Di Database\nExample:\n${prefix + command} https://chat.whatsapp.com/xxxx\n Or \n${prefix + command} id_group@g.us`)
 			}
 			break
-			case 'ලැයිස්තුවsewa': {
+			case 'listsewa': {
 				if (!isCreator) return m.reply(mess.owner)
 				let txt = `*------「 LIST SEWA 」------*\n\n`
 				for (let s of sewa) {
@@ -1056,7 +1056,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.reply(txt)
 			}
 			break
-			case 'එක් කරන්නpr': case 'එක් කරන්නprem': case 'එක් කරන්නpremium': {
+			case 'addpr': case 'addprem': case 'addpremium': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`Example:\n${prefix + command} @tag|waktu\n${prefix + command} @${m.sender.split('@')[0]}|30 hari`)
 				let [teks1, teks2] = text.split('|').map(x => x.trim());
@@ -1067,7 +1067,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
 				if (teks2) {
 					if (db.පරිශීලකයින්[nmrnya] && db.පරිශීලකයින්[nmrnya].limit >= 0) {
-						එක් කරන්නExpired({ id: nmrnya, expired: teks2.replace(/[^0-9]/g, '') + 'd' }, premium);
+						addExpired({ id: nmrnya, expired: teks2.replace(/[^0-9]/g, '') + 'd' }, premium);
 						m.reply(`Sukses ${command} @${nmrnya.split('@')[0]} Selama ${teks2}`)
 						db.පරිශීලකයින්[nmrnya].limit += db.පරිශීලකයින්[nmrnya].vip ? limit.vip : limit.premium
 						db.පරිශීලකයින්[nmrnya].money += db.පරිශීලකයින්[nmrnya].vip ? money.vip : money.premium
@@ -1091,7 +1091,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				} else m.reply('Nomer tidak terdaftar di BOT !')
 			}
 			break
-			case 'ලැයිස්තුවpr': case 'ලැයිස්තුවprem': case 'ලැයිස්තුවpremium': {
+			case 'listpr': case 'listprem': case 'listpremium': {
 				if (!isCreator) return m.reply(mess.owner)
 				let txt = `*------「 LIST PREMIUM 」------*\n\n`
 				for (let userprem of premium) {
@@ -1134,7 +1134,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				}
 			}
 			break
-			case 'එක් කරන්නcase': {
+			case 'addcase': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text && !text.startsWith('case')) return m.reply('Masukkan Casenya!')
 				fs.readFile('naze.js', 'utf8', (err, data) => {
@@ -1239,7 +1239,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'deletesession': case 'delsession': {
 				if (!isCreator) return m.reply(mess.owner)
-				fs.reඑක් කරන්නir('./nimesha madhushan', async function (err, files) {
+				fs.readdir('./nimesha madhushan', async function (err, files) {
 					if (err) {
 						console.error('Unable to scan directory: ' + err);
 						return m.reply('Unable to scan directory: ' + err);
@@ -1263,7 +1263,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'deletesampah': case 'delsampah': {
 				if (!isCreator) return m.reply(mess.owner)
-				fs.reඑක් කරන්නir('./database/sampah', async function (err, files) {
+				fs.readdir('./database/sampah', async function (err, files) {
 					if (err) {
 						console.error('Unable to scan directory: ' + err);
 						return m.reply('Unable to scan directory: ' + err);
@@ -1290,7 +1290,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await updateSettings({
-						filePath: සැකසුම්Path,
+						filePath: settingsPath,
 						botname: teksnya.trim()
 					});
 					m.reply('Sukses')
@@ -1302,7 +1302,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await updateSettings({
-						filePath: සැකසුම්Path,
+						filePath: settingsPath,
 						packname: teksnya.trim()
 					});
 					m.reply('Sukses')
@@ -1314,7 +1314,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await updateSettings({
-						filePath: සැකසුම්Path,
+						filePath: settingsPath,
 						author: teksnya.trim()
 					});
 					m.reply('Sukses')
@@ -1327,7 +1327,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!text.startsWith('nz-')) return m.reply('Apikey Tidak Valid!\nAmbil Apikey di : https://naze.biz.id/profile');
 				let old_key = global.APIKeys[global.APIs.naze];
 				await updateSettings({
-					filePath: සැකසුම්Path,
+					filePath: settingsPath,
 					apikey: text.trim()
 				});
 				m.reply(`*Apikey telah di ganti dari ${old_key} menjadi ${q}*`)
@@ -1361,22 +1361,22 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			
 			// Group Menu
-			case 'එක් කරන්න': {
+			case 'add': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 					const nmrnya = naze.findJidByLid(klss, store, true)
 					try {
-						await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'එක් කරන්න').then(async (res) => {
+						await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'add').then(async (res) => {
 							for (let i of res) {
 								let invv = await naze.groupInviteCode(m.chat)
 								const තත්වයපණිවිඩයs = {
 									200: `Berhasil menambahkan @${nmrnya.split('@')[0]} ke grup!`,
-									401: 'Dia Memblokir බෝට්ටුව!',
+									401: 'Dia Memblokir බොට්!',
 									409: 'Dia Sudah Join!',
 									500: 'Grup Penuh!'
 								};
@@ -1395,52 +1395,52 @@ module.exports = naze = async (naze, m, msg, store) => {
 					} catch (e) {
 						m.reply('Terjadi Kesalahan! Gagal Add User')
 					}
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'kick': case 'dor': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 					const nmrnya = naze.findJidByLid(klss, store, true)
 					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'remove').catch((err) => m.reply('Gagal!'))
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'promote': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 					const nmrnya = naze.findJidByLid(klss, store, true)
 					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'promote').catch((err) => m.reply('Gagal!'))
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'demote': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
 					const nmrnya = naze.findJidByLid(klss, store, true)
 					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'demote').catch((err) => m.reply('Gagal!'))
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'warn': case 'warning': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
@@ -1456,13 +1456,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 						db.කණ්ඩායම්[m.chat].warn[nmrnya] += 1
 						m.reply(`Peringatan ${db.කණ්ඩායම්[m.chat].warn[nmrnya]}/4, akan dikick sewaktu waktu❗`)
 					}
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'unwarn': case 'delwarn': case 'unwarning': case 'delwarning': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
 					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
@@ -1472,13 +1472,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 						delete db.කණ්ඩායම්[m.chat].warn[nmrnya]
 						m.reply('Berhasil Menghapus Warning!')
 					}
-				} else m.reply(`Contoh: ${prefix + command} 62xxx`)
+				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'setname': case 'setnamegc': case 'setsubject': case 'setsubjectgc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await naze.groupUpdateSubject(m.chat, teksnya).catch((err) => m.reply('Gagal!'))
@@ -1488,7 +1488,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'setdesc': case 'setdescgc': case 'setdesk': case 'setdeskgc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await naze.groupUpdateDescription(m.chat, teksnya).catch((err) => m.reply('Gagal!'))
@@ -1498,8 +1498,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'setppකණ්ඩායම්': case 'setppgrup': case 'setppgc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
-				if (!m.quoted) return m.reply('පිළිතුර Gambar yang mau dipasang di Profile බෝට්ටුව')
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.quoted) return m.reply('පිළිතුර Gambar yang mau dipasang di Profile බොට්')
 				if (!/image/.test(quoted.type)) return m.reply(`පිළිතුර Image Dengan Caption ${prefix + command}`)
 				let media = await quoted.download();
 				let { img } = await generateProfilePicture(media, text.length > 0 ? null : 512)
@@ -1518,20 +1518,20 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'delete': case 'del': case 'd': {
 				if (!m.quoted) return m.reply('පිළිතුර pesan yang mau di delete')
-				await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: m.isබෝට්ටුවපරිපාලක ? false : true, id: m.quoted.id, participant: m.quoted.sender }})
+				await naze.sendපණිවිඩය(m.chat, { delete: { remoteJid: m.chat, fromMe: m.isබොට්පරිපාලක ? false : true, id: m.quoted.id, participant: m.quoted.sender }})
 			}
 			break
 			case 'pin': case 'unpin': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				await naze.sendපණිවිඩය(m.chat, { pin: { type: command == 'pin' ? 1 : 0, time: 2592000, key: m.quoted ? m.quoted.key : m.key }})
 			}
 			break
 			case 'linkgroup': case 'linkgrup': case 'linkgc': case 'urlgroup': case 'urlgrup': case 'urlgc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				let response = await naze.groupInviteCode(m.chat)
 				await m.reply(`https://chat.whatsapp.com/${response}\n\nLink Group : ${(store.groupMetadata[m.chat] ? store.groupMetadata[m.chat] : (store.groupMetadata[m.chat] = await naze.groupMetadata(m.chat))).subject}`, { detectLink: true })
 			}
@@ -1539,7 +1539,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'revoke': case 'newlink': case 'newurl': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				await naze.groupRevokeInvite(m.chat).then((a) => {
 					m.reply(`Sukses Menyetel Ulang, Tautan Undangan Grup ${m.metadata.subject}`)
 				}).catch((err) => m.reply('Gagal!'))
@@ -1548,19 +1548,19 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'group': case 'grup': case 'gc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				let set = db.කණ්ඩායම්[m.chat]
 				switch (args[0]?.toLowerCase()) {
 					case 'close': case 'open':
 					await naze.groupSettingUpdate(m.chat, args[0] == 'close' ? 'announcement' : 'not_announcement').then(a => m.reply(`*Sukses ${args[0] == 'open' ? 'Membuka' : 'Menutup'} Group*`))
 					break
 					case 'join':
-					const _ලැයිස්තුව = await naze.groupRequestParticipantsList(m.chat).then(a => a.map(b => b.jid))
-					if (/(a(p|pp|cc)|(ept|rove))|true|ok/i.test(args[1]) && _ලැයිස්තුව.length > 0) {
-						await naze.groupRequestParticipantsUpdate(m.chat, _ලැයිස්තුව, 'approve').catch(e => m.react('❌'))
-					} else if (/reject|false|no/i.test(args[1]) && _ලැයිස්තුව.length > 0) {
-						await naze.groupRequestParticipantsUpdate(m.chat, _ලැයිස්තුව, 'reject').catch(e => m.react('❌'))
-					} else m.reply(`List Request Join :\n${_ලැයිස්තුව.length > 0 ? '- @' + _ලැයිස්තුව.join('\n- @').split('@')[0] : '*Nothing*'}\nExample : ${prefix + command} join acc/reject`)
+					const _list = await naze.groupRequestParticipantsList(m.chat).then(a => a.map(b => b.jid))
+					if (/(a(p|pp|cc)|(ept|rove))|true|ok/i.test(args[1]) && _list.length > 0) {
+						await naze.groupRequestParticipantsUpdate(m.chat, _list, 'approve').catch(e => m.react('❌'))
+					} else if (/reject|false|no/i.test(args[1]) && _list.length > 0) {
+						await naze.groupRequestParticipantsUpdate(m.chat, _list, 'reject').catch(e => m.react('❌'))
+					} else m.reply(`List Request Join :\n${_list.length > 0 ? '- @' + _list.join('\n- @').split('@')[0] : '*Nothing*'}\nExample : ${prefix + command} join acc/reject`)
 					break
 					case 'pesansementara': case 'disappearing':
 					if (/90|7|1|24|on/i.test(args[1])) {
@@ -1593,8 +1593,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'tagall': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
-				let setv = pickRandom(ලැයිස්තුවv)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
+				let setv = pickRandom(listv)
 				let teks = `*Tag All*\n\n*Pesan :* ${q ? q : ''}\n\n`
 				for (let mem of m.metadata.participants) {
 					teks += `${setv} @${mem.id.split('@')[0]}\n`
@@ -1605,20 +1605,20 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'hidetag': case 'h': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				await m.reply(q ? q : '', { mentions: m.metadata.participants.map(a => a.id) })
 			}
 			break
 			case 'totag': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isපරිපාලක) return m.reply(mess.admin)
-				if (!m.isබෝට්ටුවපරිපාලක) return m.reply(mess.botපරිපාලක)
+				if (!m.isබොට්පරිපාලක) return m.reply(mess.botපරිපාලක)
 				if (!m.quoted) return m.reply(`පිළිතුර pesan dengan caption ${prefix + command}`)
 				delete m.quoted.chat
 				await naze.sendපණිවිඩය(m.chat, { forward: m.quoted.fakeObj(), mentions: m.metadata.participants.map(a => a.id) })
 			}
 			break
-			case 'ලැයිස්තුවonline': case 'ලැයිස්තුවon': {
+			case 'listonline': case 'liston': {
 				if (!m.isGroup) return m.reply(mess.group)
 				let id = args && /\d+\-\d+@g.us/.test(args[0]) ? args[0] : m.chat
 				if (!store.presences || !store.presences[id]) return m.reply('Sedang Tidak ada yang online!')
@@ -1627,15 +1627,15 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			
-			// බෝට්ටුව Menu
-			case 'owner': case 'ලැයිස්තුවowner': {
+			// බොට් Menu
+			case 'owner': case 'listowner': {
 				await naze.sendContact(m.chat, ownerNumber, m);
 			}
 			break
 			case 'profile': case 'cek': {
 				const user = Object.keys(db.පරිශීලකයින්)
 				const තොරතුරුUser = db.පරිශීලකයින්[m.sender]
-				await m.reply(`*👤Profile @${m.sender.split('@')[0]}* :\n🐋User බෝට්ටුව : ${user.includes(m.sender) ? 'True' : 'False'}\n🔥User : ${isVip ? 'VIP' : isPremium ? 'PREMIUM' : 'FREE'}${isPremium ? `\n⏳Expired : ${checkStatus(m.sender, premium) ? formatDate(getExpired(m.sender, db.premium)) : '-'}` : ''}\n🎫Limit : ${තොරතුරුUser.limit}\n💰Uang : ${තොරතුරුUser ? තොරතුරුUser.money.toLocaleString('id-ID') : '0'}`)
+				await m.reply(`*👤Profile @${m.sender.split('@')[0]}* :\n🐋User බොට් : ${user.includes(m.sender) ? 'True' : 'False'}\n🔥User : ${isVip ? 'VIP' : isPremium ? 'PREMIUM' : 'FREE'}${isPremium ? `\n⏳Expired : ${checkStatus(m.sender, premium) ? formatDate(getExpired(m.sender, db.premium)) : '-'}` : ''}\n🎫Limit : ${තොරතුරුUser.limit}\n💰Uang : ${තොරතුරුUser ? තොරතුරුUser.money.toLocaleString('id-ID') : '0'}`)
 			}
 			break
 			case 'leaderboard': {
@@ -1731,17 +1731,17 @@ module.exports = naze = async (naze, m, msg, store) => {
 						m.reply('*Sukse Change To Off*')
 					} else m.reply(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} on/off`)
 					break
-					case 'set': case 'සැකසුම්':
-					let සැකසුම්බෝට්ටුව = Object.entries(set).map(([key, value]) => {
-						let ලැයිස්තුව = key == 'තත්වය' ? new Date(value).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : (typeof value === 'boolean') ? (value ? 'on🟢' : 'off🔴') : (typeof value === 'object') ? `\n${value.map(a => '- ' + a).join('\n')}` : value;
-						return `- ${key.charAt(0).toUpperCase() + key.slice(1)} : ${ලැයිස්තුව}`;
+					case 'set': case 'settings':
+					let settingsබොට් = Object.entries(set).map(([key, value]) => {
+						let list = key == 'තත්වය' ? new Date(value).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : (typeof value === 'boolean') ? (value ? 'on🟢' : 'off🔴') : (typeof value === 'object') ? `\n${value.map(a => '- ' + a).join('\n')}` : value;
+						return `- ${key.charAt(0).toUpperCase() + key.slice(1)} : ${list}`;
 					}).join('\n');
-					m.reply(`Settings බෝට්ටුව @${botNumber.split('@')[0]}\n${සැකසුම්බෝට්ටුව}\n\nExample: ${prefix + command} mode`);
+					m.reply(`Settings බොට් @${botNumber.split('@')[0]}\n${settingsබොට්}\n\nExample: ${prefix + command} mode`);
 					break
 					default:
 					if (args[0] || args[1]) m.reply(`*Please Sellect Settings :*\n- Mode : *${prefix + command} mode self/public*\n- Anti Call : *${prefix + command} anticall on/off*\n- Auto Bio : *${prefix + command} autobio on/off*\n- Auto Read : *${prefix + command} autoread on/off*\n- Auto Typing : *${prefix + command} autotyping on/off*\n- Read Sw : *${prefix + command} readsw on/off*\n- Multi Prefix : *${prefix + command} multiprefix on/off*`)
 				}
-				if (!args[0] && !args[1]) return m.reply(`*බෝට්ටුව Telah Online Selama*\n*${runtime(process.uptime())}*`)
+				if (!args[0] && !args[1]) return m.reply(`*බොට් Telah Online Selama*\n*${runtime(process.uptime())}*`)
 			}
 			break
 			case 'ping': case 'botතත්වය': case 'තත්වයbot': {
@@ -1828,7 +1828,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						m.reply(teks)
 					}).catch((e) => {
 						if ([400, 406].includes(e.data)) return m.reply('Grup Tidak Di Temukan❗');
-						if (e.data == 401) return m.reply('බෝට්ටුව Di Kick Dari Grup Tersebut❗');
+						if (e.data == 401) return m.reply('බොට් Di Kick Dari Grup Tersebut❗');
 						if (e.data == 410) return m.reply('Url Grup Telah Di Setel Ulang❗');
 					});
 				} else if (_saluran.test(text) || text.endsWith('@newsletter') || !isNaN(text)) {
@@ -1838,14 +1838,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 				} else m.reply('Hanya Support Url Grup atau Saluran!')
 			}
 			break
-			case 'එක් කරන්නmsg': {
+			case 'addmsg': {
 				if (!m.quoted) return m.reply('පිළිතුර Pesan Yang Ingin Disave Di Database')
 				if (!text) return m.reply(`Example : ${prefix + command} file name`)
 				let msgs = db.database
-				if (text.toLowerCase() in msgs) return m.reply(`'${text}' telah terdaftar di ලැයිස්තුව pesan`)
+				if (text.toLowerCase() in msgs) return m.reply(`'${text}' telah terdaftar di list pesan`)
 				msgs[text.toLowerCase()] = m.quoted
 				delete msgs[text.toLowerCase()].chat
-				m.reply(`Berhasil menambahkan pesan di ලැයිස්තුව pesan sebagai '${text}'\nAkses dengan ${prefix}getmsg ${text}\nLihat ලැයිස්තුව Pesan Dengan ${prefix}ලැයිස්තුවmsg`)
+				m.reply(`Berhasil menambahkan pesan di list pesan sebagai '${text}'\nAkses dengan ${prefix}getmsg ${text}\nLihat list Pesan Dengan ${prefix}listmsg`)
 			}
 			break
 			case 'delmsg': case 'deletemsg': {
@@ -1853,22 +1853,22 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let msgs = db.database
 				if (text == 'allmsg') {
 					db.database = {}
-					m.reply('Berhasil menghapus seluruh msg dari ලැයිස්තුව pesan')
+					m.reply('Berhasil menghapus seluruh msg dari list pesan')
 				} else {
-					if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' tidak terdaftar didalam ලැයිස්තුව pesan`)
+					if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' tidak terdaftar didalam list pesan`)
 					delete msgs[text.toLowerCase()]
-					m.reply(`Berhasil menghapus '${text}' dari ලැයිස්තුව pesan`)
+					m.reply(`Berhasil menghapus '${text}' dari list pesan`)
 				}
 			}
 			break
 			case 'getmsg': {
-				if (!text) return m.reply(`Example : ${prefix + command} file name\n\nLihat ලැයිස්තුව pesan dengan ${prefix}ලැයිස්තුවmsg`)
+				if (!text) return m.reply(`Example : ${prefix + command} file name\n\nLihat list pesan dengan ${prefix}listmsg`)
 				let msgs = db.database
-				if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' tidak terdaftar di ලැයිස්තුව pesan`)
+				if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' tidak terdaftar di list pesan`)
 				await naze.relayපණිවිඩය(m.chat, msgs[text.toLowerCase()], {})
 			}
 			break
-			case 'ලැයිස්තුවmsg': {
+			case 'listmsg': {
 				let seplit = Object.entries(db.database).map(([nama, isi]) => { return { nama, message: getContentType(isi) }})
 				let teks = '「 LIST DATABASE 」\n\n'
 				for (let i of seplit) {
@@ -1877,7 +1877,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.reply(teks)
 			}
 			break
-			case 'setcmd': case 'එක් කරන්නcmd': {
+			case 'setcmd': case 'addcmd': {
 				if (!m.quoted) return m.reply('පිළිතුර Pesannya!')
 				if (!m.quoted.fileSha256) return m.reply('SHA256 Hash Missing!')
 				if (!text) return m.reply(`Example : ${prefix + command} CMD Name`)
@@ -1901,7 +1901,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.reply('Done')
 			}
 			break
-			case 'ලැයිස්තුවcmd': {
+			case 'listcmd': {
 				let teks = `*List Hash*\nInfo: *bold* hash is Locked\n${Object.entries(global.db.cmd).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}`.trim()
 				naze.sendText(m.chat, teks, m);
 			}
@@ -1936,7 +1936,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isLimit) return m.reply(mess.limit)
 				if (m.isGroup) return m.reply(mess.private)
 				if (menfes[m.sender]) return m.reply(`Kamu Sedang Berada Di Sesi ${command}!`)
-				if (!text) return m.reply(`Example : ${prefix + command} 62xxxx|Nama Samaran`)
+				if (!text) return m.reply(`Example : ${prefix + command} 94xxxx|Nama Samaran`)
 				let [teks1, teks2] = text.split`|`
 				if (teks1) {
 					const tujuan = teks1.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1967,7 +1967,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					naze.sendපණිවිඩය(tujuan, { text: `_${command} connected_\n*Note :* jika ingin mengakhiri ketik _*${prefix}del${command}*_` });
 					m.reply(`_Memulai ${command}..._\n*Silahkan Mulai kirim pesan/media*\n*Durasi ${command} hanya selama 10 menit*\n*Note :* jika ingin mengakhiri ketik _*${prefix}del${command}*_`)
 					setLimit(m, db)
-				} else m.reply(`Masukkan Nomernya!\nExample : ${prefix + command} 62xxxx|Nama Samaran`)
+				} else m.reply(`Masukkan Nomernya!\nExample : ${prefix + command} 94xxxx|Nama Samaran`)
 			}
 			break
 			case 'delconfes': case 'delconfess': case 'delmenfes': case 'delmenfess': {
@@ -2014,7 +2014,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const nmrnya = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender
 				const onWa = await naze.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
-				await Jadiබෝට්ටුව(naze, nmrnya, m, store)
+				await Jadiබොට්(naze, nmrnya, m, store)
 				m.reply(`Gunakan ${prefix}stopjadibot\nUntuk Berhenti`)
 				setLimit(m, db)
 			}
@@ -2023,11 +2023,11 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const nmrnya = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender
 				const onWa = await naze.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('Nomer Tersebut Tidak Terdaftar Di Whatsapp!')
-				await StopJadiබෝට්ටුව(naze, nmrnya, m)
+				await StopJadiබොට්(naze, nmrnya, m)
 			}
 			break
-			case 'ලැයිස්තුවjadibot': {
-				ListJadiබෝට්ටුව(naze, m)
+			case 'listjadibot': {
+				ListJadiබොට්(naze, m)
 			}
 			break
 			
@@ -2060,7 +2060,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.reply(mess.wait)
 				let media = await quoted.download()
 				let audio = await toAudio(media, 'mp4')
-				await m.reply({ document: audio, mimetype: 'audio/mpeg', fileName: `Convert By Miss Chuti බෝට්ටුව.mp3`})
+				await m.reply({ document: audio, mimetype: 'audio/mpeg', fileName: `Convert By Miss Chuti බොට්.mp3`})
 			}
 			break
 			case 'tovn': case 'toptt': case 'tovoice': {
@@ -2128,9 +2128,9 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			case 'translate': case 'tr': {
-				if (text && text == 'ලැයිස්තුව') {
-					let ලැයිස්තුව_tr = `╭──❍「 *Kode Bahasa* 」❍\n│• af : Afrikaans\n│• ar : Arab\n│• zh : Chinese\n│• en : English\n│• en-us : English (United States)\n│• fr : French\n│• de : German\n│• hi : Hindi\n│• hu : Hungarian\n│• is : Icelandic\n│• id : Indonesian\n│• it : Italian\n│• ja : Japanese\n│• ko : Korean\n│• la : Latin\n│• no : Norwegian\n│• pt : Portuguese\n│• pt : Portuguese\n│• pt-br : Portuguese (Brazil)\n│• ro : Romanian\n│• ru : Russian\n│• sr : Serbian\n│• es : Spanish\n│• sv : Swedish\n│• ta : Tamil\n│• th : Thai\n│• tr : Turkish\n│• vi : Vietnamese\n╰──────❍`;
-					m.reply(ලැයිස්තුව_tr)
+				if (text && text == 'list') {
+					let list_tr = `╭──❍「 *Kode Bahasa* 」❍\n│• af : Afrikaans\n│• ar : Arab\n│• zh : Chinese\n│• en : English\n│• en-us : English (United States)\n│• fr : French\n│• de : German\n│• hi : Hindi\n│• hu : Hungarian\n│• is : Icelandic\n│• id : Indonesian\n│• it : Italian\n│• ja : Japanese\n│• ko : Korean\n│• la : Latin\n│• no : Norwegian\n│• pt : Portuguese\n│• pt : Portuguese\n│• pt-br : Portuguese (Brazil)\n│• ro : Romanian\n│• ru : Russian\n│• sr : Serbian\n│• es : Spanish\n│• sv : Swedish\n│• ta : Tamil\n│• th : Thai\n│• tr : Turkish\n│• vi : Vietnamese\n╰──────❍`;
+					m.reply(list_tr)
 				} else {
 					if (!m.quoted && (!text|| !args[1])) return m.reply(`Kirim/reply text dengan caption ${prefix + command}`)
 					let lang = args[0] ? args[0] : 'id'
@@ -2139,7 +2139,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						let hasil = await fetchApi('/tools/translate', { text: teks, lang });
 						m.reply(`To : ${lang}\n${hasil.result.translate}`)
 					} catch (e) {
-						m.reply(`Lang *${lang}* Tidak Di temukan!\nSilahkan lihat ලැයිස්තුව, ${prefix + command} ලැයිස්තුව`)
+						m.reply(`Lang *${lang}* Tidak Di temukan!\nSilahkan lihat list, ${prefix + command} list`)
 					}
 				}
 			}
@@ -2679,7 +2679,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!text) return m.reply(`Example: ${prefix + command} alone`)
 				try {
 					const anu = await fetchJson('https://api.urbandictionary.com/v0/define?term=' + text)
-					const hasil = pickRandom(anu.ලැයිස්තුව)
+					const hasil = pickRandom(anu.list)
 					await m.reply(`${hasil.definition}\n\nSumber: ${hasil.permalink}`)
 				} catch (e) {
 					m.reply('Hasil Tidak Ditemukan!')
@@ -2690,10 +2690,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 			// Stalker Menu
 			case 'wastalk': case 'whatsappstalk': {
 				if (!isLimit) return m.reply(mess.limit)
-				if (!text) return m.reply(`Example: ${prefix + command} @tag / 628xxx`)
+				if (!text) return m.reply(`Example: ${prefix + command} @tag / 947xxx`)
 				try {
 					let num = m.quoted?.sender || m.mentionedJid?.[0] || text
-					if (!num) return m.reply(`Example : ${prefix + command} @tag / 628xxx`)
+					if (!num) return m.reply(`Example : ${prefix + command} @tag / 947xxx`)
 					num = num.replace(/\D/g, '') + '@s.whatsapp.net'
 					if (!(await naze.onWhatsApp(num))[0]?.exists) return m.reply('Nomer tidak terdaftar di WhatsApp!')
 					let img = await naze.profilePictureUrl(num, 'image').catch(_ => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png?q=60')
@@ -2703,7 +2703,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					let format = PhoneNum(`+${num.split('@')[0]}`)
 					let regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 					let country = regionNames.of(format.getRegionCode('international'));
-					let wea = `WhatsApp Stalk\n\n*° Country :* ${country.toUpperCase()}\n*° Name :* ${name ? name : '-'}\n*° Format Number :* ${format.getNumber('international')}\n*° Url Api :* wa.me/${num.split('@')[0]}\n*° Mentions :* @${num.split('@')[0]}\n*° Status :* ${bio?.තත්වය || '-'}\n*° Date Status :* ${bio?.setAt ? moment(bio.setAt.toDateString()).locale('id').format('LL') : '-'}\n\n${business ? `*WhatsApp Business Stalk*\n\n*° BusinessId :* ${business.wid}\n*° Website :* ${business.website ? business.website : '-'}\n*° Email :* ${business.email ? business.email : '-'}\n*° Category :* ${business.category}\n*° Address :* ${business.එක් කරන්නress ? business.එක් කරන්නress : '-'}\n*° Timeone :* ${business.business_hours.timezone ? business.business_hours.timezone : '-'}\n*° Description* : ${business.description ? business.description : '-'}` : '*Standard WhatsApp Account*'}`
+					let wea = `WhatsApp Stalk\n\n*° Country :* ${country.toUpperCase()}\n*° Name :* ${name ? name : '-'}\n*° Format Number :* ${format.getNumber('international')}\n*° Url Api :* wa.me/${num.split('@')[0]}\n*° Mentions :* @${num.split('@')[0]}\n*° Status :* ${bio?.තත්වය || '-'}\n*° Date Status :* ${bio?.setAt ? moment(bio.setAt.toDateString()).locale('id').format('LL') : '-'}\n\n${business ? `*WhatsApp Business Stalk*\n\n*° BusinessId :* ${business.wid}\n*° Website :* ${business.website ? business.website : '-'}\n*° Email :* ${business.email ? business.email : '-'}\n*° Category :* ${business.category}\n*° Address :* ${business.address ? business.address : '-'}\n*° Timeone :* ${business.business_hours.timezone ? business.business_hours.timezone : '-'}\n*° Description* : ${business.description ? business.description : '-'}` : '*Standard WhatsApp Account*'}`
 					img ? await naze.sendපණිවිඩය(m.chat, { image: { url: img }, caption: wea, mentions: [num] }, { quoted: m }) : m.reply(wea)
 				} catch (e) {
 					m.reply('Nomer Tidak ditemukan!')
@@ -2774,7 +2774,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'ytmp4': case 'ytvideo': case 'ytplayvideo': {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`Example: ${prefix + command} url_youtube`)
-				if (!text.includes('youtu')) return m.reply('Url Tidak Mengandung Result Dari Youtube!')
+				if (!text.includes('youtu')) return m.reply('යූටීයූබ් වෙතින් ප්‍රතිඵල යූආර්එල් හි අඩංගු නොවේ.!')
 				m.reply(mess.wait)
 				try {
 					const hasil = await ytMp4(text);
@@ -2786,7 +2786,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						await m.reply({ video: { url: hasil.download }, caption: `*📍Title:* ${hasil.title}\n*✏Quality:* ${hasil.quality ? hasil.quality : ''}\n*⏳Duration:* ${hasil.duration}` })
 						setLimit(m, db)
 					} catch (e) {
-						m.reply('Gagal Mendownload Video!');
+						m.reply('වීඩියෝව බාගැනීම අසාර්ථක විය!');
 					}
 				}
 			}
@@ -2794,7 +2794,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'ig': case 'instagram': case 'instadl': case 'igdown': case 'igdl': {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`Example: ${prefix + command} url_instagram`)
-				if (!text.includes('instagram.com')) return m.reply('Url Tidak Mengandung Result Dari Instagram!')
+				if (!text.includes('instagram.com')) return m.reply('යූආර්එල් හි ඉන්ස්ටග්‍රෑම් වෙතින් ප්‍රතිඵල අඩංගු නොවේ.!')
 				m.reply(mess.wait)
 				try {
 					let hasil = await fetchApi('/download/instagram', { url: text })
@@ -2805,18 +2805,18 @@ module.exports = naze = async (naze, m, msg, store) => {
 						}, { quoted: m });
 					} else if(hasil.result.urls.length == 1) {
 						m.reply({ image: { url: hasil.result.urls[0].url }, caption: hasil.result.caption });
-					} else m.reply('Postingan Tidak Tersedia atau Privat!')
+					} else m.reply('පළ කිරීම නොමැත හෝ පෞද්ගලිකයි!')
 					setLimit(m, db)
 				} catch (e) {
 					console.log(e)
-					m.reply('Postingan Tidak Tersedia atau Privat!')
+					m.reply('පළ කිරීම නොමැත හෝ පෞද්ගලිකයි!')
 				}
 			}
 			break
 			case 'tiktok': case 'tiktokdown': case 'ttdown': case 'ttdl': case 'tt': case 'ttmp4': case 'ttvideo': case 'tiktokmp4': case 'tiktokvideo': {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`Example: ${prefix + command} url_tiktok`)
-				if (!text.includes('tiktok.com')) return m.reply('Url Tidak Mengandung Result Dari Tiktok!')
+				if (!text.includes('tiktok.com')) return m.reply('ටික්ටොක් වෙතින් ප්‍රතිඵල URL එකේ අඩංගු නොවේ.!')
 				try {
 					const hasil = await fetchApi('/download/tiktok', { url: text })
 					m.reply(mess.wait)
@@ -2828,19 +2828,18 @@ module.exports = naze = async (naze, m, msg, store) => {
 							caption: `*📍Title:* ${hasil.result.desc || '-'}\n*🕓Create At:* ${hasil.result.create_time}\n*🎃Author:* ${hasil.result.author.nickname} (@${hasil.result.author.unique_id})`
 						}, { quoted: m });
 					} else {
-						return m.reply('Url Tidak Valid!')
+						return m.reply('වලංගු නොවන URL!')
 					}
 					setLimit(m, db)
 				} catch (e) {
 					console.log(e)
-					m.reply('Gagal/Url tidak valid!')
+					m.reply('අසාර්ථක/අවලංගු URL!')
 				}
 			}
 			break
 			case 'ttmp3': case 'tiktokmp3': case 'ttaudio': case 'tiktokaudio': {
 				if (!isLimit) return m.reply(mess.limit)
-				if (!text) return m.reply(`Example: ${prefix + command} url_tiktok`)
-				if (!text.includes('tiktok.com')) return m.reply('Url Tidak Mengandung Result Dari Tiktok!')
+				if (!text) return m.reply(`Example: ${prefix + command} ටික්ටොක් වෙතින් ප්‍රතිඵල URL එකේ අඩංගු නොවේ!')
 				try {
 					const hasil = await fetchApi('/download/tiktok', { url: text });
 					m.reply(mess.wait)
@@ -3085,7 +3084,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			case 'rate': case 'nilai': {
-				m.reply(`Rate බෝට්ටුව : *${Math.floor(Math.random() * 100)}%*`)
+				m.reply(`Rate බොට් : *${Math.floor(Math.random() * 100)}%*`)
 			}
 			break
 			case 'jodohku': {
@@ -3100,7 +3099,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let member = (store.groupMetadata?.[m.chat]?.participants || m.metadata?.participants || []).map(a => a.id)
 				let jadian1 = pickRandom(member)
 				let jadian2 = pickRandom(member)
-				m.reply(`Ciee yang Jadian💖 Jangan lupa Donasi🗿\n@${jadian1.split('@')[0]} ❤ @${jadian2.split('@')[0]}`);
+				m.reply(`වාව්, යුවළ 💖 පරිත්‍යාග කරන්න අමතක කරන්න එපා🗿\n@${jadian1.split('@')[0]} ❤ @${jadian2.split('@')[0]}`);
 			}
 			break
 			case 'fitnah': {
@@ -3175,7 +3174,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'delsuit': case 'deletesuit': {
 				let roomnya = Object.values(suit).find(roof => roof.id.startsWith('suit') && [roof.p, roof.p2].includes(m.sender))
-				if (!roomnya) return m.reply(`Kamu sedang tidak berada di room suit !`)
+				if (!roomnya) return m.reply(`ඔයා කාමරේ ඇඳුමේ නෑ. !`)
 				delete suit[roomnya.id]
 				m.reply(`Berhasil delete session room suit !`)
 			}
@@ -3465,10 +3464,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				}
 			}
 			break
-			case 'ulartangga': case 'snakelඑක් කරන්නer': case 'ut': {
+			case 'ulartangga': case 'snakeladder': case 'ut': {
 				if (!m.isGroup) return m.reply(mess.group)
-				if (ulartangga[m.chat] && !(ulartangga[m.chat] instanceof SnakeLඑක් කරන්නer)) {
-					ulartangga[m.chat] = Object.assign(new SnakeLඑක් කරන්නer(ulartangga[m.chat]), ulartangga[m.chat]);
+				if (ulartangga[m.chat] && !(ulartangga[m.chat] instanceof SnakeLadder)) {
+					ulartangga[m.chat] = Object.assign(new SnakeLadder(ulartangga[m.chat]), ulartangga[m.chat]);
 				}
 				switch(args[0]) {
 					case 'create': case 'join':
@@ -3478,7 +3477,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						ulartangga[m.chat].players.push({ id: m.sender, move: 0 });
 						m.reply('Sukses Join Sesi Game')
 					} else {
-						ulartangga[m.chat] = new SnakeLඑක් කරන්නer({ id: m.chat, host: m.sender });
+						ulartangga[m.chat] = new SnakeLadder({ id: m.chat, host: m.sender });
 						ulartangga[m.chat].players.push({ id: m.sender, move: 0 });
 						ulartangga[m.chat].time = Date.now();
 						m.reply('Sukses Membuat Sesi Game')
@@ -3824,14 +3823,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 				}
 				const මෙනුnya = `
 ╭──❍「 *USER INFO* 」❍
-├ *Nama* : ${m.pushName ? m.pushName : 'Tanpa Nama'}
+├ *නම* : ${m.pushName ? m.pushName : 'නිමේෂ'}
 ├ *Id* : @${m.sender.split('@')[0]}
-├ *User* : ${isVip ? 'VIP' : isPremium ? 'PREMIUM' : 'FREE'}
+├ *පරිශීලාකයා* : ${isVip ? 'VIP' : isPremium ? 'PREMIUM' : 'FREE'}
 ├ *Limit* : ${isVip ? 'VIP' : db.පරිශීලකයින්[m.sender].limit }
 ├ *Money* : ${db.පරිශීලකයින්[m.sender] ? db.පරිශීලකයින්[m.sender].money.toLocaleString('id-ID') : '0'}
 ╰─┬────❍
 ╭─┴─❍「 *BOT INFO* 」❍
-├ *Nama බෝට්ටුව* : ${set?.botname || 'Miss Chuti බෝට්ටුව'}
+├ *බොට්ගෙ නම* : ${set?.botname || 'Miss Chuti'}
 ├ *Powered* : @${'0@s.whatsapp.net'.split('@')[0]}
 ├ *හිමිකරු* : @${ownerNumber[0].split('@')[0]}
 ├ *Mode* : ${naze.public ? 'Public' : 'Self'}
@@ -3859,33 +3858,33 @@ module.exports = naze = async (naze, m, msg, store) => {
 │${setv} ${prefix}afk
 │${setv} ${prefix}rvo (reply pesan viewone)
 │${setv} ${prefix}inspect (url gc)
-│${setv} ${prefix}එක් කරන්නmsg
+│${setv} ${prefix}addmsg
 │${setv} ${prefix}delmsg
 │${setv} ${prefix}getmsg
-│${setv} ${prefix}ලැයිස්තුවmsg
+│${setv} ${prefix}listmsg
 │${setv} ${prefix}setcmd
 │${setv} ${prefix}delcmd
-│${setv} ${prefix}ලැයිස්තුවcmd
+│${setv} ${prefix}listcmd
 │${setv} ${prefix}lockcmd
 │${setv} ${prefix}q (reply pesan)
-│${setv} ${prefix}menfes (62xxx|fake name)
-│${setv} ${prefix}confes (62xxx|fake name)
+│${setv} ${prefix}menfes (94xxx|fake name)
+│${setv} ${prefix}confes (94xxx|fake name)
 │${setv} ${prefix}roomai
 │${setv} ${prefix}jadibot 🔸️
 │${setv} ${prefix}stopjadibot
-│${setv} ${prefix}ලැයිස්තුවjadibot
+│${setv} ${prefix}listjadibot
 │${setv} ${prefix}donasi
-│${setv} ${prefix}එක් කරන්නsewa
+│${setv} ${prefix}addsewa
 │${setv} ${prefix}delsewa
-│${setv} ${prefix}ලැයිස්තුවsewa
+│${setv} ${prefix}listsewa
 ╰─┬────❍
 ╭─┴❍「 *GROUP* 」❍
-│${setv} ${prefix}එක් කරන්න (62xxx)
-│${setv} ${prefix}kick (@tag/62xxx)
-│${setv} ${prefix}promote (@tag/62xxx)
-│${setv} ${prefix}demote (@tag/62xxx)
-│${setv} ${prefix}warn (@tag/62xxx)
-│${setv} ${prefix}unwarn (@tag/62xxx)
+│${setv} ${prefix}add (94xxx)
+│${setv} ${prefix}kick (@tag/94xxx)
+│${setv} ${prefix}promote (@tag/94xxx)
+│${setv} ${prefix}demote (@tag/94xxx)
+│${setv} ${prefix}warn (@tag/94xxx)
+│${setv} ${prefix}unwarn (@tag/94xxx)
 │${setv} ${prefix}setname (nama baru gc)
 │${setv} ${prefix}setdesc (desk)
 │${setv} ${prefix}setppgc (reply imgnya)
@@ -3897,7 +3896,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 │${setv} ${prefix}unpin
 │${setv} ${prefix}hidetag
 │${setv} ${prefix}totag (reply pesan)
-│${setv} ${prefix}ලැයිස්තුවonline
+│${setv} ${prefix}listonline
 │${setv} ${prefix}group set
 │${setv} ${prefix}group (khusus admin)
 ╰─┬────❍
@@ -4047,31 +4046,31 @@ module.exports = naze = async (naze, m, msg, store) => {
 │${setv} ${prefix}setppbot
 │${setv} ${prefix}join
 │${setv} ${prefix}leave
-│${setv} ${prefix}අවහිර කරන්න
-│${setv} ${prefix}ලැයිස්තුවඅවහිර කරන්න
-│${setv} ${prefix}openඅවහිර කරන්න
-│${setv} ${prefix}ලැයිස්තුවpc
-│${setv} ${prefix}ලැයිස්තුවgc
+│${setv} ${prefix}block
+│${setv} ${prefix}listblock
+│${setv} ${prefix}openblock
+│${setv} ${prefix}listpc
+│${setv} ${prefix}listgc
 │${setv} ${prefix}ban
 │${setv} ${prefix}unban
 │${setv} ${prefix}mute
 │${setv} ${prefix}unmute
 │${setv} ${prefix}creategc
 │${setv} ${prefix}clearchat
-│${setv} ${prefix}එක් කරන්නprem
+│${setv} ${prefix}addprem
 │${setv} ${prefix}delprem
-│${setv} ${prefix}ලැයිස්තුවprem
-│${setv} ${prefix}එක් කරන්නlimit
-│${setv} ${prefix}එක් කරන්නuang
+│${setv} ${prefix}listprem
+│${setv} ${prefix}addlimit
+│${setv} ${prefix}adduang
 │${setv} ${prefix}setbotauthor
 │${setv} ${prefix}setbotname
 │${setv} ${prefix}setbotpackname
 │${setv} ${prefix}setapikey
-│${setv} ${prefix}එක් කරන්නowner
+│${setv} ${prefix}addowner
 │${setv} ${prefix}delowner
 │${setv} ${prefix}getmsgstore
-│${setv} ${prefix}bot --සැකසුම්
-│${setv} ${prefix}bot සැකසුම්
+│${setv} ${prefix}bot --settings
+│${setv} ${prefix}bot settings
 │${setv} ${prefix}getsession
 │${setv} ${prefix}delsession
 │${setv} ${prefix}delsampah
@@ -4084,7 +4083,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				await m.reply({
 					document: fake.docs,
 					fileName: ucapanWaktu,
-					mimetype: pickRandom(fake.ලැයිස්තුවfakedocs),
+					mimetype: pickRandom(fake.listfakedocs),
 					fileLength: '100000000000000',
 					pageCount: '999',
 					caption: මෙනුnya,
@@ -4114,7 +4113,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'botමෙනු': {
 				m.reply(`
-╭──❍「 *BOT* 」❍
+╭──❍「 *බොට් මෙනුව්* 」❍
 │${setv} ${prefix}profile
 │${setv} ${prefix}claim
 │${setv} ${prefix}buy [item] (nominal)
@@ -4130,37 +4129,37 @@ module.exports = naze = async (naze, m, msg, store) => {
 │${setv} ${prefix}afk
 │${setv} ${prefix}rvo (reply pesan viewone)
 │${setv} ${prefix}inspect (url gc)
-│${setv} ${prefix}එක් කරන්නmsg
+│${setv} ${prefix}addmsg
 │${setv} ${prefix}delmsg
 │${setv} ${prefix}getmsg
-│${setv} ${prefix}ලැයිස්තුවmsg
+│${setv} ${prefix}listmsg
 │${setv} ${prefix}setcmd
 │${setv} ${prefix}delcmd
-│${setv} ${prefix}ලැයිස්තුවcmd
+│${setv} ${prefix}listcmd
 │${setv} ${prefix}lockcmd
 │${setv} ${prefix}q (reply pesan)
-│${setv} ${prefix}menfes (62xxx|fake name)
-│${setv} ${prefix}confes (62xxx|fake name)
+│${setv} ${prefix}menfes (94xxx|fake name)
+│${setv} ${prefix}confes (94xxx|fake name)
 │${setv} ${prefix}roomai
 │${setv} ${prefix}jadibot 🔸️
 │${setv} ${prefix}stopjadibot
-│${setv} ${prefix}ලැයිස්තුවjadibot
+│${setv} ${prefix}listjadibot
 │${setv} ${prefix}donasi
-│${setv} ${prefix}එක් කරන්නsewa
+│${setv} ${prefix}addsewa
 │${setv} ${prefix}delsewa
-│${setv} ${prefix}ලැයිස්තුවsewa
+│${setv} ${prefix}listsewa
 ╰──────❍`)
 			}
 			break
 			case 'groupමෙනු': {
 				m.reply(`
-╭──❍「 *GROUP* 」❍
-│${setv} ${prefix}එක් කරන්න (62xxx)
-│${setv} ${prefix}kick (@tag/62xxx)
-│${setv} ${prefix}promote (@tag/62xxx)
-│${setv} ${prefix}demote (@tag/62xxx)
-│${setv} ${prefix}warn (@tag/62xxx)
-│${setv} ${prefix}unwarn (@tag/62xxx)
+╭──❍「 *GROUP මෙනුව* 」❍
+│${setv} ${prefix}add (94xxx)
+│${setv} ${prefix}kick (@tag/94xxx)
+│${setv} ${prefix}promote (@tag/94xxx)
+│${setv} ${prefix}demote (@tag/94xxx)
+│${setv} ${prefix}warn (@tag/94xxx)
+│${setv} ${prefix}unwarn (@tag/94xxx)
 │${setv} ${prefix}setname (nama baru gc)
 │${setv} ${prefix}setdesc (desk)
 │${setv} ${prefix}setppgc (reply imgnya)
@@ -4172,7 +4171,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 │${setv} ${prefix}unpin
 │${setv} ${prefix}hidetag
 │${setv} ${prefix}totag (reply pesan)
-│${setv} ${prefix}ලැයිස්තුවonline
+│${setv} ${prefix}listonline
 │${setv} ${prefix}group set
 │${setv} ${prefix}group (khusus admin)
 ╰──────❍`)
@@ -4180,7 +4179,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'searchමෙනු': {
 				m.reply(`
-╭──❍「 *SEARCH* 」❍
+╭──❍「 *SEARCH මෙනුව* 」❍
 │${setv} ${prefix}ytsearch (query)
 │${setv} ${prefix}spotify (query)
 │${setv} ${prefix}pixiv (query)
@@ -4199,7 +4198,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'downloadමෙනු': {
 				m.reply(`
-╭──❍「 *DOWNLOAD* 」❍
+╭──❍「 *DOWNLOAD මෙනුව* 」❍
 │${setv} ${prefix}ytmp3 (url)
 │${setv} ${prefix}ytmp4 (url)
 │${setv} ${prefix}instagram (url)
@@ -4213,7 +4212,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'quotesමෙනු': {
 				m.reply(`
-╭──❍「 *QUOTES* 」❍
+╭──❍「 *QUOTES මෙනුව* 」❍
 │${setv} ${prefix}motivasi
 │${setv} ${prefix}quotes
 │${setv} ${prefix}truth
@@ -4226,7 +4225,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'toolsමෙනු': {
 				m.reply(`
-╭──❍「 *TOOLS* 」❍
+╭──❍「 *TOOLS මෙනුව* 」❍
 │${setv} ${prefix}get (url) 🔸️
 │${setv} ${prefix}hd (reply pesan)
 │${setv} ${prefix}toaudio (reply pesan)
@@ -4273,7 +4272,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'aiමෙනු': {
 				m.reply(`
-╭──❍「 *AI* 」❍
+╭──❍「 *AI මෙනුව* 」❍
 │${setv} ${prefix}ai (query)
 │${setv} ${prefix}gemini (query)
 │${setv} ${prefix}txt2img (query)
@@ -4282,14 +4281,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'randomමෙනු': {
 				m.reply(`
-╭──❍「 *RANDOM* 」❍
+╭──❍「 *RANDOM මෙනුව* 」❍
 │${setv} ${prefix}coffe
 ╰──────❍`)
 			}
 			break
 			case 'stalkerමෙනු': {
 				m.reply(`
-╭──❍「 *STALKER* 」❍
+╭──❍「 *STALKER මෙනුව* 」❍
 │${setv} ${prefix}wastalk
 │${setv} ${prefix}githubstalk
 ╰──────❍`)
@@ -4297,7 +4296,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'animeමෙනු': {
 				m.reply(`
-╭──❍「 *ANIME* 」❍
+╭──❍「 *ANIME මෙනුව* 」❍
 │${setv} ${prefix}waifu
 │${setv} ${prefix}neko
 ╰──────❍`)
@@ -4305,7 +4304,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'gameමෙනු': {
 				m.reply(`
-╭──❍「 *GAME* 」❍
+╭──❍「 *GAME මෙනුව* 」❍
 │${setv} ${prefix}tictactoe
 │${setv} ${prefix}akinator
 │${setv} ${prefix}suit
@@ -4335,7 +4334,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'funමෙනු': {
 				m.reply(`
-╭──❍「 *FUN* 」❍
+╭──❍「 *FUN මෙනුව* 」❍
 │${setv} ${prefix}coba
 │${setv} ${prefix}dadu
 │${setv} ${prefix}bisakah (text)
@@ -4360,36 +4359,36 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'ownerමෙනු': {
 				m.reply(`
-╭──❍「 *OWNER* 」❍
+╭──❍「 *OWNER මෙනුව* 」❍
 │${setv} ${prefix}bot [set]
 │${setv} ${prefix}setbio
 │${setv} ${prefix}setppbot
 │${setv} ${prefix}join
 │${setv} ${prefix}leave
-│${setv} ${prefix}අවහිර කරන්න
-│${setv} ${prefix}ලැයිස්තුවඅවහිර කරන්න
-│${setv} ${prefix}openඅවහිර කරන්න
-│${setv} ${prefix}ලැයිස්තුවpc
-│${setv} ${prefix}ලැයිස්තුවgc
+│${setv} ${prefix}block
+│${setv} ${prefix}listblock
+│${setv} ${prefix}openblock
+│${setv} ${prefix}listpc
+│${setv} ${prefix}listgc
 │${setv} ${prefix}ban
 │${setv} ${prefix}unban
 │${setv} ${prefix}mute
 │${setv} ${prefix}unmute
 │${setv} ${prefix}creategc
 │${setv} ${prefix}clearchat
-│${setv} ${prefix}එක් කරන්නprem
+│${setv} ${prefix}addprem
 │${setv} ${prefix}delprem
-│${setv} ${prefix}ලැයිස්තුවprem
-│${setv} ${prefix}එක් කරන්නlimit
-│${setv} ${prefix}එක් කරන්නuang
+│${setv} ${prefix}listprem
+│${setv} ${prefix}addlimit
+│${setv} ${prefix}adduang
 │${setv} ${prefix}setbotauthor
 │${setv} ${prefix}setbotname
 │${setv} ${prefix}setbotpackname
 │${setv} ${prefix}setapikey
-│${setv} ${prefix}එක් කරන්නowner
+│${setv} ${prefix}addowner
 │${setv} ${prefix}delowner
 │${setv} ${prefix}getmsgstore
-│${setv} ${prefix}bot --සැකසුම්
+│${setv} ${prefix}bot --settings
 │${setv} ${prefix}bot සැකසුම්
 │${setv} ${prefix}getsession
 │${setv} ${prefix}delsession
@@ -4448,7 +4447,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (errorCache[errorKey].length >= 3) return;
 		errorCache[errorKey].push(now);
 		m.reply('Error: ' + (e?.name || e?.code || e?.output?.තත්වයCode || e?.තත්වය || 'Tidak diketahui') + '\nLog Error Telah dikirim ke හිමිකරු\n\n')
-		return naze.sendFromහිමිකරු(ownerNumber, `Halo sayang, sepertinya ada yang error nih, jangan lupa diperbaiki ya\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
+		return naze.sendFromහිමිකරු(ownerNumber, `හායි ආදරණීය, දෝෂයක් තියෙනවා වගේ, ඒක හදන්න අමතක කරන්න එපා, හරිද?\n\nඅනුවාදය : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
 	}
 }
 
