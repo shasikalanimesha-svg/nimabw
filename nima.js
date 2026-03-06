@@ -113,7 +113,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		const hari = moment.tz('Asia/Colombo').locale('id').format('dddd');
 		const tanggal = moment.tz('Asia/Colombo').locale('id').format('DD/MM/YYYY');
 		const jam = moment.tz('Asia/Colombo').locale('id').format('HH:mm:ss');
-		const ucapanWaktu = jam < '05:00:00' ? 'Good Morning 🌉' : jam < '11:00:00' ? 'Good Morning 🌄' : jam < '15:00:00' ? 'Good Afternoon 🏙' : jam < '18:00:00' ? 'Good Evening 🌅' : jam < '19:00:00' ? 'Good Evening 🌃' : jam < '23:59:00' ? 'Good Night 🌌' : 'Good Night 🌌';
+		const ucapanWaktu = jam < '05:00:00' ? 'සුභ අළුයමක් 🌉' : jam < '11:00:00' ? 'සුභ උදෑසනක් 🌄' : jam < '15:00:00' ? 'සුභ දහවලක් 🏙' : jam < '18:00:00' ? 'සුභ සන්ධ්‍යාවක් 🌅' : jam < '19:00:00' ? 'සුභ සන්ධ්‍යාවක් 🌃' : jam < '23:59:00' ? 'සුභ රාත්‍රියක් 🌌' : 'සුභ රාත්‍රියක් 🌌';
 		const almost = 0.66
 		const time = Date.now()
 		const time_now = new Date()
@@ -138,7 +138,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			message: {
 				contactMessage: {
 					displayName: (m.pushName || author),
-					vcard: `BEGIN:VCARD\nVERSION:3.0\nN:XL;${m.pushName || author},;;;\nFN:${m.pushName || author}\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
+					vcard: `BEGIN:VCARD\nVERSION:7.0\nN:XL;${m.pushName || author},;;;\nFN:${m.pushName || author}\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
 					sendEphemeral: true
 				}
 			}
@@ -1199,9 +1199,9 @@ module.exports = naze = async (naze, m, msg, store) => {
 					}).catch(e => m.reply('Gagal backup: ', + e))
 					break
 					case 'auto':
-					if (set.autobackup) return m.reply('Sudah Aktif Sebelumnya!')
+					if (set.autobackup) return m.reply('මීට පෙර සක්‍රිය කර ඇත!')
 					set.autobackup = true
-					m.reply('Sukses Mengaktifkan Auto Backup')
+					m.reply('ස්වයංක්‍රීය උපස්ථ කිරීම සාර්ථකව සක්‍රීය කරන ලදි')
 					break
 					case 'session':
 					await m.reply({
@@ -1571,7 +1571,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					break
 					case 'antilink': case 'antivirtex': case 'antidelete': case 'welcome': case 'antitoxic': case 'waktusholat': case 'nsfw': case 'antihidetag': case 'setinfo': case 'antitagsw': case 'leave': case 'promote': case 'demote':
 					if (/on|true/i.test(args[1])) {
-						if (set[args[0]]) return m.reply('*Sudah Aktif Sebelumnya*')
+						if (set[args[0]]) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
 						set[args[0]] = true
 						m.reply('*Sukses Change To On*')
 					} else if (/off|false/i.test(args[1])) {
@@ -1700,7 +1700,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					case 'mode': case 'public': case 'self':
 					if (!isCreator) return m.reply(mess.owner)
 					if (args[1] == 'public' || args[1] == 'all') {
-						if (naze.public && set.grouponly && set.privateonly) return m.reply('*Sudah Aktif Sebelumnya*')
+						if (naze.public && set.grouponly && set.privateonly) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
 						naze.public = set.public = true
 						set.grouponly = true
 						set.privateonly = true
@@ -1723,7 +1723,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					case 'anticall': case 'autobio': case 'autoread': case 'autotyping': case 'readsw': case 'multiprefix': case 'antispam': case 'didyoumean':
 					if (!isCreator) return m.reply(mess.owner)
 					if (args[1] == 'on') {
-						if (set[args[0]]) return m.reply('*Sudah Aktif Sebelumnya*')
+						if (set[args[0]]) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
 						set[args[0]] = true
 						m.reply('*Sukse Change To On*')
 					} else if (args[1] == 'off') {
