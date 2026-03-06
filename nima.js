@@ -1728,7 +1728,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						m.reply('*සාර්ථකව on කරන ලදී.*')
 					} else if (args[1] == 'off') {
 						set[args[0]] = false
-						m.reply('*සාර්ථකව 'off' කරන ලදී.*')
+						m.reply('*සාර්ථකව off කරන ලදී.*')
 					} else m.reply(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} on/off`)
 					break
 					case 'set': case 'settings':
