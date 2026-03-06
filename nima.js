@@ -1722,13 +1722,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 					break
 					case 'anticall': case 'autobio': case 'autoread': case 'autotyping': case 'readsw': case 'multiprefix': case 'antispam': case 'didyoumean':
 					if (!isCreator) return m.reply(mess.owner)
-					if (args[1] == on) {
+					if (args[1] == 'on') {
 						if (set[args[0]]) return m.reply('*Sudah Aktif Sebelumnya*')
 						set[args[0]] = true
-						m.reply('*සාර්ථකව on කරන ලදී.*')
+						m.reply('*සාර්ථකව 'On' කරන ලදී.*')
 					} else if (args[1] == 'off') {
 						set[args[0]] = false
-						m.reply('*සාර්ථකව off කරන ලදී.*')
+						m.reply('*සාර්ථකව 'off' කරන ලදී.*')
 					} else m.reply(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} on/off`)
 					break
 					case 'set': case 'settings':
