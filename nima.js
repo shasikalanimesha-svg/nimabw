@@ -110,9 +110,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 		const author = set.author = global.author || 'nima';
 		const packname = set.packname = global.packname || 'Shasikala';
 		const botname = set.botname = global.botname || 'Nima Bot';
-		const hari = moment.tz('Asia/Colombo').locale('id').format('dddd');
-		const tanggal = moment.tz('Asia/Colombo').locale('id').format('DD/MM/YYYY');
-		const jam = moment.tz('Asia/Colombo').locale('id').format('HH:mm:ss');
+		const _dayMap = {
+  'Sunday':'ඉරිදා','Monday':'සදුදා','Tuesday':'අඟහරුවාදා',
+  'Wednesday':'බදාදා','Thursday':'බ්‍රහස්පතින්දා',
+  'Friday':'සිකුරාදා','Saturday':'සෙනසුරාදා'
+};
+        const hari = _dayMap[moment.tz('Asia/Colombo').format('dddd')] || moment.tz('Asia/Colombo').format('dddd');
+        const tanggal = moment.tz('Asia/Colombo').format('DD/MM/YYYY');
+        const jam = moment.tz('Asia/Colombo').format('HH:mm:ss');
 		const ucapanWaktu = jam < '05:00:00' ? 'සුභ අළුයමක් 🌉' : jam < '11:00:00' ? 'සුභ උදෑසනක් 🌄' : jam < '15:00:00' ? 'සුභ දහවලක් 🏙' : jam < '18:00:00' ? 'සුභ සන්ධ්‍යාවක් 🌅' : jam < '19:00:00' ? 'සුභ සන්ධ්‍යාවක් 🌃' : jam < '23:59:00' ? 'සුභ රාත්‍රියක් 🌌' : 'සුභ රාත්‍රියක් 🌌';
 		const almost = 0.66
 		const time = Date.now()
