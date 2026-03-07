@@ -2803,16 +2803,16 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 					setLimit(m, db)
 				} catch (e) {
 					try {
-						const { result: hasil } = await fetchApi('/download/youtube', { url: text });
+						const { result: hasil } = await fetchApi('/download/youtube', { url: text, type: 'audio' });
 						await m.reply({
-							audio: { url: hasil.download },
+							audio: { url: hasil.download || hasil.url || hasil.audio },
 							mimetype: 'audio/mpeg',
 							contextInfo: {
 								externalAdReply: {
-									title: hasil.title,
-									body: hasil.quality,
+									title: hasil.title || 'YouTube Audio',
+									body: hasil.channel || hasil.quality || '',
 									previewType: 'PHOTO',
-									thumbnailUrl: hasil.thumbnail,
+									thumbnailUrl: hasil.thumbnail || hasil.thumb || '',
 									mediaType: 1,
 									renderLargerThumbnail: true,
 									sourceUrl: text
@@ -2820,7 +2820,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 							}
 						})
 						setLimit(m, db)
-					} catch (e) {
+					} catch (e2) {
 						m.reply('Audio Download අසාර්ථකයි!');
 					}
 				}
@@ -2833,14 +2833,14 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 				m.reply(mess.wait)
 				try {
 					const hasil = await ytMp4(text);
-					await m.reply({ video: hasil.result, caption: `*📍Title:* ${hasil.title}\n*✏Description:* ${hasil.desc ? hasil.desc : ''}\n*🚀Channel:* ${hasil.channel}\n*🗓Upload at:* ${hasil.uploadDate}` })
+					await m.reply({ video: hasil.result, caption: `*📍Title:* ${hasil.title}\n*🚀Channel:* ${hasil.channel}\n*🗓Upload at:* ${hasil.uploadDate}` })
 					setLimit(m, db)
 				} catch (e) {
 					try {
-						const { result: hasil } = await fetchApi('/download/youtube', { url: text, format: '360' });
-						await m.reply({ video: { url: hasil.download }, caption: `*📍Title:* ${hasil.title}\n*✏Quality:* ${hasil.quality ? hasil.quality : ''}\n*⏳Duration:* ${hasil.duration}` })
+						const { result: hasil } = await fetchApi('/download/youtube', { url: text, type: 'video', format: '360' });
+						await m.reply({ video: { url: hasil.download || hasil.url || hasil.video }, caption: `*📍Title:* ${hasil.title || ''}\n*✏Quality:* ${hasil.quality || '360p'}\n*⏳Duration:* ${hasil.duration || ''}` })
 						setLimit(m, db)
-					} catch (e) {
+					} catch (e2) {
 						m.reply('Video Download අසාර්ථකයි!');
 					}
 				}
