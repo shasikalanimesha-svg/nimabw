@@ -116,7 +116,7 @@ async function GroupParticipantsUpdate(nimesha, { id, participants, author, acti
 				}
 				let messageText;
 				if (action === 'add') {
-					if (db.groups[id].welcome) messageText = db.groups[id]?.text?.setwelcome || `${metadata.subject} වෙත සාදරයෙන් පිළිගනිමු\n@`;
+					if (db.groups[id].welcome) messageText = db.groups[id]?.text?.setwelcome || `╔══════════════════╗\n║  🌸 *සාදරයෙන් පිළිගනිමු!* 🌸\n╠══════════════════╣\n║\n║ 👋 @\n║ *${metadata.subject}*\n║ *සමූහයට සාදරයෙන් පිළිගනිමු!*\n║\n║ 🌟 සමූහ නීති පිළිපදින්න\n║ 🤝 හොඳ සාමාජිකයෙකු වන්න\n╚══════════════════╝`;
 					if (!participant) {
 						clearTimeout(groupMetadataTimers[id])
 						groupMetadataTimers[id] = setTimeout(async () => {
@@ -124,7 +124,7 @@ async function GroupParticipantsUpdate(nimesha, { id, participants, author, acti
 						}, 5000);
 					}
 				} else if (action === 'remove') {
-					if (db.groups[id].leave) messageText = db.groups[id]?.text?.setleave || `@\n${metadata.subject} වෙතින් ඉවත් වන ලදී.`;
+					if (db.groups[id].leave) messageText = db.groups[id]?.text?.setleave || `╔══════════════════╗\n║  👋 *සමූහය හැරගිය!* 👋\n╠══════════════════╣\n║\n║ 😢 @\n║ *${metadata.subject}*\n║ *සමූහයෙන් ඉවත් වී ඇත.*\n║\n║ 🌸 ඔවුන්ට සුභ ගමනක් වේවා!\n╚══════════════════╝`;
 					if ((jidNormalizedUser(nimesha.user.lid) == jidNormalizedUser(jid)) || (jidNormalizedUser(nimesha.user.id) == jidNormalizedUser(jid))) {
 						delete store.messages[id];
 						delete store.presences[id];
@@ -132,10 +132,10 @@ async function GroupParticipantsUpdate(nimesha, { id, participants, author, acti
 					}
 					if(metadata) metadata.participants = metadata.participants.filter(p => !participants.includes(metadata.addressingMode === 'lid' ? jidNormalizedUser(p.lid) : jidNormalizedUser(p.id)));
 				} else if (action === 'promote') {
-					if (db.groups[id].promote) messageText = db.groups[id]?.text?.setpromote || `@\n${metadata.subject} හි පරිපාලකයෙකු ලෙස උසස් කරන ලදී.\nBy @admin`;
+					if (db.groups[id].promote) messageText = db.groups[id]?.text?.setpromote || `╔══════════════════╗\n║  👑 *Admin උසස්වීම* 👑\n╠══════════════════╣\n║\n║ 🎉 @\n║ *${metadata.subject}*\n║ *Admin ලෙස පත් කරන ලදී!*\n║\n║ 💪 ගරු Admin!\n║ 🌸 By: @admin\n╚══════════════════╝`;
 					updateAdminStatus(participants, metadata.participants, 'admin');
 				} else if (action === 'demote') {
-					if (db.groups[id].demote) messageText = db.groups[id]?.text?.setdemote || `@\n${metadata.subject} හි පරිපාලක ධුරයෙන් ඉවත් කරන ලදී.\nBy @admin`;
+					if (db.groups[id].demote) messageText = db.groups[id]?.text?.setdemote || `╔══════════════════╗\n║  🚫 *Admin ධුර ඉවත්කිරීම* 🚫\n╠══════════════════╣\n║\n║ 📉 @\n║ *${metadata.subject}*\n║ *Admin ධුරයෙන් ඉවත් කෙරිණ.*\n║\n║ 🌸 By: @admin\n╚══════════════════╝`;
 					updateAdminStatus(participants, metadata.participants, null);
 				}
 				if (messageText && nimesha.public) {
@@ -193,8 +193,8 @@ async function LoadDataBase(nimesha, m) {
 			didyoumean: true,
 			author: global.author || 'Nimesha Madhushan',
 			autobackup: false,
-			botname: global.botname || 'Miss Shasikala',
-			packname: global.packname || 'Miss Shasikala',
+			botනාමය: global.botනාමය || 'Miss Shasikala',
+			packනාමය: global.packනාමය || 'Miss Shasikala',
 			template: 'documentMessage',
 			owner: global.owner,
 		};
@@ -235,15 +235,15 @@ async function LoadDataBase(nimesha, m) {
 				leave: false,
 				setinfo: false,
 				antilink: false,
-				demote: false,
+				demote: true,
 				antitoxic: false,
-				promote: false,
+				promote: true,
 				welcome: false,
 				antivirtex: false,
 				antitagsw: false,
 				antidelete: false,
 				antihidetag: false,
-				waktusholat: false,
+				කාලයsholat: false,
 			};
 			for (let key in defaultGroup) {
 				if (!(key in group)) group[key] = defaultGroup[key];
@@ -361,13 +361,13 @@ async function Solving(nimesha, store) {
 		const id = nimesha.decodeJid(jid);
 		if (id.endsWith('@g.us')) {
 			const groupInfo = store.contacts[id] || (store.groupMetadata[id] ? store.groupMetadata[id] : (store.groupMetadata[id] = nimesha.groupMetadata(id))) || {};
-			return Promise.resolve(groupInfo.name || groupInfo.subject || PhoneNumber('+' + id.replace('@g.us', '')).getNumber('international'));
+			return Promise.resolve(groupInfo.නාමය || groupInfo.subject || PhoneNumber('+' + id.replace('@g.us', '')).getNumber('international'));
 		} else {
 			if (id === '0@s.whatsapp.net') {
 				return 'WhatsApp';
 			}
 		const contactInfo = store.contacts[id] || {};
-		return withoutContact ? '' : contactInfo.name || contactInfo.subject || contactInfo.verifiedName || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).getNumber('international');
+		return withoutContact ? '' : contactInfo.නාමය || contactInfo.subject || contactInfo.verifiedName || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).getNumber('international');
 		}
 	}
 	
@@ -383,7 +383,7 @@ async function Solving(nimesha, store) {
 	}
 	
 	nimesha.profilePictureUrl = async (jid, type = 'image', timeoutMs) => {
-		const result = await nimesha.query({
+		const result = await nimesha.සොයන දෙය({
 			tag: 'iq',
 			attrs: {
 				target: jidNormalizedUser(jid),
@@ -394,7 +394,7 @@ async function Solving(nimesha, store) {
 			content: [{
 				tag: 'picture',
 				attrs: {
-					type, query: 'url'
+					type, සොයන දෙය: 'url'
 				},
 			}]
 		}, timeoutMs);
@@ -403,7 +403,7 @@ async function Solving(nimesha, store) {
 	}
 	
 	nimesha.setStatus = (status) => {
-		nimesha.query({
+		nimesha.සොයන දෙය({
 			tag: 'iq',
 			attrs: {
 				to: '@s.whatsapp.net',
@@ -456,20 +456,20 @@ async function Solving(nimesha, store) {
 	
 	
 	nimesha.groupMetadata = async (jid) => {
-		const result = await nimesha.query({
+		const result = await nimesha.සොයන දෙය({
 			tag: 'iq',
 			attrs: {
 				type: 'get',
 				xmlns: 'w:g2',
 				to: jid
 			},
-			content: [{ tag: 'query', attrs: { request: 'interactive' }}]
+			content: [{ tag: 'සොයන දෙය', attrs: { request: 'interactive' }}]
 		});
 		return nimesha.extractGroupMetadata(result);
 	};
 	
 	nimesha.groupFetchAllParticipating = async () => {
-		const result = await nimesha.query({ tag: 'iq', attrs: { to: '@g.us', xmlns: 'w:g2', type: 'get' }, content: [{ tag: 'participating', attrs: {}, content: [{ tag: 'participants', attrs: {}}, { tag: 'description', attrs: {}}]}]});
+		const result = await nimesha.සොයන දෙය({ tag: 'iq', attrs: { to: '@g.us', xmlns: 'w:g2', type: 'get' }, content: [{ tag: 'participating', attrs: {}, content: [{ tag: 'participants', attrs: {}}, { tag: 'description', attrs: {}}]}]});
 		const data = {};
 		const groupsChild = getBinaryNodeChild(result, 'groups');
 		if (groupsChild) {
@@ -500,8 +500,8 @@ async function Solving(nimesha, store) {
 		return hasil;
 	}
 
-	nimesha.sendPoll = (jid, name = '', values = [], quoted, selectableCount = 1) => {
-		return nimesha.sendMessage(jid, { poll: { name, values, selectableCount }}, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 })
+	nimesha.sendPoll = (jid, නාමය = '', values = [], quoted, selectableCount = 1) => {
+		return nimesha.sendMessage(jid, { poll: { නාමය, values, selectableCount }}, { quoted, ephemeralExpiration: quoted?.expiration || quoted?.metadata?.ephemeralDuration || store?.messages[jid]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 })
 	}
 	
 	nimesha.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
@@ -580,26 +580,26 @@ async function Solving(nimesha, store) {
 		return buffer
 	}
 	
-	nimesha.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+	nimesha.downloadAndSaveMediaMessage = async (message, fileනාමය, attachExtension = true) => {
 		const buffer = await nimesha.downloadMediaMessage(message);
 		const type = await FileType.fromBuffer(buffer);
 		const dir = './database/temp';
 		await fs.promises.mkdir(dir, { recursive: true });
-		const trueFileName = attachExtension ? `${dir}/${filename ? filename : Date.now()}.${type.ext}` : filename;
+		const trueFileName = attachExtension ? `${dir}/${fileනාමය ? fileනාමය : Date.now()}.${type.ext}` : fileනාමය;
 		await fs.promises.writeFile(trueFileName, buffer);
 		return trueFileName;
 	}
 	
 	nimesha.getFile = async (PATH, save) => {
 		let res;
-		let filename;
-		let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await (res = await getBuffer(PATH)) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
+		let fileනාමය;
+		let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await (res = await getBuffer(PATH)) : fs.existsSync(PATH) ? (fileනාමය = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
 		let type = await FileType.fromBuffer(data) || { mime: 'application/octet-stream', ext: '.bin' }
-		filename = path.join(__dirname, '../database/temp/' + new Date * 1 + '.' + type.ext)
-		if (data && save) fs.promises.writeFile(filename, data)
+		fileනාමය = path.join(__dirනාමය, '../database/temp/' + new Date * 1 + '.' + type.ext)
+		if (data && save) fs.promises.writeFile(fileනාමය, data)
 		return {
 			res,
-			filename,
+			fileනාමය,
 			size: await getSizeMedia(data),
 ...type,
 			data
@@ -620,17 +620,17 @@ async function Solving(nimesha, store) {
 	}
 	
 	nimesha.sendMedia = async (jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
-		const { mime, data, filename } = await nimesha.getFile(path, true);
+		const { mime, data, fileනාමය } = await nimesha.getFile(path, true);
 		const botNumber = nimesha.decodeJid(nimesha.user.id);
 		const isWebpSticker = options.asSticker || /webp/.test(mime);
-		let type = 'document', mimetype = mime, pathFile = filename;
+		let type = 'document', mimetype = mime, pathFile = fileනාමය;
 		if (isWebpSticker) {
 			pathFile = await writeExif(data, {
-				packname: options.packname || db?.set?.[botNumber]?.packname || 'Bot WhatsApp',
+				packනාමය: options.packනාමය || db?.set?.[botNumber]?.packනාමය || 'Bot WhatsApp',
 				author: options.author || db?.set?.[botNumber]?.author || 'Nimesha Madhushan',
 				categories: options.categories || [],
 			})
-			await fs.unlinkSync(filename);
+			await fs.unlinkSync(fileනාමය);
 			type = 'sticker';
 			mimetype = 'image/webp';
 		} else if (/image|video|audio/.test(mime)) {
@@ -692,7 +692,7 @@ async function Solving(nimesha, store) {
 							...(messageParamsJson && typeof messageParamsJson === 'object' && Object.keys(messageParamsJson).length > 0 ? messageParamsJson : {}),
 							buttons: buttons.map(a => {
 								return {
-									name: a.name,
+									නාමය: a.නාමය,
 									buttonParamsJson: JSON.stringify(a.buttonParamsJson ? (typeof a.buttonParamsJson === 'string' ? JSON.parse(a.buttonParamsJson) : a.buttonParamsJson) : '')
 								}
 							})
@@ -728,7 +728,7 @@ async function Solving(nimesha, store) {
 						tag: 'native_flow',
 						attrs: {
 							v: '9',
-							name: 'mixed'
+							නාමය: 'mixed'
 						}
 					}]
 				}]
@@ -785,7 +785,7 @@ async function Solving(nimesha, store) {
 						tag: 'native_flow',
 						attrs: {
 							v: '9',
-							name: 'mixed'
+							නාමය: 'mixed'
 						}
 					}]
 				}]
@@ -795,12 +795,12 @@ async function Solving(nimesha, store) {
 	}
 	
 	nimesha.newsletterMsg = async (key, content = {}, timeout = 5000) => {
-		const { type: rawType = 'INFO', name, description = '', picture = null, react, id, newsletter_id = key, ...media } = content;
+		const { type: rawType = 'INFO', නාමය, description = '', picture = null, react, id, newsletter_id = key, ...media } = content;
 		const type = rawType.toUpperCase();
 		if (react) {
 			if (!(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) throw [{ message: 'කරුණාකර නිවැරදි Newsletter Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
 			if (!id) throw [{ message: 'කරුණාකර Newsletter පණිවිඩ Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			const hasil = await nimesha.query({
+			const hasil = await nimesha.සොයන දෙය({
 				tag: 'message',
 				attrs: {
 					to: key,
@@ -818,7 +818,7 @@ async function Solving(nimesha, store) {
 			return hasil
 		} else if (media && typeof media === 'object' && Object.keys(media).length > 0) {
 			const msg = await generateWAMessageContent(media, { upload: nimesha.waUploadToServer });
-			const anu = await nimesha.query({
+			const anu = await nimesha.සොයන දෙය({
 				tag: 'message',
 				attrs: { to: newsletter_id, type: 'text' in media ? 'text' : 'media' },
 				content: [{
@@ -830,7 +830,7 @@ async function Solving(nimesha, store) {
 			return anu
 		} else {
 			if ((/(FOLLOW|UNFOLLOW|DELETE)/.test(type)) && !(newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id))) return [{ message: 'කරුණාකර නිවැරදි Newsletter Id එක භාවිතා කරන්න.', extensions: { error_code: 204, severity: 'CRITICAL', is_retryable: false }}]
-			const _query = await nimesha.query({
+			const _සොයන දෙය = await nimesha.සොයන දෙය({
 				tag: 'iq',
 				attrs: {
 					to: 's.whatsapp.net',
@@ -838,16 +838,16 @@ async function Solving(nimesha, store) {
 					xmlns: 'w:mex'
 				},
 				content: [{
-					tag: 'query',
+					tag: 'සොයන දෙය',
 					attrs: {
-						query_id: type == 'FOLLOW' ? '9926858900719341' : type == 'UNFOLLOW' ? '7238632346214362' : type == 'CREATE' ? '6234210096708695' : type == 'DELETE' ? '8316537688363079' : '6563316087068696'
+						සොයන දෙය_id: type == 'FOLLOW' ? '9926858900719341' : type == 'UNFOLLOW' ? '7238632346214362' : type == 'CREATE' ? '6234210096708695' : type == 'DELETE' ? '8316537688363079' : '6563316087068696'
 					},
 					content: new TextEncoder().encode(JSON.stringify({
-						variables: /(FOLLOW|UNFOLLOW|DELETE)/.test(type) ? { newsletter_id } : type == 'CREATE' ? { newsletter_input: { name, description, picture }} : { fetch_creation_time: true, fetch_full_image: true, fetch_viewer_metadata: false, input: { key, type: (newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id)) ? 'JID' : 'INVITE' }}
+						variables: /(FOLLOW|UNFOLLOW|DELETE)/.test(type) ? { newsletter_id } : type == 'CREATE' ? { newsletter_input: { නාමය, description, picture }} : { fetch_creation_time: true, fetch_full_image: true, fetch_viewer_metadata: false, input: { key, type: (newsletter_id.endsWith('@newsletter') || !isNaN(newsletter_id)) ? 'JID' : 'INVITE' }}
 					}))
 				}]
 			}, timeout);
-			const res = JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_join_v2 || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_leave_v2 || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_create || JSON.parse(_query.content[0].content)?.data?.xwa2_newsletter_delete_v2 || JSON.parse(_query.content[0].content)?.errors || JSON.parse(_query.content[0].content)
+			const res = JSON.parse(_සොයන දෙය.content[0].content)?.data?.xwa2_newsletter || JSON.parse(_සොයන දෙය.content[0].content)?.data?.xwa2_newsletter_join_v2 || JSON.parse(_සොයන දෙය.content[0].content)?.data?.xwa2_newsletter_leave_v2 || JSON.parse(_සොයන දෙය.content[0].content)?.data?.xwa2_newsletter_create || JSON.parse(_සොයන දෙය.content[0].content)?.data?.xwa2_newsletter_delete_v2 || JSON.parse(_සොයන දෙය.content[0].content)?.errors || JSON.parse(_සොයන දෙය.content[0].content)
 			res.thread_metadata ? (res.thread_metadata.host = 'https://mmg.whatsapp.net') : null
 			return res
 		}
@@ -869,7 +869,7 @@ async function Solving(nimesha, store) {
 				footer: { text: a.footer },
 				nativeFlowMessage: {
 					buttons: a.buttons.map(b => ({
-						name: b.name,
+						නාමය: b.නාමය,
 						buttonParamsJson: JSON.stringify(b.buttonParamsJson ? JSON.parse(b.buttonParamsJson) : '')
 					}))
 				}
@@ -942,7 +942,7 @@ async function Serialize(nimesha, msg, store) {
 				m.key.participant = m.sender = participant?.id || m.sender;
 				m.metadata.owner = m.metadata?.participants?.find(p => p.lid === m.metadata.owner)?.id || m.metadata.owner;
 				m.metadata.subjectOwner = m.metadata?.participants?.find(p => p.lid === m.metadata.subjectOwner)?.id || m.metadata.subjectOwner;
-				store.contacts[m.sender] = { ...store.contacts[m.sender], id: m.sender, lid: m.fromMe && nimesha.user.lid || participant?.lid || m.sender, name: m.pushName };
+				store.contacts[m.sender] = { ...store.contacts[m.sender], id: m.sender, lid: m.fromMe && nimesha.user.lid || participant?.lid || m.sender, නාමය: m.pushName };
 			}
 			m.admins = m.metadata.participants ? (m.metadata.participants.reduce((a, b) => (b.admin ? a.push({ id: b.id, admin: b.admin }) : [...a]) && a, [])) : []
 			m.isAdmin = m.admins?.some((b) => b.id === m.sender) || false
@@ -953,7 +953,7 @@ async function Serialize(nimesha, msg, store) {
 	if (m.message) {
 		m.type = getContentType(m.message) || Object.keys(m.message)[0]
 		m.msg = (/viewOnceMessage|viewOnceMessageV2Extension|editedMessage|ephemeralMessage/i.test(m.type) ? m.message[m.type].message[getContentType(m.message[m.type].message)] : (extractMessageContent(m.message[m.type]) || m.message[m.type]))
-		m.body = m.message?.conversation || m.msg?.text || m.msg?.conversation || m.msg?.caption || m.msg?.selectedButtonId || m.msg?.singleSelectReply?.selectedRowId || m.msg?.selectedId || m.msg?.contentText || m.msg?.selectedDisplayText || m.msg?.title || m.msg?.name || ''
+		m.body = m.message?.conversation || m.msg?.text || m.msg?.conversation || m.msg?.caption || m.msg?.selectedButtonId || m.msg?.singleSelectReply?.selectedRowId || m.msg?.selectedId || m.msg?.contentText || m.msg?.selectedDisplayText || m.msg?.title || m.msg?.නාමය || ''
 		m.mentionedJid = m.msg?.contextInfo?.mentionedJid || []
 		m.text = m.msg?.text || m.msg?.caption || m.message?.conversation || m.msg?.contentText || m.msg?.selectedDisplayText || m.msg?.title || '';
 		m.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(m.body) ? m.body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(m.body) ? m.body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : ''
@@ -991,7 +991,7 @@ async function Serialize(nimesha, msg, store) {
 			m.quoted.isBot = m.quoted.id ? ['HSK', 'BAE', 'B1E', '3EB0', 'B24E', 'WA'].some(a => m.quoted.id.startsWith(a) && [12, 16, 20, 22, 40].includes(m.quoted.id.length)) || /(.)\1{5,}|[^a-zA-Z0-9]|[^0-9A-F]/.test(m.quoted.id) : false
 			m.quoted.fromMe = m.quoted.sender === nimesha.decodeJid(nimesha.user.id)
 			m.quoted.mentionedJid = m.quoted?.msg?.contextInfo?.mentionedJid || []
-			m.quoted.body = m.quoted.msg?.text || m.quoted.msg?.caption || m.quoted?.message?.conversation || m.quoted.msg?.selectedButtonId || m.quoted.msg?.singleSelectReply?.selectedRowId || m.quoted.msg?.selectedId || m.quoted.msg?.contentText || m.quoted.msg?.selectedDisplayText || m.quoted.msg?.title || m.quoted?.msg?.name || ''
+			m.quoted.body = m.quoted.msg?.text || m.quoted.msg?.caption || m.quoted?.message?.conversation || m.quoted.msg?.selectedButtonId || m.quoted.msg?.singleSelectReply?.selectedRowId || m.quoted.msg?.selectedId || m.quoted.msg?.contentText || m.quoted.msg?.selectedDisplayText || m.quoted.msg?.title || m.quoted?.msg?.නාමය || ''
 			m.getQuotedObj = async () => {
 				if (!m.quoted.id) return null
 				let q = await global.loadMessage(m.chat, m.quoted.id, nimesha)
@@ -1009,7 +1009,7 @@ async function Serialize(nimesha, msg, store) {
 			}
 			m.quoted.isGroup = m.quoted.chat.endsWith('@g.us')
 			m.quoted.mentions = m.quoted.msg?.contextInfo?.mentionedJid || []
-			m.quoted.body = m.quoted.msg?.text || m.quoted.msg?.caption || m.quoted?.message?.conversation || m.quoted.msg?.selectedButtonId || m.quoted.msg?.singleSelectReply?.selectedRowId || m.quoted.msg?.selectedId || m.quoted.msg?.contentText || m.quoted.msg?.selectedDisplayText || m.quoted.msg?.title || m.quoted?.msg?.name || ''
+			m.quoted.body = m.quoted.msg?.text || m.quoted.msg?.caption || m.quoted?.message?.conversation || m.quoted.msg?.selectedButtonId || m.quoted.msg?.singleSelectReply?.selectedRowId || m.quoted.msg?.selectedId || m.quoted.msg?.contentText || m.quoted.msg?.selectedDisplayText || m.quoted.msg?.title || m.quoted?.msg?.නාමය || ''
 			m.quoted.prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(m.quoted.body) ? m.quoted.body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : /[\uD800-\uDBFF][\uDC00-\uDFFF]/gi.test(m.quoted.body) ? m.quoted.body.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi)[0] : ''
 			m.quoted.command = m.quoted.body && m.quoted.body.replace(m.quoted.prefix, '').trim().split(/ +/).shift()
 			m.quoted.isMedia = !!m.quoted.msg?.mimetype || !!m.quoted.msg?.thumbnailDirectPath
@@ -1093,10 +1093,10 @@ module.exports = {
 	Solving
 };
 
-let file = require.resolve(__filename)
+let file = require.resolve(__fileනාමය)
 fs.watchFile(file, () => {
 	fs.unwatchFile(file)
-	console.log(chalk.redBright(`යාවත්කාලීන කරන ලදී (Updated): ${__filename}`))
+	console.log(chalk.redBright(`යාවත්කාලීන කරන ලදී (Updated): ${__fileනාමය}`))
 	delete require.cache[file]
 	require(file)
 
