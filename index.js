@@ -18,7 +18,7 @@ const { assertInstalled, unsafeAgent } = require('./lib/function');
 const { GroupParticipantsUpdate, MessagesUpsert, Solving } = require('./src/message');
 
 const print = (label, value) => console.log(`${chalk.green.bold('║')} ${chalk.cyan.bold(label.padEnd(16))}${chalk.yellow.bold(':')} ${value}`);
-const pairingCode = process.argv.includes('--qr') ? false : process.argv.includes('--pairing-code') || global.pairing_code;
+const pairingCode = true; // Always use pairing code + QR together
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 const question = (text) => new Promise((resolve) => rl.question(text, resolve))
 let pairingStarted = false;
@@ -203,12 +203,29 @@ async function startnimaBot() {
 	nima.ev.on('connection.update', async (update) => {
 		const { qr, connection, lastDisconnect, isNewLogin, receivedPendingNotifications } = update;
 		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !nima.authState.creds.registered && !pairingStarted) {
+			pairingStarted = true;
+			// Auto repeat pairing code every 55 seconds until connected
+			const requestCode = async () => {
+				if (nima.authState.creds.registered) return;
+				try {
+					console.log('🔑 Pairing Code ලබා ගනිමින්...')
+					let code = await nima.requestPairingCode(phoneNumber);
+					console.log(chalk.bgGreen.black(' ════════════════════════════ '));
+					console.log(chalk.blue('🔑 *Pairing Code:*'), chalk.bgWhite.black.bold(' ' + code + ' '));
+					console.log(chalk.yellow('⏰ _මිනිත්තු 2කින් නව code එකක් ලැබේ_'));
+					console.log(chalk.bgGreen.black(' ════════════════════════════ '));
+				} catch(e) {
+					console.log('⚠️ Pairing code error:', e.message);
+				}
+			};
 			setTimeout(async () => {
-				pairingStarted = true;
-				console.log('🔑 Pairing Code ලබා ගනිමින්...')
-				let code = await nima.requestPairingCode(phoneNumber);
-				console.log(chalk.blue('🔑 *Pairing Code:*'), chalk.green(code), '\n', chalk.yellow('⏰ _තත්පර 15කින් expire වේ_'));
-			}, 3000)
+				await requestCode();
+				// Repeat every 55s until connected
+				const interval = setInterval(async () => {
+					if (nima.authState.creds.registered) { clearInterval(interval); return; }
+					await requestCode();
+				}, 115000);
+			}, 3000);
 		}
 		if (connection === 'close') {
 			const reason = new Boom(lastDisconnect?.error)?.output.statusCode
@@ -280,10 +297,17 @@ async function startnimaBot() {
 			}, 3000);
 		}
 		if (qr) {
-			if (!pairingCode) qrcode.generate(qr, { small: true })
-			app.use('/qr', async (req, res) => {
-				res.setHeader('content-type', 'image/png')
-				res.end(await toBuffer(qr))
+			// Show QR in terminal always (even with pairing code)
+			console.log(chalk.cyan('\n📱 QR Code (scan with WhatsApp):'));
+			qrcode.generate(qr, { small: true });
+			console.log(chalk.cyan('── හෝ Pairing Code use කරන්න ──\n'));
+			// QR via HTTP (refresh කරන endpoint)
+			try { app._router.stack = app._router.stack.filter(r => r.regexp && !r.regexp.toString().includes('/qr')); } catch(e) {}
+			app.get('/qr', async (req, res) => {
+				res.setHeader('content-type', 'image/png');
+				res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+				res.setHeader('Refresh', '300');
+				res.end(await toBuffer(qr));
 			});
 		}
 		if (isNewLogin) console.log(chalk.green('📱 නව device login හඳුනා ගන්නා ලදී!'))
