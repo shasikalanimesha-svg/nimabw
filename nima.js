@@ -2,7 +2,7 @@ process.once('uncaughtException', console.error)
 process.once('unhandledRejection', console.error)
 
 /*
-	* Create By Nima
+	* Create By Nimesha Madhushan
 	* Follow https://github.com/nimesha206
 	* Whatsapp : https://whatsapp.com/channel/0029VaWOkNm7DAWtkvkJBK43
 */
@@ -45,10 +45,10 @@ const menfesTimeouts = new Map();
 const settingsPath = path.join(__dirname, 'settings.js');
 const cases = db.cases ? db.cases : (db.cases = [...fs.readFileSync('./nima.js', 'utf-8').matchAll(/case\s+['"]([^'"]+)['"]/g)].map(match => match[1]));
 
-module.exports = naze = async (naze, m, msg, store) => {
-	await LoadDataBase(naze, m);
+module.exports = nimesha = async (nimesha, m, msg, store) => {
+	await LoadDataBase(nimesha, m);
 	
-	const botNumber = naze.decodeJid(naze.user.id);
+	const botNumber = nimesha.decodeJid(nimesha.user.id);
 	
 	// Read Database
 	const sewa = db.sewa
@@ -82,7 +82,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 	const ownerNumber = set.owner = [...new Set([...owner, botNumber.split('@')[0], ...set?.owner || []])];
 	
 	try {
-		await GroupUpdate(naze, m, store);
+		await GroupUpdate(nimesha, m, store);
 		
 		const body = ((m.type === 'conversation') ? m.message.conversation :
 		(m.type == 'imageMessage') ? m.message.imageMessage.caption :
@@ -107,7 +107,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		const text = q = args.join(' ')
 		const mime = (quoted.msg || quoted).mimetype || ''
 		const qmsg = (quoted.msg || quoted)
-		const author = set.author = global.author || 'nima';
+		const author = set.author = global.author || 'Nimesha Madhushan';
 		const packname = set.packname = global.packname || 'Shasikala';
 		const botname = set.botname = global.botname || 'Nima Bot';
 		const _dayMap = {
@@ -138,7 +138,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				remoteJid: '0@s.whatsapp.net',
 				participant: '0@s.whatsapp.net',
 				fromMe: false,
-				id: 'Naze'
+				id: 'Nimesha Madhushan'
 			},
 			message: {
 				contactMessage: {
@@ -167,7 +167,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let tglnya = new Date().toISOString().replace(/[:.]/g, '-');
 				for (let o of ownerNumber) {
 					try {
-						await naze.sendMessage(o, { document: fs.readFileSync(datanya), mimetype: 'application/json', fileName: tglnya + '_database.json' })
+						await nimesha.sendMessage(o, { document: fs.readFileSync(datanya), mimetype: 'application/json', fileName: tglnya + '_database.json' })
 						console.log(`[AUTO BACKUP] Backup berhasil dikirim ke ${o}`);
 					} catch (e) {
 						console.error(`[AUTO BACKUP] Gagal mengirim backup ke ${o}:`, error);
@@ -182,7 +182,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		// Auto Set Bio
 		if (set.autobio) {
 			if (new Date() * 1 - set.status > 60000) {
-				await naze.updateProfileStatus(`${naze.user.name} | 🎯 Runtime: ${runtime(process.uptime())}`).catch(e => {})
+				await nimesha.updateProfileStatus(`${nimesha.user.name} | 🎯 Runtime: ${runtime(process.uptime())}`).catch(e => {})
 				set.status = new Date() * 1
 			}
 		}
@@ -190,7 +190,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		// Set Mode
 		if (!isCreator) {
 			if ((set.grouponly === set.privateonly)) {
-				if (!naze.public && !m.key.fromMe) return
+				if (!nimesha.public && !m.key.fromMe) return
 			} else if (set.grouponly) {
 				if (!m.isGroup) return
 			} else if (set.privateonly) {
@@ -207,7 +207,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			
 			// Anti Hidetag
 			if (!m.key.fromMe && m.mentionedJid?.length === m.metadata.participanis?.length && db.groups[m.chat].antihidetag && !isCreator && m.isBotAdmin && !m.isAdmin) {
-				await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
+				await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
 				await m.reply('*Anti Hidetag සක්‍රීයයි❗*')
 			}
 			
@@ -218,7 +218,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						db.groups[m.chat].tagsw[m.sender] = 1
 						await m.reply(`මෙම සමූහය WhatsApp ස්ටේටස් හි ටැග් කර ඇත\n@${m.sender.split('@')[0]}, WhatsApp ස්ටේටස් හි සමූහය ටැග් නොකරන්න\nPeringatan ${db.groups[m.chat].tagsw[m.sender]}/5, akan dikick sewaktu waktu❗`)
 					} else if (db.groups[m.chat].tagsw[m.sender] >= 5) {
-						await naze.groupParticipantsUpdate(m.chat, [m.sender], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
+						await nimesha.groupParticipantsUpdate(m.chat, [m.sender], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
 						await m.reply(`@${m.sender.split("@")[0]} සමූහයෙන් ඉවත් කරන ලදි\nWhatsApp ස්ටේටස් හි 5 වාරයක් සමූහය ටැග් කළ නිසා`)
 						delete db.groups[m.chat].tagsw[m.sender]
 					} else {
@@ -231,8 +231,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 			// Anti Toxic
 			if (!m.key.fromMe && db.groups[m.chat].antitoxic && !isCreator && m.isBotAdmin && !m.isAdmin) {
 				if (budy.toLowerCase().split(/\s+/).some(word => badWords.includes(word))) {
-					await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
-					await naze.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Toxic ලෙස කතා කළා\nකරුණාකර ආචාරශීලී භාෂාවක් භාවිතා කරන්න.`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Toxic❗*'}, ...m.key }}}, {})
+					await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
+					await nimesha.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Toxic ලෙස කතා කළා\nකරුණාකර ආචාරශීලී භාෂාවක් භාවිතා කරන්න.`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Toxic❗*'}, ...m.key }}}, {})
 				}
 			}
 			
@@ -250,29 +250,29 @@ module.exports = naze = async (naze, m, msg, store) => {
 					}
 					msgContent.contextInfo = { mentionedJid: [chats.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Delete❗*'}, ...chats.key }
 					const pesan = msgType === 'conversation' ? { extendedTextMessage: { text: msgContent, contextInfo: { mentionedJid: [chats.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Delete❗*'}, ...chats.key }}} : { [msgType]: msgContent }
-					await naze.relayMessage(m.chat, pesan, {})
+					await nimesha.relayMessage(m.chat, pesan, {})
 				}
 			}
 			
 			// Anti Link Group
 			if (db.groups[m.chat].antilink && !isCreator && m.isBotAdmin && !m.isAdmin) {
 				if (budy.match('chat.whatsapp.com/')) {
-					await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
-					await naze.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} සමූහ සබැඳියක් යැව්වා\nසමාවෙන්න, සබැඳිය මකාදැමිය යුතුය..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Link❗*'}, ...m.key }}}, {})
+					await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
+					await nimesha.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} සමූහ සබැඳියක් යැව්වා\nසමාවෙන්න, සබැඳිය මකාදැමිය යුතුය..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Link❗*'}, ...m.key }}}, {})
 				}
 			}
 			
 			// Anti Virtex Group
 			if (db.groups[m.chat].antivirtex && !isCreator && m.isBotAdmin && !m.isAdmin) {
 				if (budy.length > 4500) {
-					await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
-					await naze.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Virtex යෑව්වා..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Virtex❗*'}, ...m.key }}}, {})
-					await naze.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+					await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
+					await nimesha.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Virtex යෑව්වා..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Virtex❗*'}, ...m.key }}}, {})
+					await nimesha.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 				}
 				if (m.msg?.nativeFlowMessage?.messageParamsJson?.length > 3500) {
-					await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
-					await naze.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Bug යෑව්වා..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Bug❗*'}, ...m.key }}}, {})
-					await naze.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+					await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.id, participant: m.sender }})
+					await nimesha.relayMessage(m.chat, { extendedTextMessage: { text: `හඳුනාගත් @${m.sender.split('@')[0]} Bug යෑව්වා..`, contextInfo: { mentionedJid: [m.key.participant], isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: '*Anti Bug❗*'}, ...m.key }}}, {})
+					await nimesha.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 				}
 			}
 			
@@ -280,8 +280,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 		
 		// Auto Read
 		if (m.message && m.key.remoteJid !== 'status@broadcast') {
-			if ((set.autoread && naze.public) || isCreator) {
-				naze.readMessages([m.key]);
+			if ((set.autoread && nimesha.public) || isCreator) {
+				nimesha.readMessages([m.key]);
 				console.log(chalk.black(chalk.bgWhite('[ PESAN ]:'), chalk.bgGreen(new Date), chalk.bgHex('#00EAD3')(budy || m.type), chalk.bgHex('#AF26EB')(m.key.id) + '\n' + chalk.bgCyanBright('[ DARI ] :'), chalk.bgYellow(m.pushName || (isCreator ? 'Bot' : 'Anonim')), chalk.bgHex('#FF449F')(m.sender), chalk.bgHex('#FF5700')(m.isGroup ? m.metadata.subject : m.chat.endsWith('@newsletter') ? 'Newsletter' : 'Private Chat'), chalk.bgBlue('(' + m.chat + ')')));
 			}
 		}
@@ -291,14 +291,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (db.users[m.sender]?.ban && !isCreator) return
 		
 		// Filter Set Api Key
-		if (cases.includes(command) && isCmd && (command !== 'setapikey') && global.APIKeys[global.APIs.naze] === 'nz-8ce9753907') {
+		if (cases.includes(command) && isCmd && (command !== 'setapikey') && global.APIKeys[global.APIs.nimesha] === 'nz-8ce9753907') {
 			return m.reply('.setapikey nz-8ce9753907');
 		}
 		
 		// Mengetik & Anti Spam & Hit
-		if (naze.public && isCmd) {
+		if (nimesha.public && isCmd) {
 			if (set.autotyping) {
-				await naze.sendPresenceUpdate('composing', m.chat)
+				await nimesha.sendPresenceUpdate('composing', m.chat)
 			}
 			if (cases.includes(command)) {
 				cmdAdd(db.hit);
@@ -365,7 +365,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						this.waktusholat[sholat] = hariIni
 						for (const [idnya, settings] of Object.entries(db.groups)) {
 							if (settings.waktusholat) {
-								await naze.sendMessage(idnya, { text: `*${sholat}* ශ්‍රිත කාලය ළඟා විය, නැමදුමට සූදානම් වන්න🙂.\n\n*${waktu.slice(0, 5)}*\n_ජකාර්තා සහ ආශ්‍රිත ප්‍රදේශ සඳහා._` }, { ephemeralExpiration: m.expiration || store?.messages[idnya]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 }).catch(e => {})
+								await nimesha.sendMessage(idnya, { text: `*${sholat}* ශ්‍රිත කාලය ළඟා විය, නැමදුමට සූදානම් වන්න🙂.\n\n*${waktu.slice(0, 5)}*\n_ජකාර්තා සහ ආශ්‍රිත ප්‍රදේශ සඳහා._` }, { ephemeralExpiration: m.expiration || store?.messages[idnya]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 }).catch(e => {})
 							}
 						}
 					}
@@ -375,7 +375,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		
 		// Cek Expired
 		checkExpired(premium);
-		checkExpired(sewa, naze);
+		checkExpired(sewa, nimesha);
 		
 		// TicTacToe
 		let room = Object.values(tictactoe).find(room => room.id && room.game && room.state && room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender) && room.state == 'PLAYING')
@@ -415,8 +415,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 			let str = `Room ID: ${room.id}\n\n${arr.slice(0, 3).join('')}\n${arr.slice(3, 6).join('')}\n${arr.slice(6).join('')}\n\n${isWin ? `@${winner.split('@')[0]} ජය!` : isTie ? `ක්‍රීඩාව අවසන් විය` : `Giliran ${['❌', '⭕'][1 * room.game._currentTurn]} (@${room.game.currentTurn.split('@')[0]})`}\n❌: @${room.game.playerX.split('@')[0]}\n⭕: @${room.game.playerO.split('@')[0]}\n\n*nyerah* ටයිප් කර ගිවිසීම ප්‍රකාශ කරන්න`
 			if ((room.game._currentTurn ^ isSurrender ? room.x : room.o) !== m.chat)
 			room[room.game._currentTurn ^ isSurrender ? 'x' : 'o'] = m.chat
-			if (room.x !== room.o) await naze.sendMessage(room.x, { text: str, mentions: parseMention(str) }, { quoted: m })
-			await naze.sendMessage(room.o, { text: str, mentions: parseMention(str) }, { quoted: m })
+			if (room.x !== room.o) await nimesha.sendMessage(room.x, { text: str, mentions: parseMention(str) }, { quoted: m })
+			await nimesha.sendMessage(room.o, { text: str, mentions: parseMention(str) }, { quoted: m })
 			if (isTie || isWin) delete tictactoe[room.id]
 		}
 		
@@ -440,8 +440,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 				roof.status = 'play';
 				roof.asal = m.chat;
 				m.reply(`Suit chat වෙත යැව්වා\n\n@${roof.p.split('@')[0]} dan @${roof.p2.split('@')[0]}\n\nSilahkan තෝරන්න suit di chat masing-masing klik https://wa.me/${botNumber.split('@')[0]}`)
-				if (!roof.තෝරන්න) naze.sendMessage(roof.p, { text: `Silahkan තෝරන්න \n\nBatu🗿\nKertas📄\nGunting✂️` }, { quoted: m })
-				if (!roof.තෝරන්න2) naze.sendMessage(roof.p2, { text: `Silahkan තෝරන්න \n\nBatu🗿\nKertas📄\nGunting✂️` }, { quoted: m })
+				if (!roof.තෝරන්න) nimesha.sendMessage(roof.p, { text: `Silahkan තෝරන්න \n\nBatu🗿\nKertas📄\nGunting✂️` }, { quoted: m })
+				if (!roof.තෝරන්න2) nimesha.sendMessage(roof.p2, { text: `Silahkan තෝරන්න \n\nBatu🗿\nKertas📄\nGunting✂️` }, { quoted: m })
 			}
 			let jwb = m.sender == roof.p, jwb2 = m.sender == roof.p2;
 			let g = /gunting/i, b = /batu/i, k = /kertas/i, reg = /^(gunting|batu|kertas)/i;
@@ -450,13 +450,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 				roof.තෝරන්න = reg.exec(m.text.toLowerCase())[0];
 				roof.text = m.text;
 				m.reply(`ඔබ තෝරාගත්තේ ${m.text} ${!roof.තෝරන්න2 ? `\n\nලංඟ ක්‍රීඩකයාගේ තේරීම බලා සිටිනු` : ''}`);
-				if (!roof.තෝරන්න2) naze.sendMessage(roof.p2, { text: '_ලංඟ ක්‍රීඩකයා තෝරාගත්තා_\nදැන් ඔබේ වාරය' })
+				if (!roof.තෝරන්න2) nimesha.sendMessage(roof.p2, { text: '_ලංඟ ක්‍රීඩකයා තෝරාගත්තා_\nදැන් ඔබේ වාරය' })
 			}
 			if (jwb2 && reg.test(m.text) && !roof.තෝරන්න2 && !m.isGroup) {
 				roof.තෝරන්න2 = reg.exec(m.text.toLowerCase())[0]
 				roof.text2 = m.text
 				m.reply(`ඔබ තෝරාගත්තේ ${m.text} ${!roof.තෝරන්න ? `\n\nලංඟ ක්‍රීඩකයාගේ තේරීම බලා සිටිනු` : ''}`)
-				if (!roof.තෝරන්න) naze.sendMessage(roof.p, { text: '_ලංඟ ක්‍රීඩකයා තෝරාගත්තා_\nදැන් ඔබේ වාරය' })
+				if (!roof.තෝරන්න) nimesha.sendMessage(roof.p, { text: '_ලංඟ ක්‍රීඩකයා තෝරාගත්තා_\nදැන් ඔබේ වාරය' })
 			}
 			let stage = roof.තෝරන්න
 			let stage2 = roof.තෝරන්න2
@@ -470,7 +470,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				else if (stage == stage2) tie = true
 				db.users[roof.p == win ? roof.p : roof.p2].limit += tie ? 0 : 3
 				db.users[roof.p == win ? roof.p : roof.p2].money += tie ? 0 : 3000
-				naze.sendMessage(roof.asal, { text: `_*Suit ප්‍රතිඵල*_${tie ? '\nශේෂය' : ''}\n\n@${roof.p.split('@')[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` ජය \n` : ` පරාජය \n`}\n@${roof.p2.split('@')[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` ජය \n` : ` පරාජය \n`}\n\nජයග්‍රාහකයා ලබා ගනී\n*තෑගිය:* Money(3000) & Limit(3)`.trim(), mentions: [roof.p, roof.p2] }, { quoted: m })
+				nimesha.sendMessage(roof.asal, { text: `_*Suit ප්‍රතිඵල*_${tie ? '\nශේෂය' : ''}\n\n@${roof.p.split('@')[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` ජය \n` : ` පරාජය \n`}\n@${roof.p2.split('@')[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` ජය \n` : ` පරාජය \n`}\n\nජයග්‍රාහකයා ලබා ගනී\n*තෑගිය:* Money(3000) & Limit(3)`.trim(), mentions: [roof.p, roof.p2] }, { quoted: m })
 				delete suit[roof.id]
 			}
 		}
@@ -724,7 +724,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				m.react('✈');
 				m.msg.contextInfo = { isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: `*පණිවිඩ Dari ${menfes[m.sender].nama ? menfes[m.sender].nama : 'Seseorang'}*`}, key: { remoteJid: '0@s.whatsapp.net', fromMe: false, participant: '0@s.whatsapp.net' }}
 				const pesan = m.type === 'conversation' ? { extendedTextMessage: { text: m.msg, contextInfo: { isForwarded: true, forwardingScore: 1, quotedMessage: { conversation: `*පණිවිඩ Dari ${menfes[m.sender].nama ? menfes[m.sender].nama : 'Seseorang'}*`}, key: { remoteJid: '0@s.whatsapp.net', fromMe: false, participant: '0@s.whatsapp.net' }}}} : { [m.type]: m.msg }
-				await naze.relayMessage(menfes[m.sender].tujuan, pesan, {});
+				await nimesha.relayMessage(menfes[m.sender].tujuan, pesan, {});
 			}
 			if (chat_ai[m.sender] && m.key.remoteJid !== 'status@broadcast') {
 				if (!/^(del((room|c|hat)ai)|>|<$)$/i.test(command) && budy) {
@@ -784,13 +784,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.quoted) return m.reply('Reply කරන්න')
 				delete m.quoted.chat
 				let anya = Object.values(m.quoted.fakeObj())[1]
-				m.reply(`const byt = ${JSON.stringify(anya.message, null, 2)}\nnaze.relayMessage(m.chat, byt, {})`)
+				m.reply(`const byt = ${JSON.stringify(anya.message, null, 2)}\nnimesha.relayMessage(m.chat, byt, {})`)
 			}
 			break
 			case 'setbio': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply('Text එක කොහේද?')
-				naze.setStatus(q)
+				nimesha.setStatus(q)
 				m.reply(`*Bio telah di ganti ලෙස ${q}*`)
 			}
 			break
@@ -799,7 +799,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!/image/.test(quoted.type)) return m.reply(`Caption සමග Image Reply කරන්න ${prefix + command}`)
 				let media = await quoted.download();
 				let { img } = await generateProfilePicture(media, text.length > 0 ? null : 512)
-				await naze.query({
+				await nimesha.query({
 					tag: 'iq',
 					attrs: {
 						to: '@s.whatsapp.net',
@@ -813,7 +813,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'delppbot': {
 				if (!isCreator) return m.reply(mess.owner)
-				await naze.removeProfilePicture(naze.user.id)
+				await nimesha.removeProfilePicture(nimesha.user.id)
 				m.reply('සාර්ථකයි')
 			}
 			break
@@ -824,7 +824,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const result = args[0].match(/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)
 				if (!result) return m.reply('Link Invalid❗')
 				m.reply(mess.wait)
-				await naze.groupAcceptInvite(result[1]).catch((res) => {
+				await nimesha.groupAcceptInvite(result[1]).catch((res) => {
 					if (res.data == 400) return m.reply('සමූහය හොයාගත නොහැකිය❗');
 					if (res.data == 401) return m.reply('Bot සමූහයෙන් kick කෙරිණ❗');
 					if (res.data == 409) return m.reply('බොට් දැනටමත් එම සමූහයට සම්බන්ධ වී ඇත❗');
@@ -835,12 +835,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'leave': {
 				if (!isCreator) return m.reply(mess.owner)
-				await naze.groupLeave(m.chat).then(() => naze.sendFromOwner(ownerNumber, 'සමූහයෙන් සාර්ථකව ඉවත් විය', m, { contextInfo: { isForwarded: true }})).catch(e => {});
+				await nimesha.groupLeave(m.chat).then(() => nimesha.sendFromOwner(ownerNumber, 'සමූහයෙන් සාර්ථකව ඉවත් විය', m, { contextInfo: { isForwarded: true }})).catch(e => {});
 			}
 			break
 			case 'clearchat': {
 				if (!isCreator) return m.reply(mess.owner)
-				await naze.chatModify({ delete: true, lastMessages: [{ key: m.key, messageTimestamp: m.timestamp }] }, m.chat).catch((e) => m.reply('Chat මකාදැමීම අසාර්ථකයි!'))
+				await nimesha.chatModify({ delete: true, lastMessages: [{ key: m.key, messageTimestamp: m.timestamp }] }, m.chat).catch((e) => m.reply('Chat මකාදැමීම අසාර්ථකයි!'))
 				m.reply('පණිවිඩ සාර්ථකව ඉවත් කෙරිණ')
 			}
 			break
@@ -849,7 +849,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let [teks1, teks2] = text.split`|`
 				if (teks1 && teks2) {
 					const msgnya = await global.loadMessage(teks1, teks2)
-					if (msgnya?.message) await naze.relayMessage(m.chat, msgnya.message, {})
+					if (msgnya?.message) await nimesha.relayMessage(m.chat, msgnya.message, {})
 					else m.reply('පණිවිඩය හොයාගත නොහැකිය!')
 				} else m.reply(`Contoh: ${prefix + command} 123xxx@g.us|3EB0xxx`)
 			}
@@ -858,12 +858,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const numbersOnly = m.isGroup ? (text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender) : m.chat
-					await naze.updateBlockStatus(numbersOnly, 'block').then((a) => m.reply(mess.done)).catch((err) => m.reply('අසාර්ථකයි!'))
+					await nimesha.updateBlockStatus(numbersOnly, 'block').then((a) => m.reply(mess.done)).catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'listblock': {
-				let anu = await naze.fetchBlocklist()
+				let anu = await nimesha.fetchBlocklist()
 				m.reply(`Block සංඛ්‍යාව: ${anu.length}\n` + anu.map(v => '• ' + v.replace(/@.+/, '')).join`\n`)
 			}
 			break
@@ -871,16 +871,16 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const numbersOnly = m.isGroup ? (text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender) : m.chat
-					await naze.updateBlockStatus(numbersOnly, 'unblock').then((a) => m.reply(mess.done)).catch((err) => m.reply('අසාර්ථකයි!'))
+					await nimesha.updateBlockStatus(numbersOnly, 'unblock').then((a) => m.reply(mess.done)).catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
 			case 'ban': case 'banned': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx`)
-				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
 				if (db.users[nmrnya] && !db.users[nmrnya].ban) {
 					db.users[nmrnya].ban = true
 					m.reply('User ban කෙරිණ!')
@@ -890,9 +890,9 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'unban': case 'unbanned': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx`)
-				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
 				if (db.users[nmrnya] && db.users[nmrnya].ban) {
 					db.users[nmrnya].ban = false
 					m.reply('User unban කෙරිණ!')
@@ -914,10 +914,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'addowner': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text || isNaN(text)) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx`)
-				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 				if (set?.owner) {
 					if (set.owner.find(a => a === nmrnya)) return m.reply('ඒ අංකය දැනටමත් Owner ලැයිස්තුවේ ඇත!')
@@ -929,10 +929,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'delowner': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text || isNaN(text)) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx`)
-				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 				let list = set.owner
 				const index = list.findIndex(o => o === nmrnya);
@@ -945,10 +945,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx 1000`)
 				if (args[1].length > 15) return m.reply('මුදල් ප්‍රමාණය දිජිත 15 ක් දක්වා!')
-				const findJid = naze.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = args[0].replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 				if (db.users[nmrnya] && db.users[nmrnya].money >= 0) {
 					addMoney(args[1], nmrnya, db)
@@ -960,10 +960,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!args[0] || !args[1] || isNaN(args[1])) return m.reply(`Kirim/tag අංකය!\nඋදාහරණ:\n${prefix + command} 94xxx 10`)
 				if (args[1].length > 10) return m.reply('Limit ප්‍රමාණය දිජිත 10 ක් දක්වා!')
-				const findJid = naze.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(args[0].replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = args[0].replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 				if (db.users[nmrnya] && db.users[nmrnya].limit >= 0) {
 					addLimit(args[1], nmrnya, db)
@@ -978,7 +978,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (anu.length === 0) return m.reply(teks)
 				for (let i of anu) {
 					if (store.messages?.[i]?.array?.length) {
-						let nama = naze.getName(m.sender)
+						let nama = nimesha.getName(m.sender)
 						teks += `${setv} *නම:* ${nama}\n${setv} *User:* @${i.split('@')[0]}\n${setv} *Chat:* https://wa.me/${i.split('@')[0]}\n\n=====================\n\n`
 					}
 				}
@@ -995,7 +995,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					try {
 						metadata = store.groupMetadata[i]
 					} catch (e) {
-						metadata = (store.groupMetadata[i] = await naze.groupMetadata(i).catch(e => ({})))
+						metadata = (store.groupMetadata[i] = await nimesha.groupMetadata(i).catch(e => ({})))
 					}
 					teks += metadata?.subject ? `${setv} *නම:* ${metadata.subject}\n${setv} *Admin:* ${metadata.owner ? `@${metadata.owner.split('@')[0]}` : '-' }\n${setv} *ID:* ${metadata.id}\n${setv} *සෑදිණ:* ${moment(metadata.creation * 1000).tz('Asia/Colombo').format('DD/MM/YYYY HH:mm:ss')}\n${setv} *සාමාජිකයින්:* ${metadata.participants.length}\n\n=====================\n\n` : ''
 				}
@@ -1005,12 +1005,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'creategc': case 'buatgc': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`උදාහරණ:\n${prefix + command} *Nama Gc*`)
-				let group = await naze.groupCreate(q, [m.sender])
-				let res = await naze.groupInviteCode(group.id)
+				let group = await nimesha.groupCreate(q, [m.sender])
+				let res = await nimesha.groupInviteCode(group.id)
 				await m.reply(`*Link Group :* *https://chat.whatsapp.com/${res}*\n\n*Nama Group :* *${group.subject}*\nSegera Masuk dalam 30 seconds\nAgar ලෙස Admin`, { detectLink: true })
 				await sleep(30000)
-				await naze.groupParticipantsUpdate(group.id, [m.sender], 'promote').catch(e => {});
-				await naze.sendMessage(group.id, { text: 'නිවැරදියි' })
+				await nimesha.groupParticipantsUpdate(group.id, [m.sender], 'promote').catch(e => {});
+				await nimesha.sendMessage(group.id, { text: 'නිවැරදියි' })
 			}
 			break
 			case 'addsewa': case 'sewa': {
@@ -1021,14 +1021,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 				const urlny = teks1.match(/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)
 				if (!urlny) return m.reply('Link Invalid❗')
 				try {
-					await naze.groupAcceptInvite(urlny[1])
+					await nimesha.groupAcceptInvite(urlny[1])
 				} catch (e) {
 					if (e.data == 400) return m.reply('සමූහය හොයාගත නොහැකිය❗');
 					if (e.data == 401) return m.reply('Bot සමූහයෙන් kick කෙරිණ❗');
 					if (e.data == 410) return m.reply('සමූහ URL නැවත සකස් කෙරිණ❗');
 					if (e.data == 500) return m.reply('සමූහය පිරී ඇත❗');
 				}
-				await naze.groupGetInviteInfo(urlny[1]).then(a => {
+				await nimesha.groupGetInviteInfo(urlny[1]).then(a => {
 					addExpired({ url: urlny[1], expired: (teks2?.replace(/[^0-9]/g, '') || 30) + 'd', id: a.id }, sewa)
 					m.reply('සාර්ථකයි Menambahkan Sewa කාලය: ' + (teks2?.replace(/[^0-9]/g, '') || 30) + ' hari\nOtomatis Keluar Saat Waktu Habis!')
 				}).catch(e => m.reply('Sewa එකතු කිරීම අසාර්ථකයි!'))
@@ -1047,7 +1047,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				}
 				if (checkStatus(urlny, sewa)) {
 					await m.reply('සාර්ථකයි Menghapus Sewa')
-					await naze.groupLeave(getStatus(urlny, sewa).id).catch(e => {});
+					await nimesha.groupLeave(getStatus(urlny, sewa).id).catch(e => {});
 					sewa.splice(getPosition(urlny, sewa), 1);
 				} else m.reply(`${text} Database හි ලියාපදිංචි නැත\nඋදාහරණ:\n${prefix + command} https://chat.whatsapp.com/xxxx\n Or \n${prefix + command} id_group@g.us`)
 			}
@@ -1065,10 +1065,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`උදාහරණ:\n${prefix + command} @tag|waktu\n${prefix + command} @${m.sender.split('@')[0]}|30 hari`)
 				let [teks1, teks2] = text.split('|').map(x => x.trim());
-				const findJid = naze.findJidByLid(teks1.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(teks1.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = teks1.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 				if (teks2) {
 					if (db.users[nmrnya] && db.users[nmrnya].limit >= 0) {
@@ -1083,9 +1083,9 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'delpr': case 'delprem': case 'delpremium': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply(`උදාහරණ:\n${prefix + command} @tag`)
-				const findJid = naze.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
+				const findJid = nimesha.findJidByLid(text.replace(/[^0-9]/g, '') + '@lid', store);
 				const klss = text.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-				const nmrnya = naze.findJidByLid(klss, store, true)
+				const nmrnya = nimesha.findJidByLid(klss, store, true)
 				if (db.users[nmrnya] && db.users[nmrnya].limit >= 0) {
 					if (checkStatus(nmrnya, premium)) {
 						premium.splice(getPosition(nmrnya, premium), 1);
@@ -1112,13 +1112,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 				try {
 					if (quoted.isMedia) {
 						if (/image|video/.test(quoted.mime)) {
-							await naze.sendMessage('status@broadcast', {
+							await nimesha.sendMessage('status@broadcast', {
 								[`${quoted.mime.split('/')[0]}`]: await quoted.download(),
 								caption: text || m.quoted?.body || ''
 							}, { statusJidList, broadcast: true })
 							m.react('✅')
 						} else if (/audio/.test(quoted.mime)) {
-							await naze.sendMessage('status@broadcast', {
+							await nimesha.sendMessage('status@broadcast', {
 								audio: await quoted.download(),
 								mimetype: 'audio/mp4',
 								ptt: true
@@ -1126,7 +1126,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 							m.react('✅')
 						} else m.reply('Video/Audio/Image/Text පමණ සහාය දෙයි')
 					} else if (quoted.text) {
-						await naze.sendMessage('status@broadcast', { text: text || m.quoted?.body || '' }, {
+						await nimesha.sendMessage('status@broadcast', { text: text || m.quoted?.body || '' }, {
 							textArgb: 0xffffffff,
 							font: Math.floor(Math.random() * 9),
 							backgroundColor, statusJidList,
@@ -1329,8 +1329,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'setapikey': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (!text) return m.reply('API key කොහේද?')
-				if (!text.startsWith('nz-')) return m.reply('Apikey නැහැ Valid!\nAmbil Apikey di : https://naze.biz.id/profile');
-				let old_key = global.APIKeys[global.APIs.naze];
+				if (!text.startsWith('nz-')) return m.reply('Apikey නැහැ Valid!\nAmbil Apikey di : https://nima.biz.id/profile');
+				let old_key = global.APIKeys[global.APIs.nimesha];
 				await updateSettings({
 					filePath: settingsPath,
 					apikey: text.trim()
@@ -1361,7 +1361,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			case 'donasi': case 'donate': {
-				m.reply('ආධාර කළ හැක්කේ මෙම URL හරහාය:\nhttps://saweria.co/naze')
+				m.reply('ආධාර කළ හැක්කේ මෙම URL හරහාය:\nhttps://saweria.co/nimesha206')
 			}
 			break
 			
@@ -1372,13 +1372,13 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
 					try {
-						await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'add').then(async (res) => {
+						await nimesha.groupParticipantsUpdate(m.chat, [nmrnya], 'add').then(async (res) => {
 							for (let i of res) {
-								let invv = await naze.groupInviteCode(m.chat)
+								let invv = await nimesha.groupInviteCode(m.chat)
 								const statusMessages = {
 									200: `සාර්ථකව @${nmrnya.split('@')[0]} සමූහයට එකතු කෙරිණ!`,
 									401: 'ඔහු/ඇය Bot block කර ඇත!',
@@ -1392,7 +1392,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 									await m.reply(`${'https://chat.whatsapp.com/' + invv}\n------------------------------------------------------\n\nAdmin: @${m.sender.split('@')[0]}\nඔබව මෙම සමූහයට ආරාධනා කරයි\nකැමති නම් සම්බන්ධ වන්න🙇`, { detectLink: true, chat: nmrnya, quoted: fkontak }).catch((err) => m.reply('Gagal Mengirim Undangan!'))
 								} else if (i.status == 403) {
 									let a = i.content.content[0].attrs
-									await naze.sendGroupInviteV4(m.chat, nmrnya, a.code, a.expiration, m.metadata.subject, `Admin: @${m.sender.split('@')[0]}\nඔබව මෙම සමූහයට ආරාධනා කරයි\nකැමති නම් සම්බන්ධ වන්න🙇`, null, { mentions: [m.sender] })
+									await nimesha.sendGroupInviteV4(m.chat, nmrnya, a.code, a.expiration, m.metadata.subject, `Admin: @${m.sender.split('@')[0]}\nඔබව මෙම සමූහයට ආරාධනා කරයි\nකැමති නම් සම්බන්ධ වන්න🙇`, null, { mentions: [m.sender] })
 									await m.reply(`@${nmrnya.split('@')[0]} එකතු කළ නොහැකිය\n\nඉලක්කය Private නිසා\n\nආරාධනය යවනු ලබේ\n-> wa.me/${nmrnya.replace(/\D/g, '')}\nපෞද්ගලික ලෙස`)
 								} else m.reply('User එකතු කිරීම අසාර්ථකයි\nStatus: ' + i.status)
 							}
@@ -1409,10 +1409,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
-					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
+					await nimesha.groupParticipantsUpdate(m.chat, [nmrnya], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
@@ -1422,10 +1422,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
-					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'promote').catch((err) => m.reply('අසාර්ථකයි!'))
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
+					await nimesha.groupParticipantsUpdate(m.chat, [nmrnya], 'promote').catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
@@ -1435,10 +1435,10 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
-					await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'demote').catch((err) => m.reply('අසාර්ථකයි!'))
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
+					await nimesha.groupParticipantsUpdate(m.chat, [nmrnya], 'demote').catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} 94xxx`)
 			}
 			break
@@ -1448,14 +1448,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
 					if (!db.groups[m.chat].warn[nmrnya]) {
 						db.groups[m.chat].warn[nmrnya] = 1
 						m.reply('අවවාදය 1/4, ඕනෑම වේලාවක kick කෙරේ❗')
 					} else if (db.groups[m.chat].warn[nmrnya] >= 3) {
-						await naze.groupParticipantsUpdate(m.chat, [nmrnya], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
+						await nimesha.groupParticipantsUpdate(m.chat, [nmrnya], 'remove').catch((err) => m.reply('අසාර්ථකයි!'))
 						delete db.groups[m.chat].warn[nmrnya]
 					} else {
 						db.groups[m.chat].warn[nmrnya] += 1
@@ -1470,9 +1470,9 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const numbersOnly = text ? text.replace(/\D/g, '') + '@s.whatsapp.net' : m.quoted?.sender
-					const findJid = naze.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
+					const findJid = nimesha.findJidByLid(numbersOnly.replace(/[^0-9]/g, '') + '@lid', store);
 					const klss = numbersOnly.replace(/[^0-9]/g, '') + (findJid ? '@lid' :  '@s.whatsapp.net')
-					const nmrnya = naze.findJidByLid(klss, store, true)
+					const nmrnya = nimesha.findJidByLid(klss, store, true)
 					if (db.groups[m.chat]?.warn?.[nmrnya]) {
 						delete db.groups[m.chat].warn[nmrnya]
 						m.reply('Warning සාර්ථකව ඉවත් කෙරිණ')
@@ -1486,7 +1486,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
-					await naze.groupUpdateSubject(m.chat, teksnya).catch((err) => m.reply('අසාර්ථකයි!'))
+					await nimesha.groupUpdateSubject(m.chat, teksnya).catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} textnya`)
 			}
 			break
@@ -1496,7 +1496,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
-					await naze.groupUpdateDescription(m.chat, teksnya).catch((err) => m.reply('අසාර්ථකයි!'))
+					await nimesha.groupUpdateDescription(m.chat, teksnya).catch((err) => m.reply('අසාර්ථකයි!'))
 				} else m.reply(`Contoh: ${prefix + command} textnya`)
 			}
 			break
@@ -1508,7 +1508,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!/image/.test(quoted.type)) return m.reply(`Caption සමග Image Reply කරන්න ${prefix + command}`)
 				let media = await quoted.download();
 				let { img } = await generateProfilePicture(media, text.length > 0 ? null : 512)
-				await naze.query({
+				await nimesha.query({
 					tag: 'iq',
 					attrs: {
 						target: m.chat,
@@ -1523,29 +1523,29 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'delete': case 'del': case 'd': {
 				if (!m.quoted) return m.reply('Delete කිරීමට Reply කරන්න')
-				await naze.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: m.isBotAdmin ? false : true, id: m.quoted.id, participant: m.quoted.sender }})
+				await nimesha.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: m.isBotAdmin ? false : true, id: m.quoted.id, participant: m.quoted.sender }})
 			}
 			break
 			case 'pin': case 'unpin': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isAdmin) return m.reply(mess.admin)
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
-				await naze.sendMessage(m.chat, { pin: { type: command == 'pin' ? 1 : 0, time: 2592000, key: m.quoted ? m.quoted.key : m.key }})
+				await nimesha.sendMessage(m.chat, { pin: { type: command == 'pin' ? 1 : 0, time: 2592000, key: m.quoted ? m.quoted.key : m.key }})
 			}
 			break
 			case 'linkgroup': case 'linkgrup': case 'linkgc': case 'urlgroup': case 'urlgrup': case 'urlgc': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isAdmin) return m.reply(mess.admin)
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
-				let response = await naze.groupInviteCode(m.chat)
-				await m.reply(`https://chat.whatsapp.com/${response}\n\nLink Group : ${(store.groupMetadata[m.chat] ? store.groupMetadata[m.chat] : (store.groupMetadata[m.chat] = await naze.groupMetadata(m.chat))).subject}`, { detectLink: true })
+				let response = await nimesha.groupInviteCode(m.chat)
+				await m.reply(`https://chat.whatsapp.com/${response}\n\nLink Group : ${(store.groupMetadata[m.chat] ? store.groupMetadata[m.chat] : (store.groupMetadata[m.chat] = await nimesha.groupMetadata(m.chat))).subject}`, { detectLink: true })
 			}
 			break
 			case 'revoke': case 'newlink': case 'newurl': {
 				if (!m.isGroup) return m.reply(mess.group)
 				if (!m.isAdmin) return m.reply(mess.admin)
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
-				await naze.groupRevokeInvite(m.chat).then((a) => {
+				await nimesha.groupRevokeInvite(m.chat).then((a) => {
 					m.reply(`සාර්ථකයි Menyetel Ulang, Tautan Undangan Grup ${m.metadata.subject}`)
 				}).catch((err) => m.reply('අසාර්ථකයි!'))
 			}
@@ -1557,21 +1557,21 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let set = db.groups[m.chat]
 				switch (args[0]?.toLowerCase()) {
 					case 'close': case 'open':
-					await naze.groupSettingUpdate(m.chat, args[0] == 'close' ? 'announcement' : 'not_announcement').then(a => m.reply(`*සාර්ථකයි ${args[0] == 'open' ? 'Membuka' : 'Menutup'} Group*`))
+					await nimesha.groupSettingUpdate(m.chat, args[0] == 'close' ? 'announcement' : 'not_announcement').then(a => m.reply(`*සාර්ථකයි ${args[0] == 'open' ? 'Membuka' : 'Menutup'} Group*`))
 					break
 					case 'join':
-					const _list = await naze.groupRequestParticipantsList(m.chat).then(a => a.map(b => b.jid))
+					const _list = await nimesha.groupRequestParticipantsList(m.chat).then(a => a.map(b => b.jid))
 					if (/(a(p|pp|cc)|(ept|rove))|true|ok/i.test(args[1]) && _list.length > 0) {
-						await naze.groupRequestParticipantsUpdate(m.chat, _list, 'approve').catch(e => m.react('❌'))
+						await nimesha.groupRequestParticipantsUpdate(m.chat, _list, 'approve').catch(e => m.react('❌'))
 					} else if (/reject|false|no/i.test(args[1]) && _list.length > 0) {
-						await naze.groupRequestParticipantsUpdate(m.chat, _list, 'reject').catch(e => m.react('❌'))
+						await nimesha.groupRequestParticipantsUpdate(m.chat, _list, 'reject').catch(e => m.react('❌'))
 					} else m.reply(`List Request Join :\n${_list.length > 0 ? '- @' + _list.join('\n- @').split('@')[0] : '*Nothing*'}\nඋදාහරණ : ${prefix + command} join acc/reject`)
 					break
 					case 'pesansementara': case 'disappearing':
 					if (/90|7|1|24|on/i.test(args[1])) {
-						naze.sendMessage(m.chat, { disappearingMessagesInChat: /90/i.test(args[1]) ? 7776000 : /7/i.test(args[1]) ? 604800 : 86400 })
+						nimesha.sendMessage(m.chat, { disappearingMessagesInChat: /90/i.test(args[1]) ? 7776000 : /7/i.test(args[1]) ? 604800 : 86400 })
 					} else if (/0|off|false/i.test(args[1])) {
-						naze.sendMessage(m.chat, { disappearingMessagesInChat: 0 })
+						nimesha.sendMessage(m.chat, { disappearingMessagesInChat: 0 })
 					} else m.reply('කරුණාකර තෝරන්න:\nදිනා 90, දිනා 7, දිනා 1, off')
 					break
 					case 'antilink': case 'antivirtex': case 'antidelete': case 'welcome': case 'antitoxic': case 'waktusholat': case 'nsfw': case 'antihidetag': case 'setinfo': case 'antitagsw': case 'leave': case 'promote': case 'demote':
@@ -1620,7 +1620,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!m.isBotAdmin) return m.reply(mess.botAdmin)
 				if (!m.quoted) return m.reply(`Reply pesan dengan caption ${prefix + command}`)
 				delete m.quoted.chat
-				await naze.sendMessage(m.chat, { forward: m.quoted.fakeObj(), mentions: m.metadata.participants.map(a => a.id) })
+				await nimesha.sendMessage(m.chat, { forward: m.quoted.fakeObj(), mentions: m.metadata.participants.map(a => a.id) })
 			}
 			break
 			case 'listonline': case 'liston': {
@@ -1634,7 +1634,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			
 			// Bot Menu
 			case 'owner': case 'listowner': {
-				await naze.sendContact(m.chat, ownerNumber, m);
+				await nimesha.sendContact(m.chat, ownerNumber, m);
 			}
 			break
 			case 'profile': case 'cek': {
@@ -1672,7 +1672,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'req': case 'request': {
 				if (!text) return m.reply('Owner ට ඉල්ලීමක් කරන්නේ?')
 				await m.reply(`*Request Telah Terkirim Ke Owner*\n_Terima Kasih🙏_`)
-				await naze.sendFromOwner(ownerNumber, `පණිවිඩය: @${m.sender.split('@')[0]}\nUntuk Owner\n\nRequest ${text}`, m, { contextInfo: { mentionedJid: [m.sender], isForwarded: true }})
+				await nimesha.sendFromOwner(ownerNumber, `පණිවිඩය: @${m.sender.split('@')[0]}\nUntuk Owner\n\nRequest ${text}`, m, { contextInfo: { mentionedJid: [m.sender], isForwarded: true }})
 			}
 			break
 			case 'totalfitur': {
@@ -1693,7 +1693,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			case 'react': {
-				naze.sendMessage(m.chat, { react: { text: args[0], key: m.quoted ? m.quoted.key : m.key }})
+				nimesha.sendMessage(m.chat, { react: { text: args[0], key: m.quoted ? m.quoted.key : m.key }})
 			}
 			break
 			case 'tagme': {
@@ -1705,15 +1705,15 @@ module.exports = naze = async (naze, m, msg, store) => {
 					case 'mode': case 'public': case 'self':
 					if (!isCreator) return m.reply(mess.owner)
 					if (args[1] == 'public' || args[1] == 'all') {
-						if (naze.public && set.grouponly && set.privateonly) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
-						naze.public = set.public = true
+						if (nimesha.public && set.grouponly && set.privateonly) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
+						nimesha.public = set.public = true
 						set.grouponly = true
 						set.privateonly = true
 						m.reply('*Public ලෙස සාර්ථකව වෙනස් කෙරිණ*')
 					} else if (args[1] == 'self') {
 						set.grouponly = false
 						set.privateonly = false
-						naze.public = set.public = false
+						nimesha.public = set.public = false
 						m.reply('*Self ලෙස සාර්ථකව වෙනස් කෙරිණ*')
 					} else if (args[1] == 'group') {
 						set.grouponly = true
@@ -1825,7 +1825,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let _grup = /chat.whatsapp.com\/([\w\d]*)/;
 				let _saluran = /whatsapp\.com\/channel\/([\w\d]*)/;
 				if (_grup.test(text)) {
-					await naze.groupGetInviteInfo(text.match(_grup)[1]).then((_g) => {
+					await nimesha.groupGetInviteInfo(text.match(_grup)[1]).then((_g) => {
 						let teks = `*[ INFORMATION GROUP ]*\n\nName Group: ${_g.subject}\nGroup ID: ${_g.id}\nCreate At: ${new Date(_g.creation * 1000).toLocaleString()}${_g.owner ? ('\nCreate By: ' + _g.owner) : '' }\nLinked Parent: ${_g.linkedParent}\nRestrict: ${_g.restrict}\nAnnounce: ${_g.announce}\nIs Community: ${_g.isCommunity}\nCommunity Announce:${_g.isCommunityAnnounce}\nJoin Approval: ${_g.joinApprovalMode}\nMember Add Mode: ${_g.memberAddMode}\nDescription ID: ${'`' + _g.descId + '`'}\nDescription: ${_g.desc}\nParticipants:\n`
 						_g.participants.forEach((a) => {
 							teks += a.admin ? `- Admin: @${a.id.split('@')[0]} [${a.admin}]\n` : ''
@@ -1837,7 +1837,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						if (e.data == 410) return m.reply('සමූහ URL නැවත සකස් කෙරිණ❗');
 					});
 				} else if (_saluran.test(text) || text.endsWith('@newsletter') || !isNaN(text)) {
-					await naze.newsletterMsg(text.match(_saluran)[1]).then((n) => {
+					await nimesha.newsletterMsg(text.match(_saluran)[1]).then((n) => {
 						m.reply(`*[ INFORMATION CHANNEL ]*\n\nID: ${n.id}\nState: ${n.state.type}\nName: ${n.thread_metadata.name.text}\nCreate At: ${new Date(n.thread_metadata.creation_time * 1000).toLocaleString()}\nSubscriber: ${n.thread_metadata.subscribers_count}\nVerification: ${n.thread_metadata.verification}\nDescription: ${n.thread_metadata.description.text}\n`)
 					}).catch((e) => m.reply('Channel හොයාගත නොහැකිය❗'))
 				} else m.reply('සමූහ හෝ Channel URL පමණ සහාය දෙයි!')
@@ -1870,7 +1870,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!text) return m.reply(`උදාහරණ : ${prefix + command} file name\n\nලැයිස්තුව බලන්නෙ ${prefix}listmsg`)
 				let msgs = db.database
 				if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' ලැයිස්තුවේ ලියාපදිංචි නැත`)
-				await naze.relayMessage(m.chat, msgs[text.toLowerCase()], {})
+				await nimesha.relayMessage(m.chat, msgs[text.toLowerCase()], {})
 			}
 			break
 			case 'listmsg': {
@@ -1908,7 +1908,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			break
 			case 'listcmd': {
 				let teks = `*Hash ලැයිස්තුව*\nInfo: *bold* hash Lock කෙරිණ\n${Object.entries(global.db.cmd).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}`.trim()
-				naze.sendText(m.chat, teks, m);
+				nimesha.sendText(m.chat, teks, m);
 			}
 			break
 			case 'lockcmd': case 'unlockcmd': {
@@ -1930,7 +1930,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						const anu = await m.getQuotedObj()
 						if (!anu) return m.reply('Format ලබා ගත නොහැකිය!')
 						if (!anu.quoted) return m.reply('ඔබ Reply කළ පණිවිඩය Reply නැත')
-						await naze.relayMessage(m.chat, { [anu.quoted.type]: anu.quoted.msg }, {})
+						await nimesha.relayMessage(m.chat, { [anu.quoted.type]: anu.quoted.msg }, {})
 					} catch (e) {
 						return m.reply('Format ලබා ගත නොහැකිය!')
 					}
@@ -1945,7 +1945,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let [teks1, teks2] = text.split`|`
 				if (teks1) {
 					const tujuan = teks1.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
-					const onWa = await naze.onWhatsApp(tujuan)
+					const onWa = await nimesha.onWhatsApp(tujuan)
 					if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
 					menfes[m.sender] = {
 						tujuan: tujuan,
@@ -1961,7 +1961,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 							delete menfes[m.sender];
 						}
 						if (menfes[tujuan]) {
-							naze.sendMessage(tujuan, { text: `_Session කාලය ඉකිවිය_` });
+							nimesha.sendMessage(tujuan, { text: `_Session කාලය ඉකිවිය_` });
 							delete menfes[tujuan];
 						}
 						menfesTimeouts.delete(m.sender);
@@ -1969,7 +1969,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					}, 600000);
 					menfesTimeouts.set(m.sender, timeout);
 					menfesTimeouts.set(tujuan, timeout);
-					naze.sendMessage(tujuan, { text: `_${command} සම්බන්ධ වී ඇත_\n*සටහන:* අවසන් කිරීමට ටයිප් කරන්න _*${prefix}del${command}*_` });
+					nimesha.sendMessage(tujuan, { text: `_${command} සම්බන්ධ වී ඇත_\n*සටහන:* අවසන් කිරීමට ටයිප් කරන්න _*${prefix}del${command}*_` });
 					m.reply(`_ආරම්භ කරමින්... ${command}..._\n*පණිවිඩ/media යැවීම ආරම්භ කරන්න*\n*කාලසීමාව ${command} විනාඩි 10 ක් පමණි*\n*සටහන:* අවසන් කිරීමට ටයිප් කරන්න _*${prefix}del${command}*_`)
 					setLimit(m, db)
 				} else m.reply(`Masukkan අංකය!\nඋදාහරණ : ${prefix + command} 94xxxx|Nama Samaran`)
@@ -1986,7 +1986,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					clearTimeout(menfesTimeouts.get(anu.tujuan));
 					menfesTimeouts.delete(anu.tujuan);
 				}
-				naze.sendMessage(anu.tujuan, { text: `Chat අවසන් කළේ ${anu.nama ? anu.nama : 'Seseorang'}` })
+				nimesha.sendMessage(anu.tujuan, { text: `Chat අවසන් කළේ ${anu.nama ? anu.nama : 'Seseorang'}` })
 				m.reply(`සාර්ථකයි Mengakhiri Sesi ${command.split('del')[1]}!`)
 				delete menfes[anu.tujuan];
 				delete menfes[m.sender];
@@ -2017,22 +2017,22 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isPremium) return m.reply(mess.prem)
 				if (!isLimit) return m.reply(mess.limit)
 				const nmrnya = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
-				await JadiBot(naze, nmrnya, m, store)
+				await JadiBot(nimesha, nmrnya, m, store)
 				m.reply(`භාවිතා කරන්න ${prefix}stopjadibot\nනැවැත්වීමට`)
 				setLimit(m, db)
 			}
 			break
 			case 'stopjadibot': case 'deljadibot': {
 				const nmrnya = text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender
-				const onWa = await naze.onWhatsApp(nmrnya)
+				const onWa = await nimesha.onWhatsApp(nmrnya)
 				if (!onWa.length > 0) return m.reply('ඒ අංකය WhatsApp හි ලියාපදිංචි නැත!')
-				await StopJadiBot(naze, nmrnya, m)
+				await StopJadiBot(nimesha, nmrnya, m)
 			}
 			break
 			case 'listjadibot': {
-				ListJadiBot(naze, m)
+				ListJadiBot(nimesha, m)
 			}
 			break
 			
@@ -2079,7 +2079,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'togif': {
 				if (!/webp|video/.test(mime)) return m.reply(`Reply Video/Stiker dengan caption *${prefix + command}*`)
 				m.reply(mess.wait)
-				let media = await naze.downloadAndSaveMediaMessage(qmsg)
+				let media = await nimesha.downloadAndSaveMediaMessage(qmsg)
 				let ran = `./database/temp/${getRandom('.gif')}`;
 				exec(`convert ${media} ${ran}`, (err) => {
 					fs.unlinkSync(media)
@@ -2093,7 +2093,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'toimage': case 'toimg': {
 				if (!/webp|video|image/.test(mime)) return m.reply(`Reply Video/Stiker dengan caption *${prefix + command}*`)
 				m.reply(mess.wait)
-				let media = await naze.downloadAndSaveMediaMessage(qmsg)
+				let media = await nimesha.downloadAndSaveMediaMessage(qmsg)
 				let ran = `./database/temp/${getRandom('.png')}`;
 				exec(`convert ${media}[0] ${ran}`, (err) => {
 					fs.unlinkSync(media)
@@ -2108,8 +2108,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!/video/.test(mime)) return m.reply(`Kirim/Reply Video ඔව්ng Ingin Dijadikan PTV Message Dengan Caption ${prefix + command}`)
 				if ((m.quoted ? m.quoted.type : m.type) === 'videoMessage') {
 					const anu = await quoted.download()
-					const message = await generateWAMessageContent({ video: anu }, { upload: naze.waUploadToServer })
-					await naze.relayMessage(m.chat, { ptvMessage: message.videoMessage }, {})
+					const message = await generateWAMessageContent({ video: anu }, { upload: nimesha.waUploadToServer })
+					await nimesha.relayMessage(m.chat, { ptvMessage: message.videoMessage }, {})
 				} else m.reply('PTV ලෙස හරවන Video Reply කරන්න!')
 			}
 			break
@@ -2170,14 +2170,14 @@ module.exports = naze = async (naze, m, msg, store) => {
 						m.reply({ image: hasil, caption: 'නිවැරදියි' })
 						setLimit(m, db)
 					} catch (e) {
-						let media = await naze.downloadAndSaveMediaMessage(qmsg)
+						let media = await nimesha.downloadAndSaveMediaMessage(qmsg)
 						let ran = `./database/temp/${getRandom('.jpg')}`;
 						const scaleFactor = isNaN(parseInt(text)) ? 4 : parseInt(text) < 10 ? parseInt(text) : 4;
 						exec(`ffmpeg -i "${media}" -vf "scale=iw*${scaleFactor}:ih*${scaleFactor}:flags=lanczos" -q:v 1 "${ran}"`, async (err, stderr, stdout) => {
 							fs.unlinkSync(media)
 							if (err) return m.reply(String(err))
 							let buff = fs.readFileSync(ran)
-							await naze.sendMedia(m.chat, buff, '', 'නිවැරදියි', m);
+							await nimesha.sendMedia(m.chat, buff, '', 'නිවැරදියි', m);
 							fs.unlinkSync(ran)
 							setLimit(m, db)
 						});
@@ -2266,11 +2266,11 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let teks2 = text.split`|`[1] ? text.split`|`[1] : author
 				if (/image|webp/.test(mime)) {
 					m.reply(mess.wait)
-					await naze.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
+					await nimesha.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
 				} else if (/video/.test(mime)) {
 					if ((qmsg).seconds > 11) return m.reply('උපරිම 10 seconds!')
 					m.reply(mess.wait)
-					await naze.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
+					await nimesha.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
 				} else m.reply(`Caption සමග Image/Video/GIF Reply/Send කරන්න ${prefix + command}\nකාලසීමාව Video/Gif 1-9 Detik`)
 			}
 			break
@@ -2286,7 +2286,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					let media = await quoted.download()
 					let mem = await UguuSe(media);
 					let smeme = await fetchApi('/create/meme2', { url: mem.url, text: atas, text2: bawah }, { buffer: true });
-					await naze.sendAsSticker(m.chat, smeme, m, { packname, author })
+					await nimesha.sendAsSticker(m.chat, smeme, m, { packname, author })
 					setLimit(m, db)
 				} catch (e) {
 					console.log(e)
@@ -2303,7 +2303,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					let { result } = await fetchApi('/tools/emojimix', { emoji1, emoji2 });
 					if (result.length < 1) return m.reply(`Emoji Mix ${text} හොයාගත නොහැකිය!`)
 					for (let res of result) {
-						await naze.sendAsSticker(m.chat, res.url, m, { packname, author })
+						await nimesha.sendAsSticker(m.chat, res.url, m, { packname, author })
 					}
 					setLimit(m, db)
 				} catch (e) {
@@ -2320,7 +2320,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			  try {
 			    let mediaBuffer
 			    let quotedMediaBuffer
-			    let ppUrl = await naze.profilePictureUrl(m.sender, 'image').catch(() => 'https://i.pinimg.com/564x/8a/e9/e9/8ae9e92fa4e69967aa61bf2bda967b7b.jpg')
+			    let ppUrl = await nimesha.profilePictureUrl(m.sender, 'image').catch(() => 'https://i.pinimg.com/564x/8a/e9/e9/8ae9e92fa4e69967aa61bf2bda967b7b.jpg')
 				let bufferPp = await getBuffer(ppUrl);
 			    if (m.isMedia) {
 			      mediaBuffer = await m.download()
@@ -2364,7 +2364,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			      ]
 			    };
 				let res = await fetchApi('/create/qc', params, { method: 'POST', buffer: true });
-				await naze.sendAsSticker(m.chat, Buffer.from(res, 'base64'), m, { packname, author })
+				await nimesha.sendAsSticker(m.chat, Buffer.from(res, 'base64'), m, { packname, author })
 			    setLimit(m, db)
 			  } catch (e) {
 			    console.error(e)
@@ -2377,7 +2377,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!text && (!m.quoted || !m.quoted.text)) return m.reply(`Kirim/reply pesan *${prefix + command}* Text එක`)
 				try {
 					let res = await fetchApi('/create/brat', { text }, { buffer: true });
-					await naze.sendAsSticker(m.chat, res, m)
+					await nimesha.sendAsSticker(m.chat, res, m)
 					setLimit(m, db)
 				} catch (e) {
 					m.reply('Brat Server offline!')
@@ -2409,7 +2409,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					fs.writeFileSync(fileListPath, fileListContent);
 					const outputVideoPath = path.join(tempDir, `${time + '-' + m.sender}-output.mp4`);
 					execSync(`ffmpeg -y -f concat -safe 0 -i ${fileListPath} -vf 'fps=30' -c:v libx264 -preset veryfast -pix_fmt yuv420p -t 00:00:10 ${outputVideoPath}`);
-					naze.sendAsSticker(m.chat, outputVideoPath, m, { packname, author })
+					nimesha.sendAsSticker(m.chat, outputVideoPath, m, { packname, author })
 					framePaths.forEach((filePath) => fs.unlinkSync(filePath));
 					fs.unlinkSync(fileListPath);
 					fs.unlinkSync(outputVideoPath);
@@ -2432,7 +2432,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					        contentType: 'image/jpeg'
 					    });
 						let hasil = await fetchApi('/create/wasted', form, { buffer: true });
-						await naze.sendMedia(m.chat, hasil, '', 'ගනින්', m);
+						await nimesha.sendMedia(m.chat, hasil, '', 'ගනින්', m);
 						setLimit(m, db)
 					} else m.reply('Upload කිරීමට Media යවන්න!')
 				} catch (e) {
@@ -2448,7 +2448,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						let media = await quoted.download()
 						let anu = await UguuSe(media)
 						let hasil = await fetchApi('/create/triggered', form, { buffer: true });
-						await naze.sendMedia(m.chat, hasil, '', 'ගනින්', m);
+						await nimesha.sendMedia(m.chat, hasil, '', 'ගනින්', m);
 						setLimit(m, db)
 					} else m.reply('Upload කිරීමට Media යවන්න!')
 				} catch (e) {
@@ -2488,7 +2488,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					if (/tupai/.test(command)) set = '-filter:a "atempo=0.5,asetrate=65100"'
 					if (/audio/.test(mime)) {
 						m.reply(mess.wait)
-						let media = await naze.downloadAndSaveMediaMessage(qmsg)
+						let media = await nimesha.downloadAndSaveMediaMessage(qmsg)
 						let ran = `./database/temp/${getRandom('.mp3')}`;
 						exec(`ffmpeg -i ${media} ${set} ${ran}`, (err, stderr, stdout) => {
 							fs.unlinkSync(media)
@@ -2700,16 +2700,16 @@ module.exports = naze = async (naze, m, msg, store) => {
 					let num = m.quoted?.sender || m.mentionedJid?.[0] || text
 					if (!num) return m.reply(`උදාහරණ : ${prefix + command} @tag / 94xxx`)
 					num = num.replace(/\D/g, '') + '@s.whatsapp.net'
-					if (!(await naze.onWhatsApp(num))[0]?.exists) return m.reply('WhatsApp හි අංකය ලියාপදිංචි නෑ!')
-					let img = await naze.profilePictureUrl(num, 'image').catch(_ => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png?q=60')
-					let bio = await naze.fetchStatus(num).catch(_ => { })
-					let name = await naze.getName(num)
-					let business = await naze.getBusinessProfile(num)
+					if (!(await nimesha.onWhatsApp(num))[0]?.exists) return m.reply('WhatsApp හි අංකය ලියාপදිංචි නෑ!')
+					let img = await nimesha.profilePictureUrl(num, 'image').catch(_ => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png?q=60')
+					let bio = await nimesha.fetchStatus(num).catch(_ => { })
+					let name = await nimesha.getName(num)
+					let business = await nimesha.getBusinessProfile(num)
 					let format = PhoneNum(`+${num.split('@')[0]}`)
 					let regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 					let country = regionNames.of(format.getRegionCode('international'));
 					let wea = `WhatsApp තොරතුරු\n\n*° රට:* ${country.toUpperCase()}\n*° නම:* ${name ? name : '-'}\n*° Format අංකය:* ${format.getNumber('international')}\n*° URL:* wa.me/${num.split('@')[0]}\n*° Mentions:* @${num.split('@')[0]}\n*° Status:* ${bio?.status || '-'}\n*° Status දිනය:* ${bio?.setAt ? moment(bio.setAt.toDateString()).locale('id').format('LL') : '-'}\n\n${business ? `*WhatsApp Business තොරතුරු*\n\n*° Business ID:* ${business.wid}\n*° Website:* ${business.website ? business.website : '-'}\n*° Email:* ${business.email ? business.email : '-'}\n*° Category:* ${business.category}\n*° Address:* ${business.address ? business.address : '-'}\n*° Timezone:* ${business.business_hours.timezone ? business.business_hours.timezone : '-'}\n*° විස්තරය:* ${business.description ? business.description : '-'}` : '*සාමාන්‍ය WhatsApp ගිණුම*'}`
-					img ? await naze.sendMessage(m.chat, { image: { url: img }, caption: wea, mentions: [num] }, { quoted: m }) : m.reply(wea)
+					img ? await nimesha.sendMessage(m.chat, { image: { url: img }, caption: wea, mentions: [num] }, { quoted: m }) : m.reply(wea)
 				} catch (e) {
 					m.reply('Nomer නැහැ ditemukan!')
 				}
@@ -2804,7 +2804,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				try {
 					let hasil = await fetchApi('/download/instagram', { url: text })
 					if(hasil.result.urls.length > 1) {
-						await naze.sendAlbumMessage(m.chat, {
+						await nimesha.sendAlbumMessage(m.chat, {
 							album: hasil.result.urls.map(a => (a.is_video ? { video: { url: a.url }} : { image: { url: a.url }})),
 							caption: hasil.result.caption
 						}, { quoted: m });
@@ -2828,7 +2828,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 					if (hasil.result.download.type == "video") {
 						await m.reply({ video: { url: hasil.result.download?.video?.nowm_hd || hasil.result.download?.video?.nowm }, caption: `*📍Title:* ${hasil.result.desc || '-'}\n*🕓Create At:* ${hasil.result.create_time}\n*🎃Author:* ${hasil.result.author.nickname} (@${hasil.result.author.unique_id})` });
 					} else if (hasil.result.download.type == "images") {
-						await naze.sendAlbumMessage(m.chat, {
+						await nimesha.sendAlbumMessage(m.chat, {
 							album: hasil.result.download.images.map(a => ({ image: { url: a.url }})),
 							caption: `*📍Title:* ${hasil.result.desc || '-'}\n*🕓Create At:* ${hasil.result.create_time}\n*🎃Author:* ${hasil.result.author.nickname} (@${hasil.result.author.unique_id})`
 						}, { quoted: m });
@@ -2880,7 +2880,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						m.reply('Video හොයාගත නොහැකිය!')
 					} else {
 						m.reply(mess.wait)
-						await naze.sendFileUrl(m.chat, hasil.result.hd || hasil.result.sd, `*🎐Title:* ${hasil.result.title}`, m);
+						await nimesha.sendFileUrl(m.chat, hasil.result.hd || hasil.result.sd, `*🎐Title:* ${hasil.result.title}`, m);
 					}
 					setLimit(m, db)
 				} catch (e) {
@@ -2894,7 +2894,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				if (!isUrl(args[0]) && !args[0].includes('mediafire.com')) return m.reply('URL වලංගු නොවේ!')
 				try {
 					let { result: res } = await fetchApi('/download/mediafire', { url: text })
-					await naze.sendMedia(m.chat, res.link, res.filename, `*MEDIAFIRE DOWNLOADER*\n\n*${setv} Name* : ${res.filename}\n*${setv} Size* : ${res.size}`, m)
+					await nimesha.sendMedia(m.chat, res.link, res.filename, `*MEDIAFIRE DOWNLOADER*\n\n*${setv} Name* : ${res.filename}\n*${setv} Size* : ${res.size}`, m)
 					setLimit(m, db)
 				} catch (e) {
 					m.reply('Download Server offline!')
@@ -2984,11 +2984,11 @@ module.exports = naze = async (naze, m, msg, store) => {
 			// Random Menu
 			case 'coffe': case 'kopi': {
 				try {
-					await naze.sendFileUrl(m.chat, 'https://coffee.alexflipnote.dev/random', '☕ Random Coffe', m)
+					await nimesha.sendFileUrl(m.chat, 'https://coffee.alexflipnote.dev/random', '☕ Random Coffe', m)
 				} catch (e) {
 					try {
 						const anu = await fetchJson('https://api.sampleapis.com/coffee/hot')
-						await naze.sendFileUrl(m.chat, pickRandom(anu).image, '☕ Random Coffe', m)
+						await nimesha.sendFileUrl(m.chat, pickRandom(anu).image, '☕ Random Coffe', m)
 					} catch (e) {
 						m.reply('Server offline!')
 					}
@@ -3001,7 +3001,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				try {
 					if (!isNsfw && text === 'nsfw') return m.reply('NSFW Filter සක්‍රීයයි!')
 					const res = await fetchJson('https://api.waifu.pics/' + (text === 'nsfw' ? 'nsfw' : 'sfw') + '/' + command)
-					await naze.sendFileUrl(m.chat, res.url, 'Random Waifu', m)
+					await nimesha.sendFileUrl(m.chat, res.url, 'Random Waifu', m)
 					setLimit(m, db)
 				} catch (e) {
 					m.reply('Server offline!')
@@ -3014,11 +3014,11 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let ddsa = [{ url: 'https://telegra.ph/file/9f60e4cdbeb79fc6aff7a.png', no: 1 },{ url: 'https://telegra.ph/file/797f86e444755282374ef.png', no: 2 },{ url: 'https://telegra.ph/file/970d2a7656ada7c579b69.png', no: 3 },{ url: 'https://telegra.ph/file/0470d295e00ebe789fb4d.png', no: 4 },{ url: 'https://telegra.ph/file/a9d7332e7ba1d1d26a2be.png', no: 5 },{ url: 'https://telegra.ph/file/99dcd999991a79f9ba0c0.png', no: 6 }]
 				let media = pickRandom(ddsa)
 				try {
-					await naze.sendAsSticker(m.chat, media.url, m, { packname, author, isAvatar: 1 })
+					await nimesha.sendAsSticker(m.chat, media.url, m, { packname, author, isAvatar: 1 })
 				} catch (e) {
 					let anu = await fetch(media.url)
 					let una = await anu.buffer()
-					await naze.sendAsSticker(m.chat, una, m, { packname, author, isAvatar: 1 })
+					await nimesha.sendAsSticker(m.chat, una, m, { packname, author, isAvatar: 1 })
 				}
 			}
 			break
@@ -3112,12 +3112,12 @@ module.exports = naze = async (naze, m, msg, store) => {
 				let [teks1, teks2, teks3] = text.split`|`
 				if (!teks1 || !teks2 || !teks3) return m.reply(`උදාහරණ : ${prefix + command} pesan target|pesan mu|nomer/tag target`)
 				let ftelo = { key: { fromMe: false, participant: teks3.replace(/[^0-9]/g, '') + '@s.whatsapp.net', ...(m.isGroup ? { remoteJid: m.chat } : { remoteJid: teks3.replace(/[^0-9]/g, '') + '@s.whatsapp.net'})}, message: { conversation: teks1 }}
-				naze.sendMessage(m.chat, { text: teks2 }, { quoted: ftelo });
+				nimesha.sendMessage(m.chat, { text: teks2 }, { quoted: ftelo });
 			}
 			break
 			case 'coba': {
 				let anu = ['Aku Monyet','Aku Kera','Aku Tolol','Aku Kaya','Aku Dewa','Aku Anjing','Aku Dongo','Aku Raja','Aku Sultan','Aku Baik','Aku Hitam','Aku Suki']
-				await naze.sendButtonMsg(m.chat, {
+				await nimesha.sendButtonMsg(m.chat, {
 					text: 'සුభ ව🙂',
 					buttons: [{
 						buttonId: 'teshoki',
@@ -3134,15 +3134,15 @@ module.exports = naze = async (naze, m, msg, store) => {
 			
 			// Game Menu
 			case 'slot': {
-				await gameSlot(naze, m, db)
+				await gameSlot(nimesha, m, db)
 			}
 			break
 			case 'casino': {
-				await gameCasinoSolo(naze, m, prefix, db)
+				await gameCasinoSolo(nimesha, m, prefix, db)
 			}
 			break
 			case 'samgong': case 'kartu': {
-				await gameSamgongSolo(naze, m, db)
+				await gameSamgongSolo(nimesha, m, db)
 			}
 			break
 			case 'rampok': case 'merampok': {
@@ -3150,7 +3150,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			}
 			break
 			case 'begal': {
-				await gameBegal(naze, m, db)
+				await gameBegal(nimesha, m, db)
 			}
 			break
 			case 'suitpvp': case 'suit': {
@@ -3200,8 +3200,8 @@ module.exports = naze = async (naze, m, msg, store) => {
 						return {X: '❌',O: '⭕',1: '1️⃣',2: '2️⃣',3: '3️⃣',4: '4️⃣',5: '5️⃣',6: '6️⃣',7: '7️⃣',8: '8️⃣',9: '9️⃣'}[v]
 					})
 					let str = `Room ID: ${room.id}\n\n${arr.slice(0, 3).join('')}\n${arr.slice(3, 6).join('')}\n${arr.slice(6).join('')}\n\nබලා සිටිනු @${room.game.currentTurn.split('@')[0]}\n\n*nyerah* ටයිප් කර ගිවිසීම ප්‍රකාශ කරන්න`
-					if (room.x !== room.o) await naze.sendMessage(room.x, { texr: str, mentions: parseMention(str) }, { quoted: m })
-					await naze.sendMessage(room.o, { text: str, mentions: parseMention(str) }, { quoted: m })
+					if (room.x !== room.o) await nimesha.sendMessage(room.x, { texr: str, mentions: parseMention(str) }, { quoted: m })
+					await nimesha.sendMessage(room.o, { text: str, mentions: parseMention(str) }, { quoted: m })
 				} else {
 					room = {
 						id: 'tictactoe-' + (+new Date),
@@ -3211,7 +3211,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						state: 'WAITING',
 					}
 					if (text) room.name = text
-					naze.sendMessage(m.chat, { text: 'Partner බලා සිටිනු' + (text ? ` command ටයිප් කරන්න ${prefix}${command} ${text}` : ''), mentions: m.mentionedJid }, { quoted: m })
+					nimesha.sendMessage(m.chat, { text: 'Partner බලා සිටිනු' + (text ? ` command ටයිප් කරන්න ${prefix}${command} ${text}` : ''), mentions: m.mentionedJid }, { quoted: m })
 					tictactoe[room.id] = room
 					await sleep(300000)
 					if (tictactoe[room.id]) {
@@ -3396,7 +3396,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			case 'tebakgambar': {
 				if (iGame(tebakgambar, m.chat)) return m.reply('නිම නොකළ Session දැනට ඇත!')
 				const { result: hasil } = await fetchApi('/games/tebakgambar');
-				let { key } = await naze.sendFileUrl(m.chat, hasil.img, `🎮 ඊළඟ Image හොයාගන්න:\n\n${hasil.deskripsi}\n\nකාලය: 60s\nතෑගිය *+3499*`, m)
+				let { key } = await nimesha.sendFileUrl(m.chat, hasil.img, `🎮 ඊළඟ Image හොයාගන්න:\n\n${hasil.deskripsi}\n\nකාලය: 60s\nතෑගිය *+3499*`, m)
 				tebakgambar[m.chat + key.id] = {
 					jawaban: hasil.jawaban.toLowerCase(),
 					id: key.id
@@ -3665,7 +3665,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 						const startCard = blackjack[m.chat].startCard;
 						let buttons = p.cards.map(a => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${a.rank}${a.suit}`, id: `.${command} play ${a.rank}${a.suit}` })}));
 						if (!blackjack[m.chat].hasMatching(p.id)) buttons.push({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Minum', id: `.${command} minum` }) });
-						await naze.sendListMsg(p.id, { text: `ආරම්භ Card: ${startCard.rank + startCard.suit}`, footer: `${p.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
+						await nimesha.sendListMsg(p.id, { text: `ආරම්භ Card: ${startCard.rank + startCard.suit}`, footer: `${p.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
 					}
 					break
 					case 'hit': case 'minum': {
@@ -3686,25 +3686,25 @@ module.exports = naze = async (naze, m, msg, store) => {
 								await sleep(1000);
 								let buttons = player.cards.map(a => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${a.rank}${a.suit}`, id: `.${command} play ${a.rank}${a.suit}` })}));
 								if (!session.hasMatching(player.id)) buttons.push({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Minum', id: `.${command} minum` }) });
-								await naze.sendListMsg(player.id, { text: `ආරම්භ Card: ${session.startCard.rank + session.startCard.suit}`, footer: `${player.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
+								await nimesha.sendListMsg(player.id, { text: `ආරම්භ Card: ${session.startCard.rank + session.startCard.suit}`, footer: `${player.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
 							} else {
 								let reuse = session.reuseSubmitCardsForDrinking()
 								await m.reply(reuse.msg)
 								if (!session.skip.find(a => a.id === player.id)) session.skip.push({ id: player.id });
 								await m.reply('Deck ඉවර, ඔබට Card ගත නොහැකිය. Skip.');
-								await naze.sendText(session.id, `@${m.sender.split('@')[0]} Deck ඉවර නිසා Skip.`, m);
+								await nimesha.sendText(session.id, `@${m.sender.split('@')[0]} Deck ඉවර නිසා Skip.`, m);
 								if ((session.submitCard.length + session.skip.length) === session.players.length) {
 									const result = session.resolveRound();
 									if (result) {
-										await naze.sendText(session.id, result, m);
+										await nimesha.sendText(session.id, result, m);
 										if (session.players.length === 1) {
-											await naze.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
+											await nimesha.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
 											delete blackjack[session.id];
 											return;
 										}
 										const leaderCards = session.players.find(a => a.id === session.leader);
 										let buttons = leaderCards.cards.map(c => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${c.rank}${c.suit}`, id: `.${command} play ${c.rank}${c.suit}` })}));
-										await naze.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
+										await nimesha.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
 									}
 								}
 							}
@@ -3712,15 +3712,15 @@ module.exports = naze = async (naze, m, msg, store) => {
 						if ((session.submitCard.length + session.skip.length) === session.players.length) {
 							const result = session.resolveRound();
 							if (result) {
-								await naze.sendText(session.id, result, m);
+								await nimesha.sendText(session.id, result, m);
 								if (session.players.length === 1) {
-									await naze.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
+									await nimesha.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
 									delete blackjack[session.id];
 									return;
 								}
 								const leaderCards = session.players.find(a => a.id === session.leader);
 								let buttons = leaderCards.cards.map(c => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${c.rank}${c.suit}`, id: `.${command} play ${c.rank}${c.suit}` })}));
-								await naze.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
+								await nimesha.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
 							}
 						}
 					}
@@ -3748,41 +3748,41 @@ module.exports = naze = async (naze, m, msg, store) => {
 							session.leader = '';
 							session.submitCard = [];
 							session.players = session.players.filter(p => p.id !== player.id);
-							await naze.sendText(session.id, `@${m.sender.split('@')[0]} memenangkan permainan!\nSisa Kartu: 0`, m);
+							await nimesha.sendText(session.id, `@${m.sender.split('@')[0]} memenangkan permainan!\nSisa Kartu: 0`, m);
 							if (session.players.length === 1) {
-								await naze.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
+								await nimesha.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
 								delete blackjack[session.id];
 								return;
 							}
 						}
 						if (Object.keys(session.startCard).length === 0) {
 							session.startCard = card;
-							await naze.sendText(session.id, `@${m.sender.split('@')[0]} Round ආරම්භ කෙරිණ ${card.rank}${card.suit}`, m);
+							await nimesha.sendText(session.id, `@${m.sender.split('@')[0]} Round ආරම්භ කෙරිණ ${card.rank}${card.suit}`, m);
 							for (let s of session.players) {
 								if (s.id === session.leader) continue;
 								const startCard = session.startCard;
 								let buttons = s.cards.map(a => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${a.rank}${a.suit}`, id: `.${command} play ${a.rank}${a.suit}` })}));
 								if (!session.hasMatching(s.id)) buttons.push({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Minum', id: `.${command} minum` }) });
-								await naze.sendListMsg(s.id, { text: `ආරම්භ Card: ${startCard.rank + startCard.suit}`, footer: `${s.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
+								await nimesha.sendListMsg(s.id, { text: `ආරම්භ Card: ${startCard.rank + startCard.suit}`, footer: `${s.cards.map(c => c.rank + c.suit).join(', ')}`, buttons }, { quoted: m });
 							}
 							return;
 						}
 						if ((session.submitCard.length + session.skip.length) === session.players.length) {
 							const result = session.resolveRound();
 							if (result) {
-								await naze.sendText(session.id, result, m);
+								await nimesha.sendText(session.id, result, m);
 								if (session.players.length === 1) {
-									await naze.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
+									await nimesha.sendText(session.id, `ඉතිරි ක්‍රීඩකයා 1 (@${session.players[0].id.split('@')[0]}), Blackjack Session නිම විය.`, m);
 									delete blackjack[session.id];
 									return;
 								}
 								const leaderCards = session.players.find(a => a.id === session.leader);
 								let buttons = leaderCards.cards.map(c => ({ name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: `${c.rank}${c.suit}`, id: `.${command} play ${c.rank}${c.suit}` })}));
-								await naze.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
+								await nimesha.sendListMsg(session.leader, { text: 'නව Round ආරම්භ කිරීමට Card තෝරන්න', footer: leaderCards.cards.map(c => c.rank + c.suit).join(', '), buttons }, { quoted: m });
 							}
 						}
 						await m.reply(`Kamu ක්‍රීඩා කළා ${card.rank}${card.suit}`);
-						await naze.sendText(session.id, `@${m.sender.split('@')[0]} ක්‍රීඩා කළා ${card.rank}${card.suit}`, m);
+						await nimesha.sendText(session.id, `@${m.sender.split('@')[0]} ක්‍රීඩා කළා ${card.rank}${card.suit}`, m);
 					}
 					break
 					case 'info':
@@ -3817,19 +3817,19 @@ module.exports = naze = async (naze, m, msg, store) => {
 						set.template = parseInt(Number(args[1]))
 						m.reply('සාර්ථකයි Mengubah Template Menu')
 					} else m.reply(`Template තෝරන්න:\n- 1 (Button Menu)\n- 2 (List Menu)\n- 3 (Document Menu)`)
-				} else await templateMenu(naze, set.template, m, prefix, setv, db, { botNumber, author, packname, isVip, isPremium, my })
+				} else await templateMenu(nimesha, set.template, m, prefix, setv, db, { botNumber, author, packname, isVip, isPremium, my })
 			}
 			break
 			case 'allmenu': {
 				let profile
 				try {
-					profile = await naze.profilePictureUrl(m.sender, 'image');
+					profile = await nimesha.profilePictureUrl(m.sender, 'image');
 				} catch (e) {
 					profile = fake.anonim
 				}
 				const menunya = `
 ╭──❍「 *පරිශීලක තොරතුරු* 」❍
-├ *නම* : ${m.pushName ? m.pushName : 'Nimesha'}
+├ *නම* : ${m.pushName ? m.pushName : 'Nimesha Madhushan'}
 ├ *අංකය* : @${m.sender.split('@')[0]}
 ├ *පරිශීලක* : ${isVip ? 'VIP' : isPremium ? 'PREMIUM' : 'FREE'}
 ├ *සීමාව* : ${isVip ? 'VIP' : db.users[m.sender].limit }
@@ -3839,7 +3839,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 ├ *බොට්ගෙ නම* : ${set?.botname || 'Miss Shasikala'}
 ├ *බලගැන්වීම* : @${'0@s.whatsapp.net'.split('@')[0]}
 ├ *අයිතිකරු* : @${ownerNumber[0].split('@')[0]}
-├ *ප්‍රකාරය* : ${naze.public ? 'පොදු' : 'පෞද්ගලික'}
+├ *ප්‍රකාරය* : ${nimesha.public ? 'පොදු' : 'පෞද්ගලික'}
 ├ *පූර්ව ප්‍රත්‍යය* :${set.multiprefix ? '「 MULTI-PREFIX 」' : ' *'+prefix+'*' }
 ├ *ප්‍රිමියම් විශේෂාන්ග* : 🔸️
 ╰─┬────❍
@@ -4440,7 +4440,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 			if ((!isCmd || isCreator) && budy.toLowerCase() != undefined) {
 				if (m.chat.endsWith('broadcast')) return
 				if (!(budy.toLowerCase() in db.database)) return
-				await naze.relayMessage(m.chat, db.database[budy.toLowerCase()], {})
+				await nimesha.relayMessage(m.chat, db.database[budy.toLowerCase()], {})
 			}
 		}
 	} catch (e) {
@@ -4453,7 +4453,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 		if (errorCache[errorKey].length >= 3) return;
 		errorCache[errorKey].push(now);
 		m.reply('Error: ' + (e?.name || e?.code || e?.output?.statusCode || e?.status || 'නොදනී') + '\nError log හිමිකරුට යැව්වා\n\n')
-		return naze.sendFromOwner(ownerNumber, `සුභ දවසක්, error එකක් ඇති, නිවැරදි කිරීමට අමතක නොකරන්න\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
+		return nimesha.sendFromOwner(ownerNumber, `සුභ දවසක්, error එකක් ඇති, නිවැරදි කිරීමට අමතක නොකරන්න\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
 	}
 }
 

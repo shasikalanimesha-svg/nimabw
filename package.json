@@ -1,5 +1,5 @@
 {
-  "name": "nima",
+  "name": "miss-shashikala",
   "version": "1.1.3",
   "description": "Bot WhatsApp Using Lib Baileys Multi Device",
   "main": "start.js",
@@ -15,7 +15,7 @@
     "bot-wa",
     "multi-device"
   ],
-  "author": "Nimesha",
+  "author": "Nimesha Madhushan",
   "license": "MIT",
   "directories": {
     "lib": "lib",

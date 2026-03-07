@@ -2,17 +2,17 @@ const fs = require('fs');
 const chalk = require('chalk');
 
 /*
-	* Create By nima
-	* Follow https://github.com/nimadev
+	* Create By Nimesha Madhushan
+	* Follow https://github.com/nimesha206
 	* Whatsapp : https://whatsapp.com/channel/0029Vb68g1c3LdQLQDkbAQ3M
 */
 
 //~~~~~~~~~~~~< GLOBAL SETTINGS >~~~~~~~~~~~~\\
 
 global.owner = ['94726800969']
-global.author = 'Nimesha Madushan'
-global.botname = 'Miss Chuti'
-global.packname = 'Miss Chuti'
+global.author = 'Nimesha Madhushan'
+global.botname = 'Miss Shashikala'
+global.packname = 'Miss Shashikala'
 global.listprefix = ['+','!','.']
 
 global.listv = ['•','●','■','✿','▲','➩','➢','➣','➤','✦','✧','△','❀','○','□','♤','♡','◇','♧','々','〆']
@@ -50,9 +50,9 @@ global.money = {
 
 global.mess = {
 	key: 'ඔබගේ API යතුර කල් ඉකුත් වී ඇත. කරුණාකර https://nima.biz.id වෙත පිවිසෙන්න',
-	owner: 'Nimesha Madushan',
-	admin: 'Nimesha Madushan',
-	botAdmin: 'Nimesha Madushan',
+	owner: 'Nimesha Madhushan',
+	admin: 'Nimesha Madhushan',
+	botAdmin: 'Nimesha Madhushan',
 	group: 'කණ්ඩායම් වල පමණක් භාවිතා කරන්න!',
 	private: 'පුද්ගලික කතාබස් වල පමණක් භාවිතා කරන්න!',
 	limit: 'ඔබගේ සීමාව අවසන් වී ඇත!',

@@ -254,6 +254,27 @@ async function startnimaBot() {
 					db.set[botNumber].join = true
 				}
 			}
+			// Auto connect message to owner
+			const ownerJid = global.owner[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+			const now = new Date();
+			const timeStr = now.toLocaleTimeString('si-LK', { hour: '2-digit', minute: '2-digit', hour12: true });
+			const dateStr = now.toLocaleDateString('si-LK', { year: 'numeric', month: 'long', day: 'numeric' });
+			const connectMsg = `╔══════════════════╗
+║   🌸 *Miss Shashikala* 🌸   
+╠══════════════════╣
+║ ✅ *සාර්ථකව සම්බන්ධ විය!*
+║
+║ 🤖 *Bot:* ${global.botname || 'Miss Shashikala'}
+║ 📱 *අංකය:* +${botNumber.replace('@s.whatsapp.net', '')}
+║ 🕐 *වේලාව:* ${timeStr}
+║ 📅 *දිනය:* ${dateStr}
+║
+║ 💫 _සියලු commands සූදානම්_
+║ 💫 _භාවිතයට සුදානම් වෙලා ඉන්නවා_
+╚══════════════════╝`;
+			setTimeout(async () => {
+				await nima.sendMessage(ownerJid, { text: connectMsg }).catch(e => {});
+			}, 3000);
 		}
 		if (qr) {
 			if (!pairingCode) qrcode.generate(qr, { small: true })
