@@ -692,7 +692,7 @@ async function Solving(nimesha, store) {
 							...(messageParamsJson && typeof messageParamsJson === 'object' && Object.keys(messageParamsJson).length > 0 ? messageParamsJson : {}),
 							buttons: buttons.map(a => {
 								return {
-									නාමය: a.name,
+									name: a.name,
 									buttonParamsJson: JSON.stringify(a.buttonParamsJson ? (typeof a.buttonParamsJson === 'string' ? JSON.parse(a.buttonParamsJson) : a.buttonParamsJson) : '')
 								}
 							})
@@ -728,7 +728,7 @@ async function Solving(nimesha, store) {
 						tag: 'native_flow',
 						attrs: {
 							v: '9',
-							නාමය: 'mixed'
+							name: 'mixed'
 						}
 					}]
 				}]
@@ -785,7 +785,7 @@ async function Solving(nimesha, store) {
 						tag: 'native_flow',
 						attrs: {
 							v: '9',
-							නාමය: 'mixed'
+							name: 'mixed'
 						}
 					}]
 				}]
@@ -869,7 +869,7 @@ async function Solving(nimesha, store) {
 				footer: { text: a.footer },
 				nativeFlowMessage: {
 					buttons: a.buttons.map(b => ({
-						නාමය: b.name,
+						name: b.name,
 						buttonParamsJson: JSON.stringify(b.buttonParamsJson ? JSON.parse(b.buttonParamsJson) : '')
 					}))
 				}
@@ -942,7 +942,7 @@ async function Serialize(nimesha, msg, store) {
 				m.key.participant = m.sender = participant?.id || m.sender;
 				m.metadata.owner = m.metadata?.participants?.find(p => p.lid === m.metadata.owner)?.id || m.metadata.owner;
 				m.metadata.subjectOwner = m.metadata?.participants?.find(p => p.lid === m.metadata.subjectOwner)?.id || m.metadata.subjectOwner;
-				store.contacts[m.sender] = { ...store.contacts[m.sender], id: m.sender, lid: m.fromMe && nimesha.user.lid || participant?.lid || m.sender, නාමය: m.pushName };
+				store.contacts[m.sender] = { ...store.contacts[m.sender], id: m.sender, lid: m.fromMe && nimesha.user.lid || participant?.lid || m.sender, name: m.pushName };
 			}
 			m.admins = m.metadata.participants ? (m.metadata.participants.reduce((a, b) => (b.admin ? a.push({ id: b.id, admin: b.admin }) : [...a]) && a, [])) : []
 			m.isAdmin = m.admins?.some((b) => b.id === m.sender) || false
