@@ -163,8 +163,11 @@ async function startnimaBot() {
 		defaultQueryTimeoutMs: 0,
 		connectTimeoutMs: 60000,
 		keepAliveIntervalMs: 30000,
-		// මෙන්න මෙතැනින් තමයි ඔබ ඉල්ලූ නම වෙනස් කළේ
 		GenerateHighQualityLinkPreview: false,
+		// Phone notifications fix - markOnlineOnConnect false කළොත් WhatsApp notification deliver වෙනවා
+		markOnlineOnConnect: false,
+		// Pairing code fix
+		printQRInTerminal: false,
 		transactionOpts: {
 			maxCommitRetries: 10,
 			delayBetweenTriesMs: 10,
