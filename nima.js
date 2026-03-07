@@ -2785,6 +2785,10 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 				m.reply(mess.wait)
 				try {
 					const hasil = await ytMp3(text);
+					const maxSize = 16 * 1024 * 1024;
+					if (hasil.result.length > maxSize) {
+						return m.reply(`❌ *File ලොකු වැඩියි!*\n\n📁 Size: ${hasil.size}\n⚠️ WhatsApp හි audio files සඳහා උපරිම limit එක *16MB* යි.\n\n🎵 කෙටි video එකක් (විනාඩි 5-6 යට) try කරන්න.`);
+					}
 					await m.reply({
 						audio: hasil.result,
 						mimetype: 'audio/mpeg',
