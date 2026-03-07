@@ -2736,7 +2736,7 @@ module.exports = naze = async (naze, m, msg, store) => {
 				try {
 					const hasil = await ytMp3(text);
 					await m.reply({
-						audio: { url: hasil.result },
+						audio: hasil.result,
 						mimetype: 'audio/mpeg',
 						contextInfo: {
 							externalAdReply: {
