@@ -2483,7 +2483,13 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						await nimesha.sendAsSticker(m.chat, hasil2, m, { packname, author })
 						setLimit(m, db)
 					} catch(e2) {
-						m.reply('ATTP අසාර්ථකයි!')
+						try {
+							const buf3 = await atpSticker(text)
+							await nimesha.sendAsSticker(m.chat, buf3, m, { packname, author })
+							setLimit(m, db)
+						} catch(e3) {
+							m.reply('ATTP අසාර්ථකයි!')
+						}
 					}
 				}
 			}
@@ -3119,6 +3125,178 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					m.reply('Download Server offline!')
 				}
 			}
+
+			// ═══════════════════════════════════════════════
+			// ULTIMATE DOWNLOADER COMMANDS
+			// ═══════════════════════════════════════════════
+
+			// Twitter/X
+			case 'twitter': case 'tw': case 'twdl': case 'xdl': case 'xdown': case 'twitterdl': case 'xvideo': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Twitter/X URL`)
+				if (!/twitter\.com|x\.com/.test(text)) return m.reply('Twitter/X URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await twitterDownload(text)
+					await m.reply({ video: { url: hasil.url }, caption: `*🐦 Twitter/X*\n${hasil.title || ''}` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Twitter/X Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Pinterest
+			case 'pinterest': case 'pin': case 'pindl': case 'ptdl': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Pinterest URL`)
+				if (!text.includes('pinterest')) return m.reply('Pinterest URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await pinterestDownload(text)
+					if (hasil.type === 'video') await m.reply({ video: { url: hasil.url }, caption: `*📌 Pinterest*` })
+					else await m.reply({ image: { url: hasil.url }, caption: `*📌 Pinterest*` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Pinterest Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Reddit
+			case 'reddit': case 'reddl': case 'rdl': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Reddit URL`)
+				if (!text.includes('reddit.com')) return m.reply('Reddit URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await redditDownload(text)
+					await m.reply({ video: { url: hasil.url }, caption: `*🔴 Reddit*\n${hasil.title || ''}` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Reddit Download අසාර්ථකයි!') }
+			}
+			break
+
+			// SoundCloud
+			case 'soundcloud': case 'sc': case 'scdl': case 'scdown': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} SoundCloud URL`)
+				if (!text.includes('soundcloud.com')) return m.reply('SoundCloud URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await soundcloudDownload(text)
+					await m.reply({
+						audio: { url: hasil.url },
+						mimetype: 'audio/mpeg',
+						contextInfo: { externalAdReply: { title: hasil.title || 'SoundCloud', body: hasil.artist || '', previewType: 'PHOTO', thumbnailUrl: hasil.thumb || '', mediaType: 1, renderLargerThumbnail: true, sourceUrl: text } }
+					})
+					setLimit(m, db)
+				} catch(e) { m.reply('SoundCloud Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Threads
+			case 'threads': case 'thrdl': case 'threadsdl': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Threads URL`)
+				if (!text.includes('threads.net')) return m.reply('Threads URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await threadsDownload(text)
+					if (hasil.type === 'video') await m.reply({ video: { url: hasil.url }, caption: `*🧵 Threads*` })
+					else await m.reply({ image: { url: hasil.url }, caption: `*🧵 Threads*` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Threads Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Vimeo
+			case 'vimeo': case 'vimeodl': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Vimeo URL`)
+				if (!text.includes('vimeo.com')) return m.reply('Vimeo URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await vimeoDownload(text)
+					await m.reply({ video: { url: hasil.url }, caption: `*🎬 Vimeo*` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Vimeo Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Dailymotion
+			case 'dailymotion': case 'dm': case 'dmdl': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Dailymotion URL`)
+				if (!text.includes('dailymotion.com')) return m.reply('Dailymotion URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await dailymotionDownload(text)
+					await m.reply({ video: { url: hasil.url }, caption: `*📹 Dailymotion*` })
+					setLimit(m, db)
+				} catch(e) { m.reply('Dailymotion Download අසාර්ථකයි!') }
+			}
+			break
+
+			// APK Download (Google Play / Package name)
+			case 'apk': case 'apkdl': case 'playstore': case 'gplay': case 'apkdown': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`*APK Downloader* 📦\n\nඋදාහරණ:\n${prefix + command} com.whatsapp\n${prefix + command} https://play.google.com/store/apps/details?id=com.whatsapp`)
+				m.reply(mess.wait)
+				try {
+					const hasil = await apkDownload(text)
+					await m.reply(`*📦 APK Downloader*\n\n*App:* ${hasil.name}\n*Package:* ${hasil.pkg}\n*Version:* ${hasil.version || 'Unknown'}\n\n*Download Link:*\n${hasil.url}\n\n_Link copy කරලා browser එකේ paste කරන්න_`)
+					setLimit(m, db)
+				} catch(e) { m.reply(`APK Download අසාර්ථකයි!\nPackage name හරි play.google.com URL ගහන්න`) }
+			}
+			break
+
+			// General URL downloader (any site yt-dlp supports)
+			case 'download': case 'dl': case 'ytdlp': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`*Universal Downloader* 🌐\nඋදාහරණ: ${prefix + command} [URL]\n\nSupported: YouTube, Instagram, TikTok, Twitter, Reddit, Twitch, Bilibili, සහ 1000+ sites`)
+				if (!isUrl(text)) return m.reply('Valid URL ගහන්න!')
+				m.reply(mess.wait)
+				try {
+					// Auto-detect type from URL
+					const isAudio = /spotify|soundcloud|music\.youtube/.test(text)
+					const buffer = await generalDownload(text, isAudio ? 'audio' : 'video')
+					if (isAudio) await m.reply({ audio: buffer, mimetype: 'audio/mpeg' })
+					else await m.reply({ video: buffer, caption: `*🌐 Downloaded*\n${text}` })
+					setLimit(m, db)
+				} catch(e) { m.reply(`Download අසාර්ථකයි!\nError: ${e.message}`) }
+			}
+			break
+
+			// Upgrade existing Instagram with new multi-method scraper
+			case 'ig2': case 'instagram2': case 'igv2': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Instagram URL`)
+				if (!text.includes('instagram.com')) return m.reply('Instagram URL නෙවෙ!')
+				m.reply(mess.wait)
+				try {
+					const hasil = await igDownload(text)
+					if (hasil.type === 'album') {
+						await nimesha.sendAlbumMessage(m.chat, { album: hasil.items.map(a => a.is_video ? { video: { url: a.url } } : { image: { url: a.url } }), caption: hasil.caption || '' }, { quoted: m })
+					} else if (hasil.type === 'video') {
+						await m.reply({ video: { url: hasil.url }, caption: hasil.caption || '' })
+					} else {
+						await m.reply({ image: { url: hasil.url }, caption: hasil.caption || '' })
+					}
+					setLimit(m, db)
+				} catch(e) { m.reply('Instagram Download අසාර්ථකයි!') }
+			}
+			break
+
+			// Upgrade ATTP with new multi-API
+			case 'attp3': case 'attpv2': case 'attps': {
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} ඔබේ text`)
+				m.reply(mess.wait)
+				try {
+					const buffer = await atpSticker(text)
+					await nimesha.sendAsSticker(m.chat, buffer, m, { packname, author })
+					setLimit(m, db)
+				} catch(e) { m.reply('ATTP Sticker අසාර්ථකයි!') }
+			}
+			break
+
 			break
 			
 			// Quotes Menu
@@ -4113,12 +4291,21 @@ _ස්තූතියි!_ 🌸`).then(() => {
 ╭─┴❍「 *බාගත කිරීම් (DOWNLOAD)* 」❍
 │${setv} ${prefix}ytmp3 (YouTube ගීත)
 │${setv} ${prefix}ytmp4 (YouTube වීඩියෝ)
-│${setv} ${prefix}instagram (ඉන්ස්ටග්‍රෑම් වීඩියෝ)
-│${setv} ${prefix}tiktok (ටික්ටොක් වීඩියෝ)
-│${setv} ${prefix}tiktokmp3 (ටික්ටොක් ශබ්ද)
-│${setv} ${prefix}facebook (ෆේස්බුක් වීඩියෝ)
-│${setv} ${prefix}spotifydl (ස්පොටිෆයි ගීත)
-│${setv} ${prefix}mediafire (මීඩියාෆයර් ගොනු)
+│${setv} ${prefix}instagram (Instagram)
+│${setv} ${prefix}tiktok (TikTok වීඩියෝ)
+│${setv} ${prefix}tiktokmp3 (TikTok ශබ්ද)
+│${setv} ${prefix}facebook (Facebook)
+│${setv} ${prefix}twitter (Twitter/X)
+│${setv} ${prefix}pinterest (Pinterest)
+│${setv} ${prefix}reddit (Reddit)
+│${setv} ${prefix}threads (Threads)
+│${setv} ${prefix}soundcloud (SoundCloud)
+│${setv} ${prefix}vimeo (Vimeo)
+│${setv} ${prefix}dailymotion (Dailymotion)
+│${setv} ${prefix}spotifydl (Spotify ගීත)
+│${setv} ${prefix}mediafire (MediaFire ගොනු)
+│${setv} ${prefix}apk (APK / Play Store)
+│${setv} ${prefix}dl (Universal Downloader 🌐)
 ╰─┬────❍
 ╭─┴❍「 *උපුටා දැක්වීම් (QUOTES)* 」❍
 │${setv} ${prefix}motivasi (අභිප්‍රේරණය)
@@ -4145,6 +4332,10 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}ssweb (වෙබ් පිටු ඡායාරූප) 🔸️
 │${setv} ${prefix}sticker (ස්ටිකර් සෑදීම)
 │${setv} ${prefix}attp (ඇනිමේෂන් ස්ටිකර්)
+│${setv} ${prefix}attp2 (ඇනිමේෂන් ස්ටිකර් 2)
+│${setv} ${prefix}attp3 (ඇනිමේෂන් ස්ටිකර් Pro)
+│${setv} ${prefix}attp2 (ඇනිමේෂන් ස්ටිකර් 2)
+│${setv} ${prefix}attp3 (ඇනිමේෂන් ස්ටිකර් Pro)
 │${setv} ${prefix}colong (ස්ටිකර් ගැනීම)
 │${setv} ${prefix}smeme (මීම්ස් සෑදීම)
 │${setv} ${prefix}dehaze (පැහැදිලි කිරීම)
@@ -4398,12 +4589,21 @@ _ස්තූතියි!_ 🌸`).then(() => {
 ╭──❍「 *බාගත කිරීම් (DOWNLOAD)* 」❍
 │${setv} ${prefix}ytmp3 (YouTube ගීත)
 │${setv} ${prefix}ytmp4 (YouTube වීඩියෝ)
-│${setv} ${prefix}instagram (Instagram වීඩියෝ)
+│${setv} ${prefix}instagram (Instagram)
 │${setv} ${prefix}tiktok (TikTok වීඩියෝ)
 │${setv} ${prefix}tiktokmp3 (TikTok ශබ්ද)
-│${setv} ${prefix}facebook (Facebook වීඩියෝ)
+│${setv} ${prefix}facebook (Facebook)
+│${setv} ${prefix}twitter (Twitter/X)
+│${setv} ${prefix}pinterest (Pinterest)
+│${setv} ${prefix}reddit (Reddit)
+│${setv} ${prefix}threads (Threads)
+│${setv} ${prefix}soundcloud (SoundCloud)
+│${setv} ${prefix}vimeo (Vimeo)
+│${setv} ${prefix}dailymotion (Dailymotion)
 │${setv} ${prefix}spotifydl (Spotify ගීත)
-│${setv} ${prefix}mediafire (Mediafire ගොනු)
+│${setv} ${prefix}mediafire (MediaFire ගොනු)
+│${setv} ${prefix}apk (APK / Play Store)
+│${setv} ${prefix}dl (Universal Downloader 🌐)
 ╰──────❍`)
 			}
 			break
