@@ -260,11 +260,11 @@ async function startnimaBot() {
 			const timeStr = now.toLocaleTimeString('si-LK', { hour: '2-digit', minute: '2-digit', hour12: true });
 			const dateStr = now.toLocaleDateString('si-LK', { year: 'numeric', month: 'long', day: 'numeric' });
 			const connectMsg = `╔══════════════════╗
-║   🌸 *Miss Shashikala* 🌸   
+║   🌸 *Miss Shasikala* 🌸   
 ╠══════════════════╣
 ║ ✅ *සාර්ථකව සම්බන්ධ විය!*
 ║
-║ 🤖 *Bot:* ${global.botname || 'Miss Shashikala'}
+║ 🤖 *Bot:* ${global.botname || 'Miss Shasikala'}
 ║ 📱 *අංකය:* +${botNumber.replace('@s.whatsapp.net', '')}
 ║ 🕐 *වේලාව:* ${timeStr}
 ║ 📅 *දිනය:* ${dateStr}
