@@ -1995,7 +1995,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 			case 'cai': case 'roomai': case 'chatai': case 'autoai': {
 				if (m.isGroup) return m.reply(mess.private)
 				if (chat_ai[m.sender]) return m.reply(`ඔබ Session හි ${command}!`)
-				if (!text) return m.reply(`උදාහරණ: ${prefix + command} හලො ngab\nWith Prompt: ${prefix + command} හලො ngab|Kamu adalah assisten yang siap membantu dalam hal apapun yang ku minta.\n\nමැකීමට room: ${prefix + 'del' + command}`)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} halo ngab\nWith Prompt: ${prefix + command} halo ngab|Kamu adalah assisten yang siap membantu dalam hal apapun yang ku minta.\n\nමැකීමට room: ${prefix + 'del' + command}`)
 				let [teks1, teks2] = text.split`|`
 				chat_ai[m.sender] = [{ role: 'system', content: teks2 || '' }, { role: 'user', content: text.split`|` ? teks1 : text || '' }]
 				let hasil = await fetchApi('/ai/chat4', {
@@ -2352,11 +2352,11 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 					setLimit(m, db)
 				} catch(e) {
 					try {
-						const hasil2 = await fetchApi('/tools/attp', { text }, { buffer: true })
+						const hasil2 = await fetchApi('/create/attp', { text, style: Math.floor(Math.random() * 5) + 1 }, { buffer: true })
 						await nimesha.sendAsSticker(m.chat, hasil2, m, { packname, author })
 						setLimit(m, db)
 					} catch(e2) {
-						m.reply('ATTP Server offline!')
+						m.reply('ATTP අසාර්ථකයි!')
 					}
 				}
 			}
@@ -4305,7 +4305,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 │${setv} ${prefix}colorize (වර්ණ ගැන්වීම)
 │${setv} ${prefix}hitamkan (කළු සුදු කිරීම)
 │${setv} ${prefix}emojimix (ඉමෝජි මිශ්‍ර කිරීම)
-│${setv} ${prefix}hack ( වට්සැප් හැක් කිරීම 💀)
+│${setv} ${prefix}hack (WhatsApp Hack 💀)
 │${setv} ${prefix}nulis (ලිවීම)
 │${setv} ${prefix}readmore (වැඩිපුර කියවීමට)
 │${setv} ${prefix}qc (චැට් බබල් සෑදීම)
