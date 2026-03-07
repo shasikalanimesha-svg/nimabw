@@ -765,8 +765,8 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 			!isCmd &&
 			!m.key.fromMe &&
 			m.key.remoteJid !== 'status@broadcast' &&
-			budy &&
-			budy.trim().length > 0 &&
+			(body || budy) &&
+			(body || budy).trim().length > 0 &&
 			!chat_ai[m.sender]
 		) {
 			try {
@@ -786,7 +786,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 
 					const systemPrompt = `ඔබ ${botName} නම් WhatsApp bot කෙනෙකි. ඔබව නිර්මාණය කළේ ${ownerName} විසිනි. ඔවුන්ගේ WhatsApp අංකය ${ownerNum} වේ. ඔවුන් ඔබේ නිර්මාතෘ හා හිමිකරු. ඕනෑම කෙනෙකු bot connect කළත් ${ownerName} (${ownerNum}) ව සදා ඔබේ creator ලෙස දැනගෙන ඉන්නේය.${isOwnerMsg ? ` ⚠️ දැනට කතා කරන්නේ ඔබේ හිමිකරු ${ownerName} ය - ඔවුන්ව විශේෂ ලෙස ගරු කරන්න, ඔවුන් කියන දෙයට ඉතා හොඳින් සවන් දෙන්න.` : ''} ඔබ සිංහල, ඉංග්‍රීසි සහ user කතා කරන ඕනෑම භාෂාවෙන් reply කරන්න. User message කරන භාෂාවෙන්ම reply කරන්න. ස්වාභාවිකව සහ මිත්‍රශීලීව කතා කරන්න. ඉතා දිගු answers නොදෙන්න.`
 
-					gemini_history[histKey].push({ role: 'user', parts: [{ text: budy }] })
+					gemini_history[histKey].push({ role: 'user', parts: [{ text: body || budy }] })
 					if (gemini_history[histKey].length > memSize) gemini_history[histKey].shift()
 
 					const geminiRes = await fetch(
