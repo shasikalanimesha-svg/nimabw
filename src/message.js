@@ -273,6 +273,9 @@ async function LoadDataBase(nimesha, m) {
 			tebaknegara: {},
 			tebakgambar: {},
 			tebakbendera: {},
+			gemini_autoreply: {},
+			gemini_history: {},
+			private_ai_disabled: true,  // default OFF - .aion ගෙන ON කරන්න
 		};
 		for (let key in defaultGame) {
 			if (!(key in game)) game[key] = defaultGame[key];
