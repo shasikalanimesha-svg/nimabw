@@ -295,13 +295,14 @@ async function startnimaBot() {
 	
 	nima.ev.on('contacts.update', (update) => {
 		for (let contact of update) {
+			if (!contact.id) continue;
 			let trueJid;
-			if (!trueJid) continue;
 			if (contact.id.endsWith('@lid')) {
 				trueJid = nima.findJidByLid(jidNormalizedUser(contact.id), store);
 			} else {
 				trueJid = jidNormalizedUser(contact.id);
 			}
+			if (!trueJid) continue;
 			global.store.contacts[trueJid] = {
 				...global.store.contacts[trueJid],
 				id: trueJid,
