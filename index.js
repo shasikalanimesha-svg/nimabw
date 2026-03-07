@@ -35,7 +35,7 @@ const userInfoSyt = () => {
 global.fetchApi = async (path='/', data={}, options={}) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const base = options.නාමය ? (options.නාමය in global.APIs ? global.APIs[options.නාමය] : options.නාමය) : global.APIs.nima
+      const base = options.name ? (options.name in global.APIs ? global.APIs[options.name] : options.name) : global.APIs.nima
       const apikey = global.APIKeys[base]
       let method = (options.method || 'GET').toUpperCase()
       let url = base + path
@@ -264,7 +264,7 @@ async function startnimaBot() {
 ╠══════════════════╣
 ║ ✅ *සාර්ථකව සම්බන්ධ විය!*
 ║
-║ 🤖 *Bot:* ${global.botනාමය || 'Miss Shasikala'}
+║ 🤖 *Bot:* ${global.botname || 'Miss Shasikala'}
 ║ 📱 *අංකය:* +${botNumber.replace('@s.whatsapp.net', '')}
 ║ 🕐 *වේලාව:* ${timeStr}
 ║ 📅 *දිනය:* ${dateStr}
@@ -272,7 +272,7 @@ async function startnimaBot() {
 ║ 💫 _සියලු commands සූදානම්_
 ║ 💫 _භාවිතයට සුදානම් වෙලා ඉන්නවා_
 ╠══════════════════╣
-║ 🌸 *${global.botනාමය || 'Miss Shasikala'}*
+║ 🌸 *${global.botname || 'Miss Shasikala'}*
 ║ 👑 *By ${global.ownerName || global.author || 'Nimesha Madhushan'}*
 ╚══════════════════╝`;
 			setTimeout(async () => {

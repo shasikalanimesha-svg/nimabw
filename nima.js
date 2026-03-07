@@ -42,7 +42,7 @@ const { rdGame, iGame, tGame, gameSlot, gameCasinoSolo, gameSamgongSolo, gameMer
 const { getRandom, getBuffer, fetchJson, runtime, clockString, sleep, isUrl, formatDate, formatp, generateProfilePicture, errorCache, normalize, updateSettings, parseMention, fixBytes, similarity, pickRandom, tarBackup } = require('./lib/function');
 
 const menfesTimeouts = new Map();
-const settingsPath = path.join(__dirනාමය, 'settings.js');
+const settingsPath = path.join(__dirname, 'settings.js');
 const cases = db.cases ? db.cases : (db.cases = [...fs.readFileSync('./nima.js', 'utf-8').matchAll(/case\s+['"]([^'"]+)['"]/g)].map(match => match[1]));
 
 module.exports = nimesha = async (nimesha, m, msg, store) => {
@@ -114,8 +114,8 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 		const mime = (quoted.msg || quoted).mimetype || ''
 		const qmsg = (quoted.msg || quoted)
 		const author = set.author = global.author || 'Nimesha Madhushan';
-		const packනාමය = set.packනාමය = global.packනාමය || 'Shasikala';
-		const botනාමය = set.botනාමය = global.botනාමය || 'නාමය Bot';
+		const packname = set.packname = global.packname || 'Shasikala';
+		const botname = set.botname = global.botname || 'Nima Bot';
 		const _dayMap = {
   'Sunday':'ඉරිදා','Monday':'සදුදා','Tuesday':'අඟහරුවාදා',
   'Wednesday':'බදාදා','Thursday':'බ්‍රහස්පතින්දා',
@@ -188,7 +188,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 		// Auto Set Bio
 		if (set.autobio) {
 			if (new Date() * 1 - set.status > 60000) {
-				await nimesha.updateProfileStatus(`${nimesha.user.නාමය} | 🎯 Runtime: ${runtime(process.uptime())}`).catch(e => {})
+				await nimesha.updateProfileStatus(`${nimesha.user.name} | 🎯 Runtime: ${runtime(process.uptime())}`).catch(e => {})
 				set.status = new Date() * 1
 			}
 		}
@@ -357,20 +357,20 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 			Isya: '19:00'
 		}
 		if (!this.intervalSholat) this.intervalSholat = null;
-		if (!this.කාලයsholat) this.කාලයsholat = {};
+		if (!this.waktusholat) this.waktusholat = {};
 		if (this.intervalSholat) clearInterval(this.intervalSholat); 
 		setTimeout(() => {
 			this.intervalSholat = setInterval(async() => {
 				const sekarang = moment.tz('Asia/Colombo');
 				const jamSholat = sekarang.format('HH:mm');
-				const දිනයIni = sekarang.format('YYYY-MM-DD');
+				const hariIni = sekarang.format('YYYY-MM-DD');
 				const seconds = sekarang.format('ss');
 				if (seconds !== '00') return;
 				for (const [sholat, කාලය] of Object.entries(jadwalSholat)) {
-					if (jamSholat === කාලය && this.කාලයsholat[sholat] !== දිනයIni) {
-						this.කාලයsholat[sholat] = දිනයIni
+					if (jamSholat === කාලය && this.waktusholat[sholat] !== hariIni) {
+						this.waktusholat[sholat] = hariIni
 						for (const [idnya, settings] of Object.entries(db.groups)) {
-							if (settings.කාලයsholat) {
+							if (settings.waktusholat) {
 								await nimesha.sendMessage(idnya, { text: `*${sholat}* ශ්‍රිත කාලය ළඟා විය, නැමදුමට සූදානම් වන්න🙂.\n\n*${කාලය.slice(0, 5)}*\n_ජකාර්තා සහ ආශ්‍රිත ප්‍රදේශ සඳහා._` }, { ephemeralExpiration: m.expiration || store?.messages[idnya]?.array?.slice(-1)[0]?.metadata?.ephemeralDuration || 0 }).catch(e => {})
 							}
 						}
@@ -772,7 +772,7 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 			try {
 				const ownerName = global.ownerName || global.author || 'Nimesha Madhushan'
 				const ownerNum = (global.owner?.[0] || '94726800969')
-				const botName = global.botනාමය || 'Miss Shasikala'
+				const botName = global.botname || 'Miss Shasikala'
 				const apiKey = global.geminiApiKey
 
 				if (apiKey && apiKey !== 'YOUR_GEMINI_API_KEY_HERE') {
@@ -868,7 +868,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!/image/.test(quoted.type)) return m.reply(`📌 රූපයකට Reply කරන්න (caption: *${prefix + command}*)`)
 				let media = await quoted.download();
 				let { img } = await generateProfilePicture(media, text.length > 0 ? null : 512)
-				await nimesha.සොයන දෙය({
+				await nimesha.query({
 					tag: 'iq',
 					attrs: {
 						to: '@s.whatsapp.net',
@@ -1359,25 +1359,25 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				});
 			}
 			break
-			case 'setනාමයbot': case 'setbotනාමය': {
+			case 'setනාමයbot': case 'setbotname': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await updateSettings({
 						filePath: settingsPath,
-						botනාමය: teksnya.trim()
+						botname: teksnya.trim()
 					});
 					m.reply('සාර්ථකයි')
 				} else m.reply(`උදාහරණ: ${prefix + command} පෙළ`)
 			}
 			break
-			case 'setpackනාමයbot': case 'setbotpackනාමය': {
+			case 'setpacknamebot': case 'setbotpackname': {
 				if (!isCreator) return m.reply(mess.owner)
 				if (text || m.quoted) {
 					const teksnya = text ? text : m.quoted.text
 					await updateSettings({
 						filePath: settingsPath,
-						packනාමය: teksnya.trim()
+						packname: teksnya.trim()
 					});
 					m.reply('සාර්ථකයි')
 				} else m.reply(`උදාහරණ: ${prefix + command} පෙළ`)
@@ -1583,7 +1583,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!/image/.test(quoted.type)) return m.reply(`📌 රූපයකට Reply කරන්න (caption: *${prefix + command}*)`)
 				let media = await quoted.download();
 				let { img } = await generateProfilePicture(media, text.length > 0 ? null : 512)
-				await nimesha.සොයන දෙය({
+				await nimesha.query({
 					tag: 'iq',
 					attrs: {
 						target: m.chat,
@@ -1649,7 +1649,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						nimesha.sendMessage(m.chat, { disappearingMessagesInChat: 0 })
 					} else m.reply('කරුණාකර තෝරන්න:\nදිනා 90, දිනා 7, දිනා 1, off')
 					break
-					case 'antilink': case 'antivirtex': case 'antidelete': case 'welcome': case 'antitoxic': case 'කාලයsholat': case 'nsfw': case 'antihidetag': case 'setinfo': case 'antitagsw': case 'leave': case 'promote': case 'demote':
+					case 'antilink': case 'antivirtex': case 'antidelete': case 'welcome': case 'antitoxic': case 'waktusholat': case 'nsfw': case 'antihidetag': case 'setinfo': case 'antitagsw': case 'leave': case 'promote': case 'demote':
 					if (/on|true/i.test(args[1])) {
 						if (set[args[0]]) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
 						set[args[0]] = true
@@ -1666,7 +1666,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					} else m.reply(`📌 *${args[0]} Command*\n\nඋදාහරණ: ${prefix + command} ${args[0]} සාදරයෙන් @ !\n\n*Special Tags:*\n• @ → user mention\n• @admin → admin mention\n• @subject → ${m.metadata.subject}\n\nඋදාහරණ: ${prefix + command} ${args[0]} ${m.metadata.subject} හි @ ට සාදරයෙන් ❤️`)
 					break
 					default:
-					m.reply(`සමූහ සැකසුම් ${m.metadata.subject}\n- open\n- close\n- join acc/reject\n- disappearing 90/7/1/off\n- antilink on/off ${set.antilink ? '🟢' : '🔴'}\n- antivirtex on/off ${set.antivirtex ? '🟢' : '🔴'}\n- antidelete on/off ${set.antidelete ? '🟢' : '🔴'}\n- welcome on/off ${set.welcome ? '🟢' : '🔴'}\n- leave on/off ${set.leave ? '🟢' : '🔴'}\n- promote on/off ${set.promote ? '🟢' : '🔴'}\n- demote on/off ${set.demote ? '🟢' : '🔴'}\n- setinfo on/off ${set.setinfo ? '🟢' : '🔴'}\n- nsfw on/off ${set.nsfw ? '🟢' : '🔴'}\n- කාලයsholat on/off ${set.කාලයsholat ? '🟢' : '🔴'}\n- antihidetag on/off ${set.antihidetag ? '🟢' : '🔴'}\n- antitagsw on/off ${set.antitagsw ? '🟢' : '🔴'}\n\n- setwelcome _පෙළ_\n- setleave _පෙළ_\n- setpromote _පෙළ_\n- setdemote _පෙළ_\n\nඋදාහරණ:\n${prefix + command} antilink off`)
+					m.reply(`සමූහ සැකසුම් ${m.metadata.subject}\n- open\n- close\n- join acc/reject\n- disappearing 90/7/1/off\n- antilink on/off ${set.antilink ? '🟢' : '🔴'}\n- antivirtex on/off ${set.antivirtex ? '🟢' : '🔴'}\n- antidelete on/off ${set.antidelete ? '🟢' : '🔴'}\n- welcome on/off ${set.welcome ? '🟢' : '🔴'}\n- leave on/off ${set.leave ? '🟢' : '🔴'}\n- promote on/off ${set.promote ? '🟢' : '🔴'}\n- demote on/off ${set.demote ? '🟢' : '🔴'}\n- setinfo on/off ${set.setinfo ? '🟢' : '🔴'}\n- nsfw on/off ${set.nsfw ? '🟢' : '🔴'}\n- waktusholat on/off ${set.waktusholat ? '🟢' : '🔴'}\n- antihidetag on/off ${set.antihidetag ? '🟢' : '🔴'}\n- antitagsw on/off ${set.antitagsw ? '🟢' : '🔴'}\n\n- setwelcome _පෙළ_\n- setleave _පෙළ_\n- setpromote _පෙළ_\n- setdemote _පෙළ_\n\nඋදාහරණ:\n${prefix + command} antilink off`)
 				}
 			}
 			break
@@ -1913,7 +1913,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					});
 				} else if (_saluran.test(text) || text.endsWith('@newsletter') || !isNaN(text)) {
 					await nimesha.newsletterMsg(text.match(_saluran)[1]).then((n) => {
-						m.reply(`*[ INFORMATION CHANNEL ]*\n\nID: ${n.id}\nState: ${n.state.type}\nName: ${n.thread_metadata.නාමය.text}\nCreate At: ${new Date(n.thread_metadata.creation_time * 1000).toLocaleString()}\nSubscriber: ${n.thread_metadata.subscribers_count}\nVerification: ${n.thread_metadata.verification}\nDescription: ${n.thread_metadata.description.text}\n`)
+						m.reply(`*[ INFORMATION CHANNEL ]*\n\nID: ${n.id}\nState: ${n.state.type}\nName: ${n.thread_metadata.name.text}\nCreate At: ${new Date(n.thread_metadata.creation_time * 1000).toLocaleString()}\nSubscriber: ${n.thread_metadata.subscribers_count}\nVerification: ${n.thread_metadata.verification}\nDescription: ${n.thread_metadata.description.text}\n`)
 					}).catch((e) => m.reply('Channel හොයාගත නොහැකිය❗'))
 				} else m.reply('සමූහ හෝ Channel URL පමණ සහාය දෙයි!')
 			}
@@ -2192,7 +2192,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				m.reply(mess.wait)
 				let media = await quoted.download()
 				let audio = await toAudio(media, 'mp4')
-				await m.reply({ document: audio, mimetype: 'audio/mpeg', fileName: `Convert By නාමය Bot.mp3`})
+				await m.reply({ document: audio, mimetype: 'audio/mpeg', fileName: `Convert By Nima Bot.mp3`})
 			}
 			break
 			case 'tovn': case 'toptt': case 'tovoice': {
@@ -2261,7 +2261,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			break
 			case 'translate': case 'tr': {
 				if (text && text == 'list') {
-					let list_tr = `╭──❍「 *Language Code* 」❍\n│• af : Afrikaans\n│• ar : Arab\n│• zh : Chinese\n│• en : English\n│• en-us : English (United States)\n│• fr : French\n│• de : German\n│• hi : Hindi\n│• hu : Hungarian\n│• is : Icelandic\n│• id : Indonesian\n│• it : Italian\n│• ja : Japanese\n│• ko : Korean\n│• la : Latin\n│• no : Norwegian\n│• pt : Portuguese\n│• pt : Portuguese\n│• pt-br : Portuguese (Brazil)\n│• ro : Romanian\n│• ru : Russian\n│• sr : Serbian\n│• es : Spanish\n│• sv : Swedish\n│• ta : Tamil\n│• th : Thai\n│• tr : Turkish\n│• vi : Vietනාමයse\n╰──────❍`;
+					let list_tr = `╭──❍「 *Language Code* 」❍\n│• af : Afrikaans\n│• ar : Arab\n│• zh : Chinese\n│• en : English\n│• en-us : English (United States)\n│• fr : French\n│• de : German\n│• hi : Hindi\n│• hu : Hungarian\n│• is : Icelandic\n│• id : Indonesian\n│• it : Italian\n│• ja : Japanese\n│• ko : Korean\n│• la : Latin\n│• no : Norwegian\n│• pt : Portuguese\n│• pt : Portuguese\n│• pt-br : Portuguese (Brazil)\n│• ro : Romanian\n│• ru : Russian\n│• sr : Serbian\n│• es : Spanish\n│• sv : Swedish\n│• ta : Tamil\n│• th : Thai\n│• tr : Turkish\n│• vi : Vietnamese\n╰──────❍`;
 					m.reply(list_tr)
 				} else {
 					if (!m.quoted && (!text|| !args[1])) return m.reply(`📌 Text Reply/Send කරන්න (caption: *${prefix + command}*)`)
@@ -2290,7 +2290,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						let media = await quoted.download();
 						const form = new FormData();
 					    form.append('buffer', media, {
-					        fileනාමය: 'image.jpg',
+					        filename: 'image.jpg',
 					        contentType: 'image/jpeg'
 					    });
 						let hasil = await fetchApi('/tools/remini', form, { buffer: true });
@@ -2318,7 +2318,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					let media = await quoted.download()
 					const form = new FormData();
 				    form.append('buffer', media, {
-				        fileනාමය: 'image.jpg',
+				        filename: 'image.jpg',
 				        contentType: 'image/jpeg'
 				    });
 					let hasil = await fetchApi('/tools/recolor', form, { buffer: true });
@@ -2334,7 +2334,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					const form = new FormData();
 					form.append('style', 'summer');
 				    form.append('buffer', media, {
-				        fileනාමය: 'image.jpg',
+				        filename: 'image.jpg',
 				        contentType: 'image/jpeg'
 				    });
 					let hasil = await fetchApi('/create/skin-tone', form, { buffer: true });
@@ -2380,7 +2380,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} jakarta`)
 				try {
 					let { result: data } = await fetchApi('/tools/cuaca', { city: text });
-					m.reply(`*🏙 නගර කාලගුණය ${data.නාමය}*\n\n*🌤️ කාලගුණය:* ${data.weather[0].main}\n*📝 විස්තරය:* ${data.weather[0].description}\n*🌡️ සාමාන්‍ය උෂ්ණත්වය:* ${data.main.temp} °C\n*🤔 දැනෙන ලෙස:* ${data.main.feels_like} °C\n*🌬️ පීඩනය:* ${data.main.pressure} hPa\n*💧 ආර්ද්‍රතාවය:* ${data.main.humidity}%\n*🌪️ සුළං වේගය:* ${data.wind.speed} Km/h\n*📍 ස්ථානය:*\n- *Bujur :* ${data.coord.lat}\n- *Lintang :* ${data.coord.lon}\n*🌏 රට:* ${data.sys.country}`)
+					m.reply(`*🏙 නගර කාලගුණය ${data.name}*\n\n*🌤️ කාලගුණය:* ${data.weather[0].main}\n*📝 විස්තරය:* ${data.weather[0].description}\n*🌡️ සාමාන්‍ය උෂ්ණත්වය:* ${data.main.temp} °C\n*🤔 දැනෙන ලෙස:* ${data.main.feels_like} °C\n*🌬️ පීඩනය:* ${data.main.pressure} hPa\n*💧 ආර්ද්‍රතාවය:* ${data.main.humidity}%\n*🌪️ සුළං වේගය:* ${data.wind.speed} Km/h\n*📍 ස්ථානය:*\n- *Bujur :* ${data.coord.lat}\n- *Lintang :* ${data.coord.lon}\n*🌏 රට:* ${data.sys.country}`)
 				} catch (e) {
 					m.reply('නගරය හොයාගත නොහැකිය!')
 				}
@@ -2389,15 +2389,15 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			case 'sticker': case 'stiker': case 's': case 'stickergif': case 'stikergif': case 'sgif': case 'stickerwm': case 'swm': case 'curi': case 'colong': case 'take': case 'stickergifwm': case 'sgifwm': {
 				if (!/image|video|sticker/.test(quoted.type)) return m.reply(`Caption සමග Image/Video/GIF Reply/Send කරන්න ${prefix + command}\nකාලසීමාව Image/Video/Gif 1-9 Detik`)
 				let media = await quoted.download()
-				let teks1 = text.split`|`[0] ? text.split`|`[0] : packනාමය
+				let teks1 = text.split`|`[0] ? text.split`|`[0] : packname
 				let teks2 = text.split`|`[1] ? text.split`|`[1] : author
 				if (/image|webp/.test(mime)) {
 					m.reply(mess.wait)
-					await nimesha.sendAsSticker(m.chat, media, m, { packනාමය: teks1, author: teks2 })
+					await nimesha.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
 				} else if (/video/.test(mime)) {
 					if ((qmsg).seconds > 11) return m.reply('උපරිම 10 seconds!')
 					m.reply(mess.wait)
-					await nimesha.sendAsSticker(m.chat, media, m, { packනාමය: teks1, author: teks2 })
+					await nimesha.sendAsSticker(m.chat, media, m, { packname: teks1, author: teks2 })
 				} else m.reply(`Caption සමග Image/Video/GIF Reply/Send කරන්න ${prefix + command}\nකාලසීමාව Video/Gif 1-9 Detik`)
 			}
 			break
@@ -2413,7 +2413,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					let media = await quoted.download()
 					let mem = await UguuSe(media);
 					let smeme = await fetchApi('/create/meme2', { url: mem.url, text: atas, text2: bawah }, { buffer: true });
-					await nimesha.sendAsSticker(m.chat, smeme, m, { packනාමය, author })
+					await nimesha.sendAsSticker(m.chat, smeme, m, { packname, author })
 					setLimit(m, db)
 				} catch (e) {
 					console.log(e)
@@ -2430,7 +2430,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					let { result } = await fetchApi('/tools/emojimix', { emoji1, emoji2 });
 					if (result.length < 1) return m.reply(`❌ *${text}* Emoji Mix හොයාගත නොහැකිය!`)
 					for (let res of result) {
-						await nimesha.sendAsSticker(m.chat, res.url, m, { packනාමය, author })
+						await nimesha.sendAsSticker(m.chat, res.url, m, { packname, author })
 					}
 					setLimit(m, db)
 				} catch (e) {
@@ -2475,12 +2475,12 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				try {
 					const style = command === 'attp2' ? Math.floor(Math.random() * 10) + 10 : Math.floor(Math.random() * 10) + 1
 					const hasil = await fetchApi('/create/attp', { text, style }, { buffer: true })
-					await nimesha.sendAsSticker(m.chat, hasil, m, { packනාමය, author })
+					await nimesha.sendAsSticker(m.chat, hasil, m, { packname, author })
 					setLimit(m, db)
 				} catch(e) {
 					try {
 						const hasil2 = await fetchApi('/create/attp', { text, style: Math.floor(Math.random() * 5) + 1 }, { buffer: true })
-						await nimesha.sendAsSticker(m.chat, hasil2, m, { packනාමය, author })
+						await nimesha.sendAsSticker(m.chat, hasil2, m, { packname, author })
 						setLimit(m, db)
 					} catch(e2) {
 						m.reply('ATTP අසාර්ථකයි!')
@@ -2505,8 +2505,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			    if (m.quoted && m.quoted.isMedia) {
 			      quotedMediaBuffer = await m.quoted.download()
 			    }
-			    const senderName = m.pushName || store.contacts?.[m.sender]?.නාමය || '+' + m.sender.split('@')[0]
-			    const quotedName = store.contacts?.[m.quoted?.sender]?.නාමය || '+' + (m.quoted?.sender || '').split('@')[0]
+			    const senderName = m.pushName || store.contacts?.[m.sender]?.name || '+' + m.sender.split('@')[0]
+			    const quotedName = store.contacts?.[m.quoted?.sender]?.name || '+' + (m.quoted?.sender || '').split('@')[0]
 			    const params = {
 			      type: 'quote',
 			      backgroundColor: '#1b2226',
@@ -2541,7 +2541,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			      ]
 			    };
 				let res = await fetchApi('/create/qc', params, { method: 'POST', buffer: true });
-				await nimesha.sendAsSticker(m.chat, Buffer.from(res, 'base64'), m, { packනාමය, author })
+				await nimesha.sendAsSticker(m.chat, Buffer.from(res, 'base64'), m, { packname, author })
 			    setLimit(m, db)
 			  } catch (e) {
 			    console.error(e)
@@ -2586,7 +2586,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					fs.writeFileSync(fileListPath, fileListContent);
 					const outputVideoPath = path.join(tempDir, `${time + '-' + m.sender}-output.mp4`);
 					execSync(`ffmpeg -y -f concat -safe 0 -i ${fileListPath} -vf 'fps=30' -c:v libx264 -preset veryfast -pix_fmt yuv420p -t 00:00:10 ${outputVideoPath}`);
-					nimesha.sendAsSticker(m.chat, outputVideoPath, m, { packනාමය, author })
+					nimesha.sendAsSticker(m.chat, outputVideoPath, m, { packname, author })
 					framePaths.forEach((filePath) => fs.unlinkSync(filePath));
 					fs.unlinkSync(fileListPath);
 					fs.unlinkSync(outputVideoPath);
@@ -2605,7 +2605,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						let media = await quoted.download()
 						const form = new FormData();
 					    form.append('buffer', media, {
-					        fileනාමය: 'image.jpg',
+					        filename: 'image.jpg',
 					        contentType: 'image/jpeg'
 					    });
 						let hasil = await fetchApi('/create/wasted', form, { buffer: true });
@@ -2708,9 +2708,9 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			
 			// Ai Menu
 			case 'ai': case 'google': case 'bard': case 'gemini': {
-				if (!text) return m.reply(`උදාහරණ: ${prefix + command} සොයන දෙය`)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} query`)
 				try {
-					let hasil = await fetchApi('/ai/gemini-flash-lite', { සොයන දෙය: text });
+					let hasil = await fetchApi('/ai/gemini-flash-lite', { query: text });
 					m.reply(hasil.result.text)
 				} catch (e) {
 					m.reply(pickRandom(['AI Feature ගැටලුවකට ලක් ව ඇත!','AI සම්බන්ධ කිරීමට නොහැකිය!','AI System දැනට කාර්යබහුලයි!','Feature දැනට භාවිතා කළ නොහැකිය!']))
@@ -2720,9 +2720,9 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			
 			// Search Menu
 			case 'gimage': case 'bingimg': {
-				if (!text) return m.reply(`උදාහරණ: ${prefix + command} සොයන දෙය`)
+				if (!text) return m.reply(`උදාහරණ: ${prefix + command} query`)
 				try {
-					let anu = await fetchApi('/search/google', { සොයන දෙය: text });
+					let anu = await fetchApi('/search/google', { query: text });
 					let una = pickRandom(anu.result)
 					await m.reply({ image: { url: una.pagemap?.cse_thumbnail?.[0]?.src || una.pagemap?.cse_image?.[0].src || una.pagemap?.metatags?.[0]?.["og:image"] }, caption: 'සෙවීමේ ප්‍රතිඵල ' + text + '\nTitle: ' + una.title + '\nSnippet: ' + una.snippet + '\nSource: ' + una.link || una.formattedUrl })
 					setLimit(m, db)
@@ -2737,11 +2737,11 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				try {
 					const res = await yts.search(text);
 					const hasil = pickRandom(res.all)
-					const teksnya = `*📍Title:* ${hasil.title || 'නැහැ tersedia'}\n*✏Description:* ${hasil.description || 'නැහැ tersedia'}\n*🌟Channel:* ${hasil.author?.නාමය || 'නැහැ tersedia'}\n*⏳Duration:* ${hasil.seconds || 'නැහැ tersedia'} second (${hasil.timestamp || 'නැහැ tersedia'})\n*🔎Source:* ${hasil.url || 'නැහැ tersedia'}\n\n_සටහන: Download කිරීමට_\n_තෝරන්න ${prefix}ytmp3 url_video හෝ ${prefix}ytmp4 url_video_`;
+					const teksnya = `*📍Title:* ${hasil.title || 'නැහැ tersedia'}\n*✏Description:* ${hasil.description || 'නැහැ tersedia'}\n*🌟Channel:* ${hasil.author?.name || 'නැහැ tersedia'}\n*⏳Duration:* ${hasil.seconds || 'නැහැ tersedia'} second (${hasil.timestamp || 'නැහැ tersedia'})\n*🔎Source:* ${hasil.url || 'නැහැ tersedia'}\n\n_සටහන: Download කිරීමට_\n_තෝරන්න ${prefix}ytmp3 url_video හෝ ${prefix}ytmp4 url_video_`;
 					await m.reply({ image: { url: hasil.thumbnail }, caption: teksnya })
 				} catch (e) {
 					try {
-						const res = await fetchApi('/search/youtube', { සොයන දෙය: text });
+						const res = await fetchApi('/search/youtube', { query: text });
 						const hasil = pickRandom(res.result.items)
 						const teksnya = `*📍Title:* ${hasil.snippet.title || 'නැහැ tersedia'}\n*✏Description:* ${hasil.snippet.description || 'නැහැ tersedia'}\n*🌟Channel:* ${hasil.snippet.channelTitle || 'නැහැ tersedia'}\n*⏳Duration:* ${hasil.duration || 'නැහැ tersedia'}\n*🔎Source:* https://youtu.be/${hasil.id.videoId || 'නැහැ tersedia'}\n\n_සටහන: Download කිරීමට_\n_තෝරන්න ${prefix}ytmp3 url_video හෝ ${prefix}ytmp4 url_video_`;
 						await m.reply({ image: { url: hasil.snippet.thumbnails.medium.url }, caption: teksnya })
@@ -2756,7 +2756,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} hu tao`)
 				try {
 					m.reply(mess.wait)
-					const res = await fetchApi('/search/pixiv', { සොයන දෙය: text });
+					const res = await fetchApi('/search/pixiv', { query: text });
 					let hasil = pickRandom(res.result.body.illusts);
 					const response = await fetch(hasil.url, { headers: { 'referer': 'https://www.pixiv.net' }});
 					const image = await response.buffer();
@@ -2772,7 +2772,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} hu tao`)
 				try {
-					const res = await fetchApi('/search/pinterest', { සොයන දෙය: text });
+					const res = await fetchApi('/search/pinterest', { query: text });
 					const hasil = pickRandom(res.result)
 					const image = await getBuffer(hasil);
 					await m.reply({ image, caption: 'Hasil සිට: ' + text })
@@ -2786,7 +2786,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} hu tao`)
 				try {
-					let anu = await fetchApi('/search/pinterest', { සොයන දෙය: text });
+					let anu = await fetchApi('/search/pinterest', { query: text });
 					if (anu.length < 1) {
 						m.reply('Post ලබා ගත නොහැකිය!');
 					} else {
@@ -2803,7 +2803,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} black rover`)
 				try {
-					let anu = await fetchApi('/search/meloboom', { සොයන දෙය: text });
+					let anu = await fetchApi('/search/meloboom', { query: text });
 					let result = pickRandom(anu.result.data)
 					await m.reply({ audio: { url: anu.result.populated.media[result.media.audio[0]].url }, fileName: result.slug + '.mp3', mimetype: 'audio/mpeg' })
 					setLimit(m, db)
@@ -2815,10 +2815,10 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			case 'npm': case 'npmjs': {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} axios`)
 				try {
-					let anu = await fetchApi('/search/npm', { සොයන දෙය: text });
+					let anu = await fetchApi('/search/npm', { query: text });
 					if (anu.result.objects.length > 1) return m.reply('සෙවීමේ ප්‍රතිඵල හොයාගත නොහැකිය')
 					let txt = anu.result.objects.map(({ package: pkg }) => {
-						return `*${pkg.නාමය}* (v${pkg.version})\n_${pkg.links.npm}_\n_${pkg.description}_`
+						return `*${pkg.name}* (v${pkg.version})\n_${pkg.links.npm}_\n_${pkg.description}_`
 					}).join`\n\n`
 					m.reply(txt)
 				} catch (e) {
@@ -2829,14 +2829,14 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			case 'style': {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} නාමය`)
 				let anu = await fetchApi('/search/styletext', { text });
-				let txt = anu.result.map(a => `*${a.නාමය}*\n${a.result}`).join`\n\n`
+				let txt = anu.result.map(a => `*${a.name}*\n${a.result}`).join`\n\n`
 				m.reply(txt)
 			}
 			break
 			case 'spotify': case 'spotifysearch': {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} alan walker alone`)
 				try {
-					let hasil = await fetchApi('/search/spotify', { සොයන දෙය: text });
+					let hasil = await fetchApi('/search/spotify', { query: text });
 					let txt = hasil.result.map(a => {
 						return `*Title : ${a.title}*\n- Artist : ${a.artist}\n- Url : ${a.url}`
 					}).join`\n\n`
@@ -2849,7 +2849,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			case 'tenor': {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} alone`)
 				try {
-					const anu = await fetchApi('/search/tenor', { සොයන දෙය: text });
+					const anu = await fetchApi('/search/tenor', { query: text });
 					const hasil = pickRandom(anu.result)
 					await m.reply({ video: { url: hasil.media[0].mp4.url }, caption: `👀 *Media:* ${hasil.url}\n📋 *Description:* ${hasil.content_description}\n🔛 *Url:* ${hasil.itemurl}`, gifPlayback: true, gifAttribution: 2 })
 				} catch (e) {
@@ -2897,7 +2897,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} userනාමයnya`)
 				try {
 					const res = await fetchJson('https://api.github.com/users/' + text)
-					m.reply({ image: { url: res.avatar_url }, caption: `*Userනාමය :* ${res.login}\n*Nickනාමය :* ${res.නාමය || 'නැත'}\n*Bio :* ${res.bio || 'නැත'}\n*ID:* ${res.id}\n*Node ID :* ${res.node_id}\n*වර්ගය:* ${res.type}\n*Admin:* ${res.admin ? 'ඔව්' : 'නැහැ'}\n*Company :* ${res.company || 'නැත'}\n*Blog :* ${res.blog || 'නැත'}\n*Location :* ${res.location || 'නැත'}\n*Email :* ${res.email || 'නැත'}\n*Public Repo :* ${res.public_repos}\n*Public Gists :* ${res.public_gists}\n*Followers :* ${res.followers}\n*Following :* ${res.following}\n*Created At :* ${res.created_at} *Updated At :* ${res.updated_at}` })
+					m.reply({ image: { url: res.avatar_url }, caption: `*Userනාමය :* ${res.login}\n*Nickනාමය :* ${res.name || 'නැත'}\n*Bio :* ${res.bio || 'නැත'}\n*ID:* ${res.id}\n*Node ID :* ${res.node_id}\n*වර්ගය:* ${res.type}\n*Admin:* ${res.admin ? 'ඔව්' : 'නැහැ'}\n*Company :* ${res.company || 'නැත'}\n*Blog :* ${res.blog || 'නැත'}\n*Location :* ${res.location || 'නැත'}\n*Email :* ${res.email || 'නැත'}\n*Public Repo :* ${res.public_repos}\n*Public Gists :* ${res.public_gists}\n*Followers :* ${res.followers}\n*Following :* ${res.following}\n*Created At :* ${res.created_at} *Updated At :* ${res.updated_at}` })
 				} catch (e) {
 					m.reply('Userනාමය නැහැ ditemukan!')
 				}
@@ -3075,7 +3075,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!isUrl(args[0]) && !args[0].includes('mediafire.com')) return m.reply('URL වලංගු නොවේ!')
 				try {
 					let { result: res } = await fetchApi('/download/mediafire', { url: text })
-					await nimesha.sendMedia(m.chat, res.link, res.fileනාමය, `*MEDIAFIRE DOWNLOADER*\n\n*${setv} Name* : ${res.fileනාමය}\n*${setv} Size* : ${res.size}`, m)
+					await nimesha.sendMedia(m.chat, res.link, res.filename, `*MEDIAFIRE DOWNLOADER*\n\n*${setv} Name* : ${res.filename}\n*${setv} Size* : ${res.size}`, m)
 					setLimit(m, db)
 				} catch (e) {
 					m.reply('Download Server offline!')
@@ -3195,11 +3195,11 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				let ddsa = [{ url: 'https://telegra.ph/file/9f60e4cdbeb79fc6aff7a.png', no: 1 },{ url: 'https://telegra.ph/file/797f86e444755282374ef.png', no: 2 },{ url: 'https://telegra.ph/file/970d2a7656ada7c579b69.png', no: 3 },{ url: 'https://telegra.ph/file/0470d295e00ebe789fb4d.png', no: 4 },{ url: 'https://telegra.ph/file/a9d7332e7ba1d1d26a2be.png', no: 5 },{ url: 'https://telegra.ph/file/99dcd999991a79f9ba0c0.png', no: 6 }]
 				let media = pickRandom(ddsa)
 				try {
-					await nimesha.sendAsSticker(m.chat, media.url, m, { packනාමය, author, isAvatar: 1 })
+					await nimesha.sendAsSticker(m.chat, media.url, m, { packname, author, isAvatar: 1 })
 				} catch (e) {
 					let anu = await fetch(media.url)
 					let una = await anu.buffer()
-					await nimesha.sendAsSticker(m.chat, una, m, { packනාමය, author, isAvatar: 1 })
+					await nimesha.sendAsSticker(m.chat, una, m, { packname, author, isAvatar: 1 })
 				}
 			}
 			break
@@ -3368,7 +3368,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			break
 			case 'ttc': case 'ttt': case 'tictactoe': {
 				if (Object.values(tictactoe).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))) return m.reply(`⚠️ ඔබ දැනටමත් ක්‍රීඩාවේ! නිමා කිරීමට: *${prefix}del${command}*`);
-				let room = Object.values(tictactoe).find(room => room.state === 'WAITING' && (text ? room.නාමය === text : true))
+				let room = Object.values(tictactoe).find(room => room.state === 'WAITING' && (text ? room.name === text : true))
 				if (room) {
 					m.reply('Partner හොයාගත්!')
 					room.o = m.chat
@@ -3391,7 +3391,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						game: new TicTacToe(m.sender, 'o'),
 						state: 'WAITING',
 					}
-					if (text) room.නාමය = text
+					if (text) room.name = text
 					nimesha.sendMessage(m.chat, { text: 'Partner බලා සිටිනු' + (text ? ` command ටයිප් කරන්න ${prefix}${command} ${text}` : ''), mentions: m.mentionedJid }, { quoted: m })
 					tictactoe[room.id] = room
 					await sleep(300000)
@@ -3998,7 +3998,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						set.template = parseInt(Number(args[1]))
 						m.reply('සාර්ථකයි Mengubah Template Menu')
 					} else m.reply(`Template තෝරන්න:\n- 1 (Button Menu)\n- 2 (List Menu)\n- 3 (Document Menu)`)
-				} else await templateMenu(nimesha, set.template, m, prefix, setv, db, { botNumber, author, packනාමය, isVip, isPremium, my })
+				} else await templateMenu(nimesha, set.template, m, prefix, setv, db, { botNumber, author, packname, isVip, isPremium, my })
 			}
 			break
 			case 'allmenu': {
@@ -4017,7 +4017,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 ├ *මුදල්* : ${db.users[m.sender] ? db.users[m.sender].money.toLocaleString('id-ID') : '0'}
 ╰─┬────❍
 ╭─┴─❍「 *බොට් තොරතුරු* 」❍
-├ *බොට්ගෙ නම* : ${set?.botනාමය || 'Miss Shasikala'}
+├ *බොට්ගෙ නම* : ${set?.botname || 'Miss Shasikala'}
 ├ *බලගැන්වීම* : @${'0@s.whatsapp.net'.split('@')[0]}
 ├ *අයිතිකරු* : @${ownerNumber[0].split('@')[0]}
 ├ *ප්‍රකාරය* : ${nimesha.public ? 'පොදු' : 'පෞද්ගලික'}
@@ -4252,8 +4252,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}addlimit (සීමාව වැඩි කිරීම)
 │${setv} ${prefix}adduang (මුදල් එක් කිරීම)
 │${setv} ${prefix}setbotauthor (නිර්මාණකරු නම)
-│${setv} ${prefix}setbotනාමය (බොට්ගේ නම)
-│${setv} ${prefix}setbotpackනාමය (පැකේජ නම)
+│${setv} ${prefix}setbotname (බොට්ගේ නම)
+│${setv} ${prefix}setbotpackname (පැකේජ නම)
 │${setv} ${prefix}setapikey (API කේතය සැකසීම)
 │${setv} ${prefix}addowner (හිමිකරුවෙකු එක් කිරීම)
 │${setv} ${prefix}delowner (හිමිකරුවෙකු ඉවත් කිරීම)
@@ -4287,7 +4287,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						},
 						externalAdReply: {
 							title: author,
-							body: packනාමය,
+							body: packname,
 							showAdAttribution: false,
 							thumbnailUrl: profile,
 							mediaType: 1,
@@ -4581,8 +4581,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}addlimit (සීමාව වැඩි කිරීම)
 │${setv} ${prefix}adduang (මුදල් එක් කිරීම)
 │${setv} ${prefix}setbotauthor (නිර්මාණකරු නම)
-│${setv} ${prefix}setbotනාමය (බොට්ගේ නම)
-│${setv} ${prefix}setbotpackනාමය (පැකේජ නම)
+│${setv} ${prefix}setbotname (බොට්ගේ නම)
+│${setv} ${prefix}setbotpackname (පැකේජ නම)
 │${setv} ${prefix}setapikey (API කේතය සැකසීම)
 │${setv} ${prefix}addowner (හිමිකරුවෙකු එක් කිරීම)
 │${setv} ${prefix}delowner (හිමිකරුවෙකු ඉවත් කිරීම)
@@ -4642,21 +4642,21 @@ _ස්තූතියි!_ 🌸`).then(() => {
 	} catch (e) {
 		console.log(e);
 		if (e?.message?.includes('No sessions')) return;
-		const errorKey = e?.code || e?.නාමය || e?.message?.slice(0, 100) || 'unknown_error';
+		const errorKey = e?.code || e?.name || e?.message?.slice(0, 100) || 'unknown_error';
 		const now = Date.now();
 		if (!errorCache[errorKey]) errorCache[errorKey] = [];
 		errorCache[errorKey] = errorCache[errorKey].filter(ts => now - ts < 600000);
 		if (errorCache[errorKey].length >= 3) return;
 		errorCache[errorKey].push(now);
-		m.reply('Error: ' + (e?.නාමය || e?.code || e?.output?.statusCode || e?.status || 'නොදනී') + '\nError log හිමිකරුට යැව්වා\n\n')
+		m.reply('Error: ' + (e?.name || e?.code || e?.output?.statusCode || e?.status || 'නොදනී') + '\nError log හිමිකරුට යැව්වා\n\n')
 		return nimesha.sendFromOwner(ownerNumber, `සුභ දවසක්, error එකක් ඇති, නිවැරදි කිරීමට අමතක නොකරන්න\n\nVersion : *${require('./package.json').version}*\n\n*Log error:*\n\n` + util.format(e), m, { contextInfo: { isForwarded: true }})
 	}
 }
 
-let file = require.resolve(__fileනාමය)
+let file = require.resolve(__filename)
 fs.watchFile(file, () => {
 	fs.unwatchFile(file)
-	console.log(chalk.redBright(`Update ${__fileනාමය}`))
+	console.log(chalk.redBright(`Update ${__filename}`))
 	delete require.cache[file]
 	require(file)
 
