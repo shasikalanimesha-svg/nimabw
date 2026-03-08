@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
-const MasterKey = crypto.createHash('sha512').update('Miss_Shasikala_Ultra_Secret_Encryption_2024_Nimesha_Madhushan').digest();
-const EncryptionIV = crypto.createHash('sha256').update('Shasikala_Bot_IV_Vector_Secure_2024').digest().slice(0, 16);
+const MasterKey = crypto.createHash('sha256').update('Miss_Shasikala_Ultra_Secret_Encryption_2024_Nimesha_Madhushan_Secure_Config').digest();
+const EncryptionIV = crypto.createHash('md5').update('Shasikala_Bot_IV').digest();
 
 function EncryptData(data) {
 	const cipher = crypto.createCipheriv('aes-256-cbc', MasterKey, EncryptionIV);
