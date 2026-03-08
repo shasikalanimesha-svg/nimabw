@@ -191,6 +191,8 @@ async function LoadDataBase(nimesha, m) {
 			multiprefix: false,
 			privateonly: false,
 			didyoumean: true,
+			autostatus: false,
+			antidelete: false,
 			author: global.author || 'Nimesha Madhushan',
 			autobackup: false,
 			botname: global.botname || 'Miss Shasikala',
