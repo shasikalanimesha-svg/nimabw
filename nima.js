@@ -2498,71 +2498,71 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						if (!res.ok) throw new Error('bk9 failed')
 						const buf = Buffer.from(await res.arrayBuffer())
 						if (buf.length < 200) throw new Error('invalid')
-						return buf
-					},
-					// 4. api.itzpire.com
-					async () => {
-						const res = await fetch(`https://api.itzpire.com/sticker/attp?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
-						if (!res.ok) throw new Error('itzpire failed')
-						return Buffer.from(await res.arrayBuffer())
-					},
-					// 5. apis.davidcyriltech.my.id
-					async () => {
-						const res = await fetch(`https://apis.davidcyriltech.my.id/attp?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
-						const data = await res.json()
-						const imgUrl = data?.result || data?.url || data?.image
-						if (!imgUrl) throw new Error('no url')
-						const r2 = await fetch(imgUrl, { signal: AbortSignal.timeout(15000) })
-						return Buffer.from(await r2.arrayBuffer())
-					},
-					// 6. attp.xteam.xyz (alt endpoint)
-					async () => {
-						const res = await fetch(`https://attp.xteam.xyz/?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
-						if (!res.ok) throw new Error('attp.xteam failed')
-						return Buffer.from(await res.arrayBuffer())
-					},
-					// 7. api.nima.biz.id style 2
-					async () => {
-						return await fetchApi('/create/attp', { text, style: Math.floor(Math.random() * 5) + 6 }, { buffer: true })
-					},
-				]
-				let success = false
-				for (let i = 0; i < atpMethods.length; i++) {
-					try {
-						console.log('[ATTP] Trying method', i + 1)
-						const buf = await atpMethods[i]()
-						if (!buf || buf.length < 100) throw new Error('empty buffer')
-						await nimesha.sendAsSticker(m.chat, buf, m, { packname, author })
-						setLimit(m, db)
-						console.log('[ATTP] ✅ Method', i + 1)
-						success = true
-						break
-					} catch(e) {
-						console.log('[ATTP] ❌ Method', i + 1, e.message)
-				 }
-            }
-            if (!success) m.reply('❌ ATTP අසාර්ථකයි! සියලු APIs offline.')
-            break
+					return buf
+				},
+				// 4. api.itzpire.com
+				async () => {
+					const res = await fetch(`https://api.itzpire.com/sticker/attp?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
+					if (!res.ok) throw new Error('itzpire failed')
+					return Buffer.from(await res.arrayBuffer())
+				},
+				// 5. apis.davidcyriltech.my.id
+				async () => {
+					const res = await fetch(`https://apis.davidcyriltech.my.id/attp?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
+					const data = await res.json()
+					const imgUrl = data?.result || data?.url || data?.image
+					if (!imgUrl) throw new Error('no url')
+					const r2 = await fetch(imgUrl, { signal: AbortSignal.timeout(15000) })
+					return Buffer.from(await r2.arrayBuffer())
+				},
+				// 6. attp.xteam.xyz (alt endpoint)
+				async () => {
+					const res = await fetch(`https://attp.xteam.xyz/?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
+					if (!res.ok) throw new Error('attp.xteam failed')
+					return Buffer.from(await res.arrayBuffer())
+				},
+				// 7. api.nima.biz.id style 2
+				async () => {
+					return await fetchApi('/create/attp', { text, style: Math.floor(Math.random() * 5) + 6 }, { buffer: true })
+				},
+			]
+			let success = false
+			for (let i = 0; i < atpMethods.length; i++) {
+				try {
+					console.log('[ATTP] Trying method', i + 1)
+					const buf = await atpMethods[i]()
+					if (!buf || buf.length < 100) throw new Error('empty buffer')
+					await nimesha.sendAsSticker(m.chat, buf, m, { packname, author })
+					setLimit(m, db)
+					console.log('[ATTP] ✅ Method', i + 1)
+					success = true
+					break
+				} catch(e) {
+					console.log('[ATTP] ❌ Method', i + 1, e.message)
+				}
+			}
+			if (!success) m.reply('❌ ATTP අසාර්ථකයි! සියලු APIs offline.')
+			break
 
-            case 'qc':
+			case 'qc':
 			case 'quote':
 			case 'fakechat': {
-			  if (!isLimit) return m.reply(mess.limit)
-			  if (!text && !m.quoted) return m.reply(`📌 Reply/Send කරන්න: *${prefix + command}*`)
-			
-			  try {
-			    let mediaBuffer
-			    let quotedMediaBuffer
-			    let ppUrl = await nimesha.profilePictureUrl(m.sender, 'image').catch(() => 'https://i.pinimg.com/564x/8a/e9/e9/8ae9e92fa4e69967aa61bf2bda967b7b.jpg')
-				let bufferPp = await getBuffer(ppUrl);
-			    if (m.isMedia) {
-			      mediaBuffer = await m.download()
-			    }
-			    if (m.quoted && m.quoted.isMedia) {
-			      quotedMediaBuffer = await m.quoted.download()
-			    }
-			    const senderName = m.pushName || store.contacts?.[m.sender]?.name || '+' + m.sender.split('@')[0]
-			    const quotedName = store.contacts?.[m.quoted?.sender]?.name || '+' + (m.quoted?.sender || '').split('@')[0]
+				if (!isLimit) return m.reply(mess.limit)
+				if (!text && !m.quoted) return m.reply(`📌 Reply/Send කරන්න: *${prefix + command}*`)
+
+				try {
+					let mediaBuffer
+					let quotedMediaBuffer
+					let ppUrl = await nimesha.profilePictureUrl(m.sender, 'image').catch(() => 'https://i.pinimg.com/564x/8a/e9/e9/8ae9e92fa4e69967aa61bf2bda967b7b.jpg')
+					let bufferPp = await getBuffer(ppUrl);
+					if (m.isMedia) {
+						mediaBuffer = await m.download()
+					}
+					if (m.quoted && m.quoted.isMedia) {
+						quotedMediaBuffer = await m.quoted.download()
+					}
+					const senderName = m.pushName || store.contacts?.[m.sender]?.name || '+' + m.sender.split('@')[0]
+					const quotedName = store.contacts?.[m.quoted?.sender]?.name || '+' + (m.quoted?.sender || '').split('@')[0]
 			    const params = {
 			      type: 'quote',
 			      backgroundColor: '#1b2226',
