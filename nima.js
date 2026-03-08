@@ -4035,20 +4035,21 @@ _ස්තූතියි!_ 🌸`).then(() => {
 ├ *සීමාව* : ${isVip ? 'VIP' : db.users[m.sender].limit }
 ├ *මුදල්* : ${db.users[m.sender] ? db.users[m.sender].money.toLocaleString('id-ID') : '0'}
 ╰─┬────❍
-╭─┴─❍「 *බොට් තොරතුරු* 」❍
+╭─┴─❍「 *🤖 බොට් තොරතුරු | BOT DETAILS 🤖* 」❍
 ├ *බොට්ගෙ නම* : ${set?.botname || 'Miss Shasikala'}
 ├ *බලගැන්වීම* : @${'0@s.whatsapp.net'.split('@')[0]}
 ├ *අයිතිකරු* : @${ownerNumber[0].split('@')[0]}
 ├ *ප්‍රකාරය* : ${nimesha.public ? 'පොදු' : 'පෞද්ගලික'}
 ├ *පූර්ව ප්‍රත්‍යය* :${set.multiprefix ? '「 MULTI-PREFIX 」' : ' *'+prefix+'*' }
+├ *මුළු Features* : ${((fs.readFileSync('./nima.js').toString()).match(/case '/g) || []).length}
 ├ *ප්‍රිමියම් විශේෂාන්ග* : 🔸️
 ╰─┬────❍
-╭─┴─❍「 *විස්තර* 」❍
+╭─┴─❍「 *📅 විස්තර | DETAILS 📅* 」❍
 ├ *දිනය* : ${tanggal}
 ├ *දවස* : ${දිනය}
 ├ *වෙලාව* : ${jam} WIB
 ╰──────❍
-╭──❍「 *බොට් ( BOT )* 」❍
+╭──❍「 *🤖 බොට් ( BOT ) | BOT COMMANDS 🤖* 」❍
 │${setv} ${prefix}profile (ගිණුම් විස්තර)
 │${setv} ${prefix}claim (ත්‍යාග ලබා ගැනීම)
 │${setv} ${prefix}buy (භාණ්ඩ මිලදී ගැනීම)
@@ -4084,7 +4085,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}delsewa (කුලී කාලය ඉවත් කිරීම)
 │${setv} ${prefix}listsewa (කුලී ලැයිස්තුව)
 ╰─┬────❍
-╭─┴❍「 *සමූහ (GROUP)* 」❍
+╭─┴❍「 *👥 සමූහ ( GROUP ) | GROUP COMMANDS 👥* 」❍
 │${setv} ${prefix}add (සාමාජිකයින් එක් කිරීම)
 │${setv} ${prefix}kick (සාමාජිකයින් ඉවත් කිරීම)
 │${setv} ${prefix}promote (පාලක තනතුරු දීම)
@@ -4106,7 +4107,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}group set (සමූහ සැකසුම්)
 │${setv} ${prefix}group (පාලකයන්ට පමණි)
 ╰─┬────❍
-╭─┴❍「 *සෙවුම් (SEARCH)* 」❍
+╭─┴❍「 *🔍 සෙවුම් ( SEARCH ) | SEARCH 🔍* 」❍
 │${setv} ${prefix}ytsearch (YouTube සෙවීම්)
 │${setv} ${prefix}spotify (සංගීත සෙවීම්)
 │${setv} ${prefix}pixiv (චිත්‍ර සෙවීම්)
@@ -4121,7 +4122,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}tenor (GIF සෙවීම්)
 │${setv} ${prefix}urban (වචන අර්ථ සෙවීම්)
 ╰─┬────❍
-╭─┴❍「 *බාගත කිරීම් (DOWNLOAD)* 」❍
+╭─┴❍「 *⬇️ බාගත කිරීම් ( DOWNLOAD ) | DOWNLOAD ⬇️* 」❍
 │${setv} ${prefix}ytmp3 (YouTube ගීත)
 │${setv} ${prefix}ytmp4 (YouTube වීඩියෝ)
 │${setv} ${prefix}instagram (ඉන්ස්ටග්‍රෑම් වීඩියෝ)
@@ -4131,7 +4132,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}spotifydl (ස්පොටිෆයි ගීත)
 │${setv} ${prefix}mediafire (මීඩියාෆයර් ගොනු)
 ╰─┬────❍
-╭─┴❍「 *උපුටා දැක්වීම් (QUOTES)* 」❍
+╭─┴❍「 *💬 උපුටා දැක්වීම් ( QUOTES ) | QUOTES 💬* 」❍
 │${setv} ${prefix}motivasi (අභිප්‍රේරණය)
 │${setv} ${prefix}quotes (උපුටා දැක්වීම්)
 │${setv} ${prefix}truth (ඇත්ත පැවසීම)
@@ -4140,7 +4141,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}bucin (ආදරණීය කියමන්)
 │${setv} ${prefix}renungan (සිතන්නට යමක්)
 ╰─┬────❍
-╭─┴❍「 *මෙවලම් (TOOLS)* 」❍
+╭─┴❍「 *🛠️ මෙවලම් ( TOOLS ) | TOOLS 🛠️* 」❍
 │${setv} ${prefix}get (දත්ත ලබා ගැනීම) 🔸️
 │${setv} ${prefix}hd (පැහැදිලි බව වැඩි කිරීම)
 │${setv} ${prefix}toaudio (හඬ බවට හැරවීම)
@@ -4185,16 +4186,16 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}nightcore (හඬ වෙනස් කිරීම්)
 │${setv} ${prefix}getexif (ස්ටිකර් විස්තර බැලීම)
 ╰─┬────❍
-╭─┴❍「 *කෘතිම බුද්ධිය (AI)* 」❍
+╭─┴❍「 *🤖 කෘතිම බුද්ධිය ( AI ) | ARTIFICIAL INTELLIGENCE 🤖* 」❍
 │${setv} ${prefix}ai (ප්‍රශ්න ඇසීම)
 │${setv} ${prefix}gemini (ගෙමිනි AI)
 │${setv} ${prefix}txt2img (අකුරුවලින් පින්තූර සෑදීම)
 ╰─┬────❍
-╭─┴❍「 *ඇනිමේ (ANIME)* 」❍
+╭─┴❍「 *✨ ඇනිමේ ( ANIME ) | ANIME ✨* 」❍
 │${setv} ${prefix}waifu (ඇනිමේ රූප)
 │${setv} ${prefix}neko (නෙකෝ රූප)
 ╰─┬────❍
-╭─┴❍「 *ක්‍රීඩා (GAME)* 」❍
+╭─┴❍「 *🎮 ක්‍රීඩා ( GAME ) | GAMES 🎮* 」❍
 │${setv} ${prefix}tictactoe (තිතයි කතුරයි)
 │${setv} ${prefix}akinator (සිතුවිලි කියවීම)
 │${setv} ${prefix}suit (ගල, කතුර, කොළය)
@@ -4220,7 +4221,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}tebakgambar (රූප අනුමානය)
 │${setv} ${prefix}tebakbendera (කොඩි අනුමානය)
 ╰─┬────❍
-╭─┴❍「 *විනෝදය (FUN)* 」❍
+╭─┴❍「 *😂 විනෝදය ( FUN ) | ENTERTAINMENT 😂* 」❍
 │${setv} ${prefix}coba (උත්සාහ කරන්න)
 │${setv} ${prefix}dadu (දාදු කැටය)
 │${setv} ${prefix}bisakah (හැකියාවක් ඇසීම)
@@ -4241,14 +4242,14 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}heleh (අකුරු වෙනස් කිරීම)
 │${setv} ${prefix}holoh (අකුරු වෙනස් කිරීම)
 ╰─┬────❍
-╭─┴❍「 *වෙනත් (RANDOM)* 」❍
+╭─┴❍「 *🎲 වෙනත් ( RANDOM ) | RANDOM 🎲* 」❍
 │${setv} ${prefix}coffe (කෝපි පින්තූර)
 ╰─┬────❍
-╭─┴❍「 *තොරතුරු සෙවීම (STALKER)* 」❍
+╭─┴❍「 *🔎 තොරතුරු සෙවීම ( STALKER ) | INFORMATION 🔎* 」❍
 │${setv} ${prefix}wastalk (WhatsApp තොරතුරු)
 │${setv} ${prefix}githubstalk (GitHub තොරතුරු)
 ╰─┬────❍
-╭─┴❍「 *හිමිකරු (OWNER)* 」❍
+╭─┴❍「 *👑 හිමිකරු ( OWNER ) | OWNER COMMANDS 👑* 」❍
 │${setv} ${prefix}bot [set] (බොට් සැකසුම්)
 │${setv} ${prefix}setbio (මතකය සැකසීම)
 │${setv} ${prefix}setppbot (බොට් පින්තූරය සැකසීම)

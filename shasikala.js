@@ -9,7 +9,10 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 		const botNumber = nimesha.decodeJid(nimesha.user.id);
 		const isOwner = [botNumber.split('@')[0], ...global.owner].map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net').includes(m.sender);
 		
-		const set = global.db?.set[botNumber] || {};
+		const set = global.db?.set?.[botNumber] || {};
+	const botFooter = global.db?.set?.[botNumber]?.botname 
+		? `> 🌸 *${global.db.set[botNumber].botname}* ✨`
+		: global.mess?.footer || '> 🌸 *Miss Shasikala* ✨';
 		
 		if (m.type === 'statusUpdate' && set.autostatus) {
 			try {
@@ -25,13 +28,13 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 					}).catch(() => {});
 					
 					await nimesha.sendMessage(botNumber, {
-						text: `${emoji} ස්ටේටස් ස්වයංක්‍රීයවම like කරන ලදී\n\nයෝ: @${jid.split('@')[0]}\nEmoji: ${emoji}\n\n${global.mess.footer || '> 🌸 *Miss Shasikala* ✨'}`
+						text: `${emoji} ස්ටේටස් ස්වයංක්‍රීයවම like කරන ලදී\n\nයෝ: @${jid.split('@')[0]}\nEmoji: ${emoji}\n\n${botFooter}`
 					}).catch(() => {});
 				}
 			} catch (e) {
 				console.log(e);
 				await nimesha.sendMessage(botNumber, {
-					text: `❌ ස්ටේටස් auto-like වල දෝෂයි: ${e.message}\n\n${global.mess.footer || '> 🌸 *Miss Shasikala* ✨'}`
+					text: `❌ ස්ටේටස් auto-like වල දෝෂයි: ${e.message}\n\n${botFooter}`
 				}).catch(() => {});
 			}
 		}
@@ -46,7 +49,7 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 					
 					if (originalSender && originalSender !== botNumber) {
 						await nimesha.sendMessage(botNumber, {
-							text: `🗑️ *පණිවිඩ මැකිණි*\n\n👤 පරිශීලක: @${originalSender.split('@')[0]}\n💬 තත්ත්වය: [මැකූ පණිවිඩ]\n⏰ වේලාව: ${new Date().toLocaleTimeString('si-LK')}\n📍 චැට්: ${originalJid}\n\n${global.mess.footer || '> 🌸 *Miss Shasikala* ✨'}`
+							text: `🗑️ *පණිවිඩ මැකිණි*\n\n👤 පරිශීලක: @${originalSender.split('@')[0]}\n💬 තත්ත්වය: [මැකූ පණිවිඩ]\n⏰ වේලාව: ${new Date().toLocaleTimeString('si-LK')}\n📍 චැට්: ${originalJid}\n\n${botFooter}`
 						}).catch(() => {});
 					}
 				}
