@@ -158,6 +158,7 @@ async function startnimaBot() {
 		}
 	}
 	
+	global.nimaInstance = null;
 	const nima = WAConnection({
 		version,
 		logger: level,
@@ -203,6 +204,8 @@ async function startnimaBot() {
 		})()
 	}
 	
+	global.nimaInstance = nima;
+
 	await Solving(nima, global.store)
 	
 	nima.ev.on('creds.update', saveCreds)
