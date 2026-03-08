@@ -72,7 +72,7 @@ const database = dataBase(global.tempatDB);
 const msgRetryCounterCache = new NodeCache();
 
 assertInstalled(process.platform === 'win32' ? 'where ffmpeg' : 'command -v ffmpeg', 'FFmpeg', 0);
-console.log(chalk.greenBright('✅ පද්ධතියට අවශ්‍ය සියලුම බාහිර ගොනු (Dependencies) සක්‍රීයයි'));
+console.log(chalk.greenBright('✅ අයිතිකරු නිමේෂගේ දුරකථනය හරහා සම්බන්ධ විය'));
 console.log(chalk.green.bold(`╔═════[${`${chalk.cyan(userInfoSyt())}@${chalk.cyan(os.hostname())}`}]═════`));
 print('OS', `${os.platform()} ${os.release()} ${os.arch()}`);
 print('Uptime', `${Math.floor(os.uptime() / 3600)} පැය ${Math.floor((os.uptime() % 3600) / 60)} විනාඩි`);
@@ -86,7 +86,7 @@ print('Date & Time', new Date().toLocaleString('en-US', { timeZone: 'Asia/Colomb
 console.log(chalk.green.bold('╚' + ('═'.repeat(30))));
 
 server.listen(PORT, () => {
-	console.log('App එක පෝට්', PORT, 'හරහා සක්‍රීය විය.');
+	console.log('Miss Shasikala පෝට්', PORT, 'හරහා සක්‍රීය විය.');
 });
 
 async function startnimaBot() {
@@ -153,7 +153,7 @@ async function startnimaBot() {
 			return msg?.message || ''
 		}
 		return {
-			conversation: 'Halo Saya nima Bot'
+			conversation: 'Hello nima Bot'
 		}
 	}
 	
@@ -396,7 +396,7 @@ const cleanup = async (signal) => {
 	if (global.db) await database.write(global.db)
 	if (global.store) await storeDB.write(global.store)
 	server.close(() => {
-		console.log('✅ Server closed. Exiting...')
+		console.log('✅ සාර්ථකව ඉවත් උණි...')
 		process.exit(0)
 	})
 }
