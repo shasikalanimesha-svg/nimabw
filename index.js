@@ -89,7 +89,7 @@ print('Date & Time', new Date().toLocaleString('en-US', { timeZone: 'Asia/Colomb
 console.log(chalk.green.bold('╚' + ('═'.repeat(30))));
 
 server.listen(PORT, () => {
-	console.log('Miss Shasikala පෝට්', PORT, 'හරහා සක්‍රීය විය.');
+	console.log('🌸 MISS SHASIKALA [BOT] ක්‍රියාකාරී වී ඇත!');
 });
 
 async function startnimaBot() {
@@ -290,11 +290,11 @@ async function startnimaBot() {
 			const timeStr = now.toLocaleTimeString('si-LK', { hour: '2-digit', minute: '2-digit', hour12: true });
 			const dateStr = now.toLocaleDateString('si-LK', { year: 'numeric', month: 'long', day: 'numeric' });
 			const connectMsg = `╔══════════════════╗
-║   🌸 *Miss Shasikala* 🌸   
+║ 🌸 MISS SHASIKALA [BOT]
 ╠══════════════════╣
 ║ ✅ *සාර්ථකව සම්බන්ධ විය!*
 ║
-║ 🤖 *Bot:* ${global.botname || 'Miss Shasikala'}
+║ 🤖 *Bot:* ${global.botname || 'MISS SHASIKALA'}
 ║ 📱 *අංකය:* +${botNumber.replace('@s.whatsapp.net', '')}
 ║ 🕐 *වේලාව:* ${timeStr}
 ║ 📅 *දිනය:* ${dateStr}
@@ -302,8 +302,8 @@ async function startnimaBot() {
 ║ 💫 _සියලු commands සූදානම්_
 ║ 💫 _භාවිතයට සුදානම් වෙලා ඉන්නවා_
 ╠══════════════════╣
-║ 🌸 *${global.botname || 'Miss Shasikala'}*
-║ 👑 *By ${global.ownerName || global.author || 'Nimesha Madhushan'}*
+║ 🌸 *${global.botname || 'MISS SHASIKALA'}* [BOT]
+║ 👑 *By ${global.ownerName || global.author || 'NIMESHA MADHUSHAN'}*
 ╚══════════════════╝`;
 			setTimeout(async () => {
 				await nimaBot.sendMessage(ownerJid, { text: connectMsg }).catch(e => {});
