@@ -3,7 +3,7 @@ const path = require('path');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const { writeFile } = require('fs/promises');
 
-const statusEmojis = ['😍', '🤩', '😘', '🥰', '🤭', '😊', '💕', '✨'];
+const statusEmojis = ['❤️', '😍', '🤩', '😘', '🥰', '🤭', '😊', '💕', '✨'];
 const messageStore = new Map();
 const TEMP_MEDIA_DIR = path.join(__dirname, './database/temp');
 
@@ -106,28 +106,32 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 			? `> 🌸 *${global.db.set[botNumber].botname}* [BOT]✨`
 			: global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨ | 👑 _CREATED BY *NIMESHA MADHUSHAN* _';
 		
-		if (m.type === 'statusUpdate' && set.autostatus) {
+		// Auto Status Handler
+		if (m.messages && Object.values(m.messages).some(msg => msg?.message?.statusMessage)) {
 			try {
-				const jid = Object.keys(m.messages)[0];
-				const message = m.messages[jid];
+				const botNumber = nimesha.decodeJid(nimesha.user.id);
+				const set = global.db?.set?.[botNumber] || {};
 				
-				if (message.message?.imageMessage || message.message?.videoMessage || message.message?.audioMessage || message.message?.conversation) {
-					await nimesha.readMessages([message.key]);
-					const emoji = getRandomEmoji();
-					
-					await nimesha.sendMessage(jid, {
-						react: { text: emoji, key: message.key }
-					}).catch(() => {});
-					
-					await nimesha.sendMessage(botNumber, {
-						text: `${emoji} ස්ටේටස් ස්වයංක්‍රීයවම like කරන ලදී\n\nයෝ: @${jid.split('@')[0]}\nEmoji: ${emoji}\n\n${botFooter}`
-					}).catch(() => {});
+				if (set.autostatus) {
+					for (const message of Object.values(m.messages)) {
+						if (message?.message?.statusMessage) {
+							const statusSender = message.key.participant || message.key.remoteJid;
+							const emoji = getRandomEmoji();
+							
+							try {
+								await nimesha.sendMessage(statusSender, {
+									react: { text: emoji, key: message.key }
+								}).catch(() => {});
+								
+								console.log(`❤️ AutoStatus - @${statusSender.split('@')[0]} ට ${emoji} එක එකතු කිරීම`);
+							} catch (e) {
+								console.log('AutoStatus reaction error:', e.message);
+							}
+						}
+					}
 				}
 			} catch (e) {
-				console.log(e);
-				await nimesha.sendMessage(botNumber, {
-					text: `❌ ස්ටේටස් auto-like වල දෝෂයි: ${e.message}\n\n${botFooter}`
-				}).catch(() => {});
+				console.log('AutoStatus handler error:', e.message);
 			}
 		}
 
