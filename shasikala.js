@@ -3,7 +3,7 @@ const path = require('path');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const { writeFile } = require('fs/promises');
 
-const statusEmojis = ['❤️', '😍', '🤩', '😘', '🥰', '🤭', '😊', '💕', '✨'];
+const statusEmojis = ['😍', '🤩', '😘', '🥰', '🤭', '😊', '💕', '✨'];
 const messageStore = new Map();
 const TEMP_MEDIA_DIR = path.join(__dirname, './database/temp');
 
@@ -106,7 +106,6 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 			? `> 🌸 *${global.db.set[botNumber].botname}* [BOT]✨`
 			: global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨ | 👑 _CREATED BY *NIMESHA MADHUSHAN* _';
 		
-		// AUTOSTATUS - Status එක ස්වයංක්‍රීයව like කිරීම
 		if (m.type === 'statusUpdate' && set.autostatus) {
 			try {
 				const jid = Object.keys(m.messages)[0];
@@ -121,18 +120,17 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 					}).catch(() => {});
 					
 					await nimesha.sendMessage(botNumber, {
-						text: `❤️ *AutoStatus* - ස්ටේටස් ස්වයංක්‍රීයවම like කරන ලදී\n\n🧑 යෝ: @${jid.split('@')[0]}\n😍 Emoji: ${emoji}\n🕐 වේලාව: ${new Date().toLocaleTimeString('si-LK')}\n\n${botFooter}`
+						text: `${emoji} ස්ටේටස් ස්වයංක්‍රීයවම like කරන ලදී\n\nයෝ: @${jid.split('@')[0]}\nEmoji: ${emoji}\n\n${botFooter}`
 					}).catch(() => {});
 				}
 			} catch (e) {
-				console.log('AutoStatus Error:', e);
+				console.log(e);
 				await nimesha.sendMessage(botNumber, {
-					text: `❌ *AutoStatus දෝෂයි*\n\n📝 Error: ${e.message}\n\n${botFooter}`
+					text: `❌ ස්ටේටස් auto-like වල දෝෂයි: ${e.message}\n\n${botFooter}`
 				}).catch(() => {});
 			}
 		}
 
-		// Message Store - පණිවිඩ antidelete සඳහා save කිරීම
 		if (m.message && m.message?.extendedTextMessage?.contextInfo?.quotedMessage && !m.message?.extendedTextMessage?.contextInfo?.quotedMessage?.messageStubType) {
 			try {
 				await storeMessage(m);
@@ -147,10 +145,13 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 			}
 		}
 		
-		// ANTIDELETE - මැකූ පණිවිඩ ප්‍රතිනිර්මාණය කිරීම
 		if (m.message?.protocolMessage?.type === 0 || m.message?.protocolMessage?.type === 1) {
 			try {
-				if (set.antidelete) {
+				// Group එකෙ antidelete check කිරීම OR owner setting
+				const isGroupAntiDelete = m.isGroup ? global.db?.groups?.[m.chat]?.antidelete : false;
+				const isOwnerAntiDelete = set.antidelete;
+				
+				if (isGroupAntiDelete || isOwnerAntiDelete) {
 					const deletedMessage = m.message.protocolMessage;
 					const messageId = deletedMessage.key?.id;
 					const originalJid = deletedMessage.key?.remoteJid || m.chat;
@@ -171,21 +172,22 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 							year: 'numeric'
 						});
 
-						let reportText = `╭══✦〔 *🛡️ ANTIDELETE වාර්තාව 🛡️* 〕✦═╮\n│\n` +
+						let reportText = `╭══✦〔 *🔰 ᴀɴᴛɪᴅᴇʟᴇᴛᴇ වාර්තාව 🔰* 〕✦═╮\n│\n` +
 							`│ *🗑️ මැකුවේ:* @${originalSender.split('@')[0]}\n` +
-							`│ *👤 නම:* ${senderName}\n` +
+							`│ *👤 එවූ පුද්ගලයා:* @${senderName}\n` +
 							`│ *📱 අංකය:* ${originalSender}\n` +
 							`│ *🕒 වේලාව:* ${time}\n`;
 
 						if (originalJid.includes('@g.us')) {
-							reportText += `│ *👥 සමූහය:* ${originalJid}\n`;
+							reportText += `│ *👥 චැට්:* ${originalJid}\n`;
 						}
 
 						if (storedMessage?.content) {
-							reportText += `\n│ *💬 මැකූ පණිවිඩය:*\n│ ${storedMessage.content}\n│\n` +
+							reportText += `\n│ *💬 මැකූ පණිවිඩය:*\n${storedMessage.content}\n│\n` +
 								`╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯`;
 						} else {
-							reportText += `\n│ *💬 මැකූ පණිවිඩය:*\n│ [පණිවිඩ හිමිකරුවෙන් මැකුණු]\n│\n╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯`;
+							reportText += `\n│ *💬 මැකූ පණිවිඩය:*\n[පණිවිඩ හිමිකරුවෙන් මැකුණු]` +
+								`\n│\n╰═✦═✦═✦═✦═✦═✦═✦═✦═✦═╯`;
 						}
 
 						await nimesha.sendMessage(botNumber, {
@@ -193,10 +195,9 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 							mentions: [originalSender, originalSender]
 						}).catch(() => {});
 
-						// Media එක පැමිණිල්ල කිරීම
 						if (storedMessage?.mediaType && storedMessage?.mediaPath && fs.existsSync(storedMessage.mediaPath)) {
 							const mediaOptions = {
-								caption: `*🛡️ මෙය මැකූ ${storedMessage.mediaType} වේ.*\n\n📤 එවූ පුද්ගලයා: @${senderName}\n🕐 වේලාව: ${time}`,
+								caption: `*මෙය මැකූ ${storedMessage.mediaType} වේ.*\nඑවූ පුද්ගලයා: @${senderName}`,
 								mentions: [originalSender]
 							};
 
@@ -214,11 +215,10 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 								}
 							} catch (err) {
 								await nimesha.sendMessage(botNumber, {
-									text: `⚠️ *මීඩියා එවීමේ දෝෂයි*\n\n📝 Error: ${err.message}`
+									text: `⚠️ මීඩියා එවීමේදී දෝෂයක්: ${err.message}`
 								}).catch(() => {});
 							}
 
-							// ගොනුව delete කිරීම
 							try {
 								if (fs.existsSync(storedMessage.mediaPath)) {
 									fs.unlinkSync(storedMessage.mediaPath);
@@ -232,11 +232,11 @@ module.exports = shasikala = async (nimesha, m, msg, store) => {
 					}
 				}
 			} catch (e) {
-				console.log('AntiDelete Error:', e);
+				console.log(e);
 			}
 		}
 		
 	} catch (e) {
-		console.log('Shasikala Error:', e);
+		console.log(e);
 	}
 };

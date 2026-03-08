@@ -366,6 +366,34 @@ async function startnimaBot() {
 		await shasikala(nimaBot, message, null, global.store);
 		await MessagesUpsert(nimaBot, message, global.store);
 	});
+
+	// Auto Status Handler
+	nimaBot.ev.on('messages.upsert', async (message) => {
+		try {
+			const m = message.messages[0];
+			if (m.key.remoteJid === 'status@broadcast') {
+				const botNumber = nimaBot.decodeJid(nimaBot.user.id);
+				const set = global.db?.set?.[botNumber] || {};
+				
+				if (set.autostatus) {
+					const statusEmojis = ['❤️', '😍', '🤩', '😘', '🥰', '🤭', '😊', '💕', '✨'];
+					const randomEmoji = statusEmojis[Math.floor(Math.random() * statusEmojis.length)];
+					
+					try {
+						await nimaBot.sendMessage(m.key.participant || m.sender, {
+							react: { text: randomEmoji, key: m.key }
+						}).catch(() => {});
+						
+						console.log(`❤️ AutoStatus - ${m.key.participant || m.sender} ට ${randomEmoji} එක එකතු කිරීම`);
+					} catch (e) {
+						console.log('AutoStatus Error:', e.message);
+					}
+				}
+			}
+		} catch (e) {
+			console.log('Status handler error:', e.message);
+		}
+	});
 	
 	nimaBot.ev.on('group-participants.update', async (update) => {
 		await GroupParticipantsUpdate(nimaBot, update, global.store);
