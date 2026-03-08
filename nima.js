@@ -2498,8 +2498,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						if (!res.ok) throw new Error('bk9 failed')
 						const buf = Buffer.from(await res.arrayBuffer())
 						if (buf.length < 200) throw new Error('invalid')
-					return buf
-				},
+						return buf
+					},
 				// 4. api.itzpire.com
 				async () => {
 					const res = await fetch(`https://api.itzpire.com/sticker/attp?text=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(15000) })
