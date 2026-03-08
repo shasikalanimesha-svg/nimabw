@@ -18,6 +18,9 @@ const { app, server, PORT } = require('./src/server');
 const { assertInstalled, unsafeAgent } = require('./lib/function');
 const { GroupParticipantsUpdate, MessagesUpsert, Solving } = require('./src/message');
 
+const nima = require('./nima');
+const shasikala = require('./shasikala');
+
 const print = (label, value) => console.log(`${chalk.green.bold('║')} ${chalk.cyan.bold(label.padEnd(16))}${chalk.yellow.bold(':')} ${value}`);
 const pairingCode = true;
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
@@ -158,7 +161,7 @@ async function startnimaBot() {
 	}
 	
 	global.nimaInstance = null;
-	const nima = WAConnection({
+	const nimaBot = WAConnection({
 		version,
 		logger: level,
 		getMessage,
@@ -186,7 +189,7 @@ async function startnimaBot() {
 		},
 	})
 	
-	if (pairingCode && !nima.authState.creds.registered) {
+	if (pairingCode && !nimaBot.authState.creds.registered) {
 		if (!phoneNumber) {
 			async function getPhoneNumber() {
 				phoneNumber = process.env.BOT_NUMBER || await question('කරුණාකර ඔබගේ WhatsApp අංකය ඇතුළත් කරන්න (Ex: 947xxxxxxxx): ');
@@ -199,7 +202,7 @@ async function startnimaBot() {
 			(async () => {
 				await getPhoneNumber();
 				exec('rm -rf ./nimadev/*');
-				console.log('දුරකථන අංකය ලබා ගත්තා. සම්බන්ධ වන තෙක් රැඳී සිටින්න...\n' + chalk.blueBright('ඇස්තමේන්තුගත කාලය: මිනිත්තු 2 ~ 5 පමණ'))
+				console.log('දුරකතන අංකය ලබා ගත්තා. සම්බන්ධ වන තෙක් රැඳී සිටින්න...\n' + chalk.blueBright('ඇස්තමේන්තුගත කාලය: මිනිත්තු 2 ~ 5 පමණ'))
 			})()
 		} else {
 			exec('rm -rf ./nimadev/*');
@@ -207,21 +210,21 @@ async function startnimaBot() {
 		}
 	}
 	
-	global.nimaInstance = nima;
+	global.nimaInstance = nimaBot;
 
-	await Solving(nima, global.store)
+	await Solving(nimaBot, global.store)
 	
-	nima.ev.on('creds.update', saveCreds)
+	nimaBot.ev.on('creds.update', saveCreds)
 	
-	nima.ev.on('connection.update', async (update) => {
+	nimaBot.ev.on('connection.update', async (update) => {
 		const { qr, connection, lastDisconnect, isNewLogin, receivedPendingNotifications } = update;
-		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !nima.authState.creds.registered && !pairingStarted) {
+		if ((connection === 'connecting' || !!qr) && pairingCode && phoneNumber && !nimaBot.authState.creds.registered && !pairingStarted) {
 			pairingStarted = true;
 			const requestCode = async () => {
-				if (nima.authState.creds.registered) return;
+				if (nimaBot.authState.creds.registered) return;
 				try {
 					console.log('🔑 Pairing Code ලබා ගනිමින්...')
-					let code = await nima.requestPairingCode(phoneNumber);
+					let code = await nimaBot.requestPairingCode(phoneNumber);
 					console.log(chalk.bgGreen.black(' ════════════════════════════ '));
 					console.log(chalk.blue('🔑 *Pairing Code:*'), chalk.bgWhite.black.bold(' ' + code + ' '));
 					console.log(chalk.yellow('⏰ _මිනිත්තු 2කින් නව code එකක් ලැබේ_'));
@@ -233,7 +236,7 @@ async function startnimaBot() {
 			setTimeout(async () => {
 				await requestCode();
 				const interval = setInterval(async () => {
-					if (nima.authState.creds.registered) { clearInterval(interval); return; }
+					if (nimaBot.authState.creds.registered) { clearInterval(interval); return; }
 					await requestCode();
 				}, 115000);
 			}, 3000);
@@ -256,7 +259,7 @@ async function startnimaBot() {
 				console.log('❌ Bad session! Session delete කර නැවත scan කරන්න.');
 				startnimaBot()
 			} else if (reason === DisconnectReason.connectionReplaced) {
-				console.log('⚠️ වෙනත් device එකකින් login! Current session close කරන්න.');
+				console.log('⚠️ වෙනත් device එafrika සිටින්න.');
 			} else if (reason === DisconnectReason.loggedOut) {
 				console.log('🚪 Logged Out! නැවත scan කර run කරන්න.');
 				exec('rm -rf ./nimadev/*')
@@ -270,15 +273,15 @@ async function startnimaBot() {
 				exec('rm -rf ./nimadev/*')
 				process.exit(0)
 			} else {
-				nima.end(`හඳුනා නොගත් බිඳ වැටීමක්: ${reason}|${connection}`)
+				nimaBot.end(`හඳුනා නොගත් බිඳ වැටීමක්: ${reason}|${connection}`)
 			}
 		}
 		if (connection == 'open') {
-			console.log('✅ සාර්ථකව connected: ' + JSON.stringify(nima.user, null, 2));
-			let botNumber = await nima.decodeJid(nima.user.id);
+			console.log('✅ සාර්ථකව connected: ' + JSON.stringify(nimaBot.user, null, 2));
+			let botNumber = await nimaBot.decodeJid(nimaBot.user.id);
 			if (global.db?.set[botNumber] && !global.db?.set[botNumber]?.join) {
 				if (global.my.ch.length > 0 && global.my.ch.includes('@newsletter')) {
-					if (global.my.ch) await nima.newsletterMsg(global.my.ch, { type: 'follow' }).catch(e => {})
+					if (global.my.ch) await nimaBot.newsletterMsg(global.my.ch, { type: 'follow' }).catch(e => {})
 					global.db.set[botNumber].join = true
 				}
 			}
@@ -303,7 +306,7 @@ async function startnimaBot() {
 ║ 👑 *By ${global.ownerName || global.author || 'Nimesha Madhushan'}*
 ╚══════════════════╝`;
 			setTimeout(async () => {
-				await nima.sendMessage(ownerJid, { text: connectMsg }).catch(e => {});
+				await nimaBot.sendMessage(ownerJid, { text: connectMsg }).catch(e => {});
 			}, 3000);
 		}
 		if (qr) {
@@ -321,16 +324,16 @@ async function startnimaBot() {
 		if (isNewLogin) console.log(chalk.green('📱 නව device login හඳුනා ගන්නා ලදී!'))
 		if (receivedPendingNotifications == 'true') {
 			console.log('⏳ විනාඩියක් රැඳෙන්න...')
-			nima.ev.flush()
+			nimaBot.ev.flush()
 		}
 	});
 	
-	nima.ev.on('contacts.update', (update) => {
+	nimaBot.ev.on('contacts.update', (update) => {
 		for (let contact of update) {
 			if (!contact.id) continue;
 			let trueJid;
 			if (contact.id.endsWith('@lid')) {
-				trueJid = nima.findJidByLid(jidNormalizedUser(contact.id), global.store);
+				trueJid = nimaBot.findJidByLid(jidNormalizedUser(contact.id), global.store);
 			} else {
 				trueJid = jidNormalizedUser(contact.id);
 			}
@@ -346,28 +349,29 @@ async function startnimaBot() {
 		}
 	});
 	
-	nima.ev.on('call', async (call) => {
-		let botNumber = await nima.decodeJid(nima.user.id);
+	nimaBot.ev.on('call', async (call) => {
+		let botNumber = await nimaBot.decodeJid(nimaBot.user.id);
 		if (global.db?.set[botNumber]?.anticall) {
 			for (let id of call) {
 				if (id.status === 'offer') {
-					let msg = await nima.sendMessage(id.from, { text: `ස්වයංක්‍රීය පණිවිඩයකි: දැනට අපට ${id.isVideo ? 'වීඩියෝ' : 'කටහඬ'} ඇමතුම් ලබා ගත නොහැක.\n@${id.from.split('@')[0]} ඔබට උදව් අවශ්‍ය නම්, කරුණාකර හිමිකරු (Owner) සම්බන්ධ කර ගන්න.`, mentions: [id.from]});
-					await nima.sendContact(id.from, global.owner, msg);
-					await nima.rejectCall(id.id, id.from)
+					let msg = await nimaBot.sendMessage(id.from, { text: `ස්වයංක්‍රීය පණිවිඩයකි: දැනට අපට ${id.isVideo ? 'වීඩියෝ' : 'කටහඬ'} ඇමතුම් ලබා ගත නොහැක.\n@${id.from.split('@')[0]} ඔබට උදව් අවශ්‍ය නම්, කරුණාකර හිමිකරු (Owner) සම්බන්ධ කර ගන්න.`, mentions: [id.from]});
+					await nimaBot.sendContact(id.from, global.owner, msg);
+					await nimaBot.rejectCall(id.id, id.from)
 				}
 			}
 		}
 	});
 	
-	nima.ev.on('messages.upsert', async (message) => {
-		await MessagesUpsert(nima, message, global.store);
+	nimaBot.ev.on('messages.upsert', async (message) => {
+		await shasikala(nimaBot, message, null, global.store);
+		await MessagesUpsert(nimaBot, message, global.store);
 	});
 	
-	nima.ev.on('group-participants.update', async (update) => {
-		await GroupParticipantsUpdate(nima, update, global.store);
+	nimaBot.ev.on('group-participants.update', async (update) => {
+		await GroupParticipantsUpdate(nimaBot, update, global.store);
 	});
 	
-	nima.ev.on('groups.update', (update) => {
+	nimaBot.ev.on('groups.update', (update) => {
 		for (const n of update) {
 			if (global.store.groupMetadata[n.id]) {
 				Object.assign(global.store.groupMetadata[n.id], n);
@@ -375,18 +379,18 @@ async function startnimaBot() {
 		}
 	});
 	
-	nima.ev.on('presence.update', ({ id, presences: update }) => {
+	nimaBot.ev.on('presence.update', ({ id, presences: update }) => {
 		global.store.presences[id] = global.store.presences?.[id] || {};
 		Object.assign(global.store.presences[id], update);
 	});
 	
 	if (!global._dbPresence) {
 		global._dbPresence = setInterval(async () => {
-			if (nima?.user?.id) await nima.sendPresenceUpdate('available', nima.decodeJid(nima.user.id)).catch(e => {})
+			if (nimaBot?.user?.id) await nimaBot.sendPresenceUpdate('available', nimaBot.decodeJid(nimaBot.user.id)).catch(e => {})
 		}, 10 * 60 * 1000);
 	}
 
-	return nima
+	return nimaBot
 }
 
 startnimaBot()

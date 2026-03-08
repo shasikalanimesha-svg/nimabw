@@ -87,6 +87,8 @@ module.exports = nimesha = async (nimesha, m, msg, store) => {
 	
 	const ownerNumber = set.owner = [...new Set([...owner, botNumber.split('@')[0], ...set?.owner || []])];
 	
+	if (set.antidelete === undefined) set.antidelete = false;
+	if (set.autostatus === undefined) set.autostatus = false;
 	try {
 		await GroupUpdate(nimesha, m, store);
 		
@@ -1800,7 +1802,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						m.reply('*Private Only ලෙස සාර්ථකව වෙනස් කෙරිණ*')
 					} else m.reply('Mode: self/public/group/private/all')
 					break
-					case 'anticall': case 'autobio': case 'autoread': case 'autotyping': case 'readsw': case 'multiprefix': case 'antispam': case 'didyoumean':
+					case 'anticall': case 'autobio': case 'autoread': case 'autotyping': case 'readsw': case 'multiprefix': case 'antispam': case 'antidelete': case 'autostatus': case 'didyoumean':
 					if (!isCreator) return m.reply(mess.owner)
 					if (args[1] == 'on') {
 						if (set[args[0]]) return m.reply('*මීට පෙර සක්‍රිය කර ඇත*')
@@ -1819,7 +1821,16 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					m.reply(`Settings Bot @${botNumber.split('@')[0]}\n${settingsBot}\n\nඋදාහරණ: ${prefix + command} mode`);
 					break
 					default:
-					if (args[0] || args[1]) m.reply(`*කරුණාකර Settings තෝරන්න:*\n- Mode : *${prefix + command} mode self/public*\n- Anti Call : *${prefix + command} anticall on/off*\n- Auto Bio : *${prefix + command} autobio on/off*\n- Auto Read : *${prefix + command} autoread on/off*\n- Auto Typing : *${prefix + command} autotyping on/off*\n- Read Sw : *${prefix + command} readsw on/off*\n- Multi Prefix : *${prefix + command} multiprefix on/off*`)
+				if (args[0] || args[1]) {
+					if (command !== 'bot') return;
+					const validSettings = ['mode', 'anticall', 'antidelete', 'autostatus', 'autobio', 'autoread', 'autotyping', 'readsw', 'multiprefix'];
+					
+					if (!validSettings.includes(args[0])) {
+						return m.reply(`❌ *විධානය වැරදිය!*\n\n✅ නිවැරදි විධාන:\n\n${validSettings.map(s => `${prefix}bot ${s} on/off`).join('\n')}`);
+					}
+					
+					m.reply(`*කරුණාකර Settings තෝරන්න:*\n- Mode : *${prefix + command} mode self/public*\n- Anti Call : *${prefix + command} anticall on/off*\n- Anti Delete : *${prefix + command} antidelete on/off*\n- Auto Status : *${prefix + command} autostatus on/off*\n- Auto Bio : *${prefix + command} autobio on/off*\n- Auto Read : *${prefix + command} autoread on/off*\n- Auto Typing : *${prefix + command} autotyping on/off*\n- Read Sw : *${prefix + command} readsw on/off*\n- Multi Prefix : *${prefix + command} multiprefix on/off*`);
+				}
 				}
 				if (!args[0] && !args[1]) return m.reply(`*Bot ක්‍රියාත්මකව ඇත්තේ*\n*${runtime(process.uptime())}*`)
 			}
@@ -4597,6 +4608,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 │${setv} ${prefix}getmsgstore (දත්ත ගබඩාව ලබා ගැනීම)
 │${setv} ${prefix}bot --settings (බොට් සැකසුම්)
 │${setv} ${prefix}bot settings (බොට් සැකසුම්)
+│${setv} ${prefix}bot antidelete on/off (ඉවත් කළ පණිවිඩ ලුහුබඩු)
+│${setv} ${prefix}bot autostatus on/off (ස්ටේටස් ස්වයංක්‍රීයව like කිරීම)
 │${setv} ${prefix}getsession (සෙශන් එක ලබා ගැනීම)
 │${setv} ${prefix}delsession (සෙශන් එක මැකීම)
 │${setv} ${prefix}delsampah (වැඩකට නැති දත්ත මැකීම)
