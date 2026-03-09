@@ -19,7 +19,7 @@ class MusicDownloader {
         this.timeout = 120000;
     }
 
-    async downloadMp3(input) {
+    async downloadMp3(input, progressCallback = null) {
         const methods = [
             // yt-dlp Methods (1-8)
             {
@@ -151,10 +151,104 @@ class MusicDownloader {
             {
                 name: 'sox (audio convert)',
                 cmd: () => `sox "${input}" -c 2 -r 44100 "${this.tempDir}/audio_${Date.now()}.mp3" 2>/dev/null`
+            },
+
+            // ── API Methods (31-53) ─────────────────────────────────────
+            {
+                name: 'cobalt-api',
+                cmd: () => this._cobaltApi(input)
+            },
+            {
+                name: 'invidious-api',
+                cmd: () => this._invidiousApi(input)
+            },
+            {
+                name: 'rapidapi-mp36',
+                cmd: () => this._rapidApiMp36(input)
+            },
+            {
+                name: 'rapidapi-ytstream',
+                cmd: () => this._rapidApiYtStream(input)
+            },
+            {
+                name: 'cnvmp3',
+                cmd: () => this._cnvMp3(input)
+            },
+            {
+                name: 'ezmp3',
+                cmd: () => this._ezMp3(input)
+            },
+            {
+                name: 'yt1s',
+                cmd: () => this._yt1s(input)
+            },
+            {
+                name: 'loader.to',
+                cmd: () => this._loaderTo(input)
+            },
+            {
+                name: 'tomp3.cc',
+                cmd: () => this._toMp3(input)
+            },
+            {
+                name: 'savefrom',
+                cmd: () => this._savefrom(input)
+            },
+            {
+                name: 'notube',
+                cmd: () => this._notube(input)
+            },
+            {
+                name: 'ymp4',
+                cmd: () => this._ymp4(input)
+            },
+            {
+                name: 'converto',
+                cmd: () => this._converto(input)
+            },
+            {
+                name: 'mp3clan',
+                cmd: () => this._mp3clan(input)
+            },
+            {
+                name: 'ytbsave',
+                cmd: () => this._ytbsave(input)
+            },
+            {
+                name: 'ssyoutube',
+                cmd: () => this._ssyoutube(input)
+            },
+            {
+                name: 'yt-dlp (android_music)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=android_music" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (android_creator)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=android_creator" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (tv_embedded)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=tv_embedded" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (mediaconnect)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=mediaconnect" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (android_testsuite)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=android_testsuite" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (web_embedded)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=web_embedded" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
+            },
+            {
+                name: 'yt-dlp (ios_music)',
+                cmd: () => `yt-dlp -x --audio-format mp3 --extractor-args "youtube:player_client=ios_music" "${input}" -o "${this.tempDir}/%(title)s.%(ext)s" 2>/dev/null`
             }
         ];
 
-        return this._tryMethods(methods);
+        return this._tryMethods(methods, input, progressCallback);
     }
 
     async _ytdlCore(url) {
@@ -363,37 +457,259 @@ class MusicDownloader {
         });
     }
 
-    async searchAndDownload(query) {
+    async searchAndDownload(query, progressCallback = null) {
         try {
             const YtSearch = require('yt-search');
             const result = await YtSearch(query);
             
             if (result && result.videos && result.videos.length > 0) {
                 const url = `https://www.youtube.com/watch?v=${result.videos[0].videoId}`;
-                return this.downloadMp3(url);
+                return this.downloadMp3(url, progressCallback);
             }
-            throw new Error('YouTube ප්‍රතිඵල හමු නොවිණි');
+            throw new Error('YouTube ප්‍රතිදල හමු නොළිණී');
         } catch (err) {
             throw err;
         }
     }
 
-    async downloadByUrl(url) {
-        return this.downloadMp3(url);
+    async downloadByUrl(url, progressCallback = null) {
+        return this.downloadMp3(url, progressCallback);
     }
 
-    async _tryMethods(methods) {
+
+    // ════════════════════════════════════════════════════════════════
+    //   API HELPER METHODS (31-53)
+    // ════════════════════════════════════════════════════════════════
+
+    _getVideoId(url) {
+        return url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([^&\n?#]+)/)?.[1] || null;
+    }
+
+    async _fetch(url, options = {}) {
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        return (await fetch)(url, { ...options, signal: AbortSignal.timeout(options.timeout || 25000) });
+    }
+
+    async _downloadUrlToFile(dlUrl) {
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const filePath = path.join(this.tempDir, `audio_${Date.now()}.mp3`);
+        const res = await (await fetch)(dlUrl, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(60000) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = Buffer.from(await res.arrayBuffer());
+        fs.writeFileSync(filePath, buf);
+        return filePath;
+    }
+
+    async _cobaltApi(url) {
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const fetchFn = await fetch;
+        const instanceRes = await fetchFn('https://instances.cobalt.best/api/instances.json', { signal: AbortSignal.timeout(8000) });
+        const instances = await instanceRes.json();
+        const cobaltList = (instances || []).filter(i => i.online && i.services?.youtube).sort((a,b) => (b.score||0)-(a.score||0)).slice(0,5).map(i => `${i.protocol||'https'}://${i.api}`);
+        const allInst = [...cobaltList, 'https://api.cobalt.tools', 'https://cobalt.oisd.nl'];
+        for (const inst of allInst) {
+            try {
+                const r = await fetchFn(`${inst}/`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ url, downloadMode: 'audio', audioFormat: 'mp3', audioBitrate: '128' }), signal: AbortSignal.timeout(12000) });
+                const d = await r.json();
+                if (d?.url) return await this._downloadUrlToFile(d.url);
+            } catch {}
+        }
+        throw new Error('cobalt: all failed');
+    }
+
+    async _invidiousApi(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const instances = ['https://inv.nadeko.net','https://invidious.privacyredirect.com','https://invidious.nerdvpn.de','https://yt.artemislena.eu','https://invidious.lunar.icu','https://iv.datura.network'];
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const fetchFn = await fetch;
+        for (const inst of instances) {
+            try {
+                const r = await fetchFn(`${inst}/api/v1/videos/${videoId}?fields=adaptiveFormats`, { signal: AbortSignal.timeout(8000) });
+                const d = await r.json();
+                const fmt = (d.adaptiveFormats||[]).filter(f=>f.type?.includes('audio')).sort((a,b)=>(b.bitrate||0)-(a.bitrate||0))[0];
+                if (fmt?.url) {
+                    const dlUrl = fmt.url.replace(/^https:\/\/[^/]+/, inst);
+                    return await this._downloadUrlToFile(dlUrl);
+                }
+            } catch {}
+        }
+        throw new Error('invidious: all failed');
+    }
+
+    async _rapidApiMp36(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const RAPID_KEY = '3bde5a3ca1msh6a3c2e0e02d1fdap142e7bjsn8f5a2e0e3c4a';
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://youtube-mp36.p.rapidapi.com/dl?id=${videoId}`, { headers: { 'x-rapidapi-host': 'youtube-mp36.p.rapidapi.com', 'x-rapidapi-key': RAPID_KEY }, signal: AbortSignal.timeout(30000) });
+        const d = await r.json();
+        if (!d?.link) throw new Error('no link');
+        return await this._downloadUrlToFile(d.link);
+    }
+
+    async _rapidApiYtStream(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const RAPID_KEY = '3bde5a3ca1msh6a3c2e0e02d1fdap142e7bjsn8f5a2e0e3c4a';
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://ytstream-download-youtube-videos.p.rapidapi.com/dl?id=${videoId}`, { headers: { 'x-rapidapi-host': 'ytstream-download-youtube-videos.p.rapidapi.com', 'x-rapidapi-key': RAPID_KEY }, signal: AbortSignal.timeout(30000) });
+        const d = await r.json();
+        const link = d?.link || d?.url || d?.formats?.['140']?.url;
+        if (!link) throw new Error('no link');
+        return await this._downloadUrlToFile(link);
+    }
+
+    async _cnvMp3(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://cnvmp3.com/api.php?url=https://www.youtube.com/watch?v=${videoId}&format=mp3&quality=128`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://cnvmp3.com/' }, signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        if (!d?.url) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url);
+    }
+
+    async _ezMp3(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)('https://ezmp3.cc/api/convert', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla/5.0' }, body: new URLSearchParams({ id: videoId }), signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        if (!d?.url && !d?.link) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url || d.link);
+    }
+
+    async _yt1s(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const fetchFn = await fetch;
+        const r1 = await fetchFn('https://yt1s.com/api/ajaxSearch/index', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla/5.0' }, body: new URLSearchParams({ q: `https://www.youtube.com/watch?v=${videoId}`, vt: 'mp3' }), signal: AbortSignal.timeout(15000) });
+        const d1 = await r1.json();
+        const kId = d1?.links?.mp3?.mp3128?.k;
+        if (!kId) throw new Error('no key');
+        const r2 = await fetchFn('https://yt1s.com/api/ajaxConvert/convert', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ vid: videoId, k: kId }), signal: AbortSignal.timeout(30000) });
+        const d2 = await r2.json();
+        if (!d2?.dlink) throw new Error('no link');
+        return await this._downloadUrlToFile(d2.dlink);
+    }
+
+    async _loaderTo(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const fetchFn = await fetch;
+        const r = await fetchFn(`https://loader.to/ajax/download.php?format=mp3&url=https://www.youtube.com/watch?v=${videoId}`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(30000) });
+        const d = await r.json();
+        if (!d?.success || !d?.id) throw new Error('no id');
+        for (let i = 0; i < 15; i++) {
+            await new Promise(r => setTimeout(r, 3000));
+            const r2 = await fetchFn(`https://loader.to/ajax/progress.php?id=${d.id}`, { signal: AbortSignal.timeout(10000) });
+            const d2 = await r2.json();
+            if (d2?.download_url) return await this._downloadUrlToFile(d2.download_url);
+        }
+        throw new Error('loader.to timeout');
+    }
+
+    async _toMp3(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://tomp3.cc/api/json?id=${videoId}&format=mp3`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://tomp3.cc/' }, signal: AbortSignal.timeout(25000) });
+        const d = await r.json();
+        if (!d?.link) throw new Error('no link');
+        return await this._downloadUrlToFile(d.link);
+    }
+
+    async _savefrom(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://worker.sf-tools.com/savefrom.php?sf_url=https://www.youtube.com/watch?v=${videoId}`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        const link = d?.url?.[0]?.url || d?.url;
+        if (!link) throw new Error('no link');
+        return await this._downloadUrlToFile(link);
+    }
+
+    async _notube(url) {
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)('https://notube.net/api/button/?api=dfcb6d76f2f6a9894gjkege8a4ab232222', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ url }), signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        if (!d?.url) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url);
+    }
+
+    async _ymp4(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)('https://ymp4.download/api/convert', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla/5.0' }, body: new URLSearchParams({ url: `https://www.youtube.com/watch?v=${videoId}`, format: 'mp3' }), signal: AbortSignal.timeout(25000) });
+        const d = await r.json();
+        if (!d?.url) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url);
+    }
+
+    async _converto(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://www.converto.io/download-api/fetch?url=https://www.youtube.com/watch?v=${videoId}&format=mp3&video=false`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://www.converto.io/' }, signal: AbortSignal.timeout(25000) });
+        const d = await r.json();
+        const link = d?.link || d?.url;
+        if (!link) throw new Error('no link');
+        return await this._downloadUrlToFile(link);
+    }
+
+    async _mp3clan(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://mp3clan.com/app/mp3Search.php?q=${videoId}&count=1`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        const link = d?.response?.[0]?.url || d?.response?.[0]?.mp3;
+        if (!link) throw new Error('no link');
+        return await this._downloadUrlToFile(link);
+    }
+
+    async _ytbsave(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://ytbsave.com/api/convert?url=https://www.youtube.com/watch?v=${videoId}&format=mp3`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        if (!d?.url) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url);
+    }
+
+    async _ssyoutube(url) {
+        const videoId = this._getVideoId(url);
+        if (!videoId) throw new Error('Invalid YT URL');
+        const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+        const r = await (await fetch)(`https://ssyoutube.com/api/convert?id=${videoId}&type=mp3`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(20000) });
+        const d = await r.json();
+        if (!d?.url) throw new Error('no link');
+        return await this._downloadUrlToFile(d.url);
+    }
+
+    async _tryMethods(methods, input = '', progressCallback = null) {
         const attempts = [];
+        const total = methods.length;
         
-        for (const method of methods) {
+        for (let i = 0; i < methods.length; i++) {
+            const method = methods[i];
+            const num = i + 1;
             try {
                 let cmd = typeof method.cmd === 'function' ? await method.cmd() : method.cmd;
                 
                 if (typeof cmd === 'string' && cmd.startsWith('/')) {
                     if (fs.existsSync(cmd)) {
+                        if (progressCallback) await progressCallback(num, method.name, true, total);
                         return { success: true, method: method.name, filePath: cmd, fileName: path.basename(cmd) };
                     }
                     attempts.push({ method: method.name, success: false });
+                    if (progressCallback) await progressCallback(num, method.name, false, total);
                     continue;
                 }
 
@@ -406,12 +722,15 @@ class MusicDownloader {
                 
                 if (audioFile) {
                     const filePath = path.join(this.tempDir, audioFile);
+                    if (progressCallback) await progressCallback(num, method.name, true, total);
                     return { success: true, method: method.name, filePath, fileName: audioFile };
                 }
                 
                 attempts.push({ method: method.name, success: false });
+                if (progressCallback) await progressCallback(num, method.name, false, total);
             } catch (err) {
                 attempts.push({ method: method.name, success: false, error: err.message });
+                if (progressCallback) await progressCallback(num, method.name, false, total);
             }
         }
 
@@ -511,11 +830,24 @@ ${botFooter}`;
 
                     await nimesha.sendMessage(m.chat, { text: downloadingMsg }, { quoted: m, edit: statusMsg.key });
 
+                    // Live progress lines
+                    let progressLines = [];
+                    const progressCallback = async (num, methodName, success, total) => {
+                        try {
+                            const icon = success ? '✅' : '❌';
+                            const status = success ? 'සාර්ථකයි' : 'අසාර්ථකයි';
+                            progressLines.push(`${icon} *${num}/${total}* — \`${methodName}\` → ${status}`);
+                            const nextLine = !success && num < total ? '\n\n⏳ _ඊළඟ method try කරමින්..._' : '';
+                            const progressText = `⬇️ 𝑩𝑨𝑮𝑨𝑵𝑰𝑴𝑰𝑵...\n━━━━━━━━━━━━━━━━━━━━━━\n🎵 *ඉල්ලුම්:* ${input}\n━━━━━━━━━━━━━━━━━━━━━━\n${progressLines.join('\n')}${nextLine}\n━━━━━━━━━━━━━━━━━━━━━━\n${botFooter}`;
+                            await nimesha.sendMessage(m.chat, { text: progressText }, { quoted: m, edit: statusMsg.key });
+                        } catch (e) {}
+                    };
+
                     let downloadResult;
                     if (input.match(/https?:\/\//)) {
-                        downloadResult = await musicDownloader.downloadByUrl(input);
+                        downloadResult = await musicDownloader.downloadByUrl(input, progressCallback);
                     } else {
-                        downloadResult = await musicDownloader.searchAndDownload(input);
+                        downloadResult = await musicDownloader.searchAndDownload(input, progressCallback);
                     }
 
                     if (!downloadResult.success) {

@@ -19,28 +19,24 @@ const log = {
     header: (msg) => console.log(`\n${chalk.bold.blue('═══════════════════════════════════')}\n${chalk.bold.cyan(msg)}\n${chalk.bold.blue('═══════════════════════════════════')}\n`)
 };
 
-// 🎵 YouTube Download Methods Package Matrix
+// 🎵 YouTube Download Methods Package Matrix (53+ methods - 2026 Upgrade)
 const YOUTUBE_METHODS = {
     'yt-dlp': {
         packages: ['yt-dlp', 'python3'],
         methods: [
-            'Default (best)',
-            'Android Client',
-            'WEB Mobile (mweb)',
-            'WEB Creator',
-            'TV Embedded',
-            'iOS Client',
-            'VR Client',
-            'Studio Client'
+            'Default (best)', 'Android Client', 'WEB Mobile (mweb)', 'WEB Creator',
+            'TV Embedded', 'iOS Client', 'VR Client', 'Studio Client',
+            'android_music', 'android_creator', 'android_testsuite',
+            'ios_music', 'tv', 'web_embedded', 'mediaconnect'
         ]
     },
     'youtube-dl': {
         packages: ['youtube-dl', 'python3'],
-        methods: ['Python executable', 'Direct URL']
+        methods: ['Python executable', 'Direct URL', 'Legacy mode', 'No-cookie mode']
     },
     'ffmpeg': {
         packages: ['ffmpeg'],
-        methods: ['Direct stream extraction']
+        methods: ['Direct stream extraction', 'libmp3lame encode', 'AAC->MP3', 'batch convert']
     },
     'spotifydl': {
         packages: ['spotifydl'],
@@ -48,15 +44,30 @@ const YOUTUBE_METHODS = {
     },
     'curl': {
         packages: ['curl'],
-        methods: ['HTTP streaming']
+        methods: ['HTTP streaming', 'pipe to ffmpeg']
     },
     'wget': {
         packages: ['wget'],
-        methods: ['Direct download']
+        methods: ['Direct download', 'pipe to ffmpeg']
     },
     'aria2c': {
         packages: ['aria2'],
         methods: ['Multi-thread download']
+    },
+    'sox': {
+        packages: ['sox'],
+        methods: ['Audio format conversion (shasikala fallback)']
+    },
+    'node-fetch': {
+        packages: [],
+        methods: [
+            'cobalt API (17+ instances)',
+            'invidious API (12+ instances)',
+            'rapidapi-mp36', 'rapidapi-ytstream',
+            'cnvmp3', 'ezmp3', 'yt1s', 'loader.to', 'tomp3.cc',
+            'savefrom', 'notube', 'ymp4', 'converto',
+            'mp3clan', 'ytbsave', 'ssyoutube'
+        ]
     }
 };
 
@@ -882,19 +893,33 @@ async function autoInstallDependencies() {
     // පද්ධති බිමට අවශ්‍යතා පරීක්ෂා කරමින් සහ නැතිවූ විට ස්වයංක්‍රියව ස්ථාපනය
     log.header('🔧 system පරීක්ෂා කරමින්');
     
-    // 🎵 YouTube සඳහා අනිවාර්ය: ffmpeg, yt-dlp, python3
-    // 🎵 shasikala.js සිතුවම් download feature සඳහා: .song .spotify .soundcloud .play commands
-    const mandatorySysDeps = ['ffmpeg', 'yt-dlp', 'python3']; 
-    const optionalSysDeps = {
-        'curl': 'HTTP ඉල්ලුම් / streaming (shasikala)',
-        'git': 'version control පද්ධතිය',
-        'spotifydl': 'Spotify ට්‍රැක download (shasikala .spotify)',
-        'imagemagick': 'ඡායාරූප පරිවර්තනය',
-        'ghostscript': 'PDF/document ක්‍රියාවලිය',
-        'youtube-dl': 'YouTube සිതුවම් download (shasikala fallback)',
-        'wget': 'direct ගොනුව download (shasikala fallback)',
-        'aria2c': 'බහු-thread download (shasikala fallback)',
-        'ffprobe': 'මීඩියා තොරතුරු'
+    // ════════════════════════════════════════════════════════════
+    // 🔧 SYSTEM DEPENDENCIES (2026 - Updated for 50+ YT methods)
+    //
+    // MANDATORY (bot නොනවතිනවා මේවා නැතිව):
+    //   ffmpeg    - audio/video encode, shasikala methods 23-26
+    //   python3   - yt-dlp + youtube-dl runtime
+    //   yt-dlp    - lib/scraper.js + shasikala.js methods 1-16 (15 client variants)
+    //
+    // OPTIONAL (miss වුණොත් fallback methods use කරනවා):
+    //   youtube-dl  - shasikala methods 9-14 fallback
+    //   curl/wget   - shasikala methods 27-28, lib/scraper API download
+    //   aria2c      - shasikala method 29 multi-thread
+    //   sox         - shasikala method 30 audio convert
+    //   node-fetch  - (npm) lib/scraper API methods 17-53 (cobalt, invidious, etc.)
+    // ════════════════════════════════════════════════════════════
+    const mandatorySysDeps = ['ffmpeg', 'python3', 'yt-dlp'];
+    co    const optionalSysDeps = {
+        'curl':        'HTTP streaming + API calls (shasikala & lib/scraper 50+ methods)',
+        'wget':        'direct file download fallback (shasikala method 29)',
+        'git':         'version control',
+        'spotifydl':   'Spotify track download (shasikala .spotify command)',
+        'imagemagick': 'image processing / sticker creation',
+        'ghostscript': 'PDF/document processing',
+        'youtube-dl':  'YT download fallback (shasikala methods 9-14)',
+        'aria2c':      'multi-thread download (shasikala method 29)',
+        'sox':         'audio format conversion (shasikala method 30 fallback)',
+        'ffprobe':     'media info detection (usually bundled with ffmpeg)'
     };
 
     let missingMandatory = [];
@@ -1011,7 +1036,7 @@ async function autoInstallDependencies() {
     }
 
     // 🎵 සිතුවම් tools auto install
-    const musicToolsToInstall = missingOptional.filter(tool => ['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c'].includes(tool));
+    const musicToolsToInstall = missingOptional.filter(tool => ['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c', 'sox'].includes(tool));
     
     if (musicToolsToInstall.length > 0) {
         log.warn(`\n🎵 සිතුවම් tools නැතිවුණි: ${musicToolsToInstall.join(', ')}`);
@@ -1027,7 +1052,7 @@ async function autoInstallDependencies() {
                 
                 // Python tools yt-dlp, youtube-dl, spotifydl සඳහා
                 const pythonTools = musicToolsToInstall.filter(t => ['yt-dlp', 'youtube-dl', 'spotifydl'].includes(t));
-                const systemTools = musicToolsToInstall.filter(t => ['wget', 'aria2c'].includes(t));
+                const systemTools = musicToolsToInstall.filter(t => ['wget', 'aria2c', 'sox'].includes(t));
                 
                 if (pythonTools.length > 0) {
                     log.info(`Python tools ස්ථාපනය කරමින්: ${pythonTools.join(', ')}`);
@@ -1079,7 +1104,7 @@ async function autoInstallDependencies() {
     }
 
     // වෙනත් විකල්ප tools
-    const otherOptionalTools = missingOptional.filter(tool => !['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c'].includes(tool));
+    const otherOptionalTools = missingOptional.filter(tool => !['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c', 'sox'].includes(tool));
     if (otherOptionalTools.length > 0) {
         log.warn(`\nවෙනත් විකල්ප tools නැතිවුණි: ${otherOptionalTools.join(', ')}`);
 

@@ -3009,9 +3009,15 @@ ${global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨'}`;
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} YouTube URL`)
 				if (!text.includes('youtu')) return m.reply('URL YouTube ප්‍රතිඵලය ඇතුළත් නෑ!')
-				m.reply(mess.wait)
+				let _progressMsgKey = null;
+				const _sendProgress = async (txt, prevKey) => {
+					try {
+						const sent = await conn.sendMessage(m.chat, { text: txt }, { quoted: m });
+						return sent?.key || prevKey;
+					} catch { return prevKey; }
+				};
 				try {
-					const hasil = await ytMp3(text);
+					const hasil = await ytMp3(text, _sendProgress);
 					// hasil.result can be Buffer or { url: '...' }
 					const isBuffer = Buffer.isBuffer(hasil.result);
 					const audioPayload = isBuffer ? hasil.result : { url: hasil.result.url || hasil.result };
@@ -3066,9 +3072,15 @@ ${global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨'}`;
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} YouTube URL`)
 				if (!text.includes('youtu')) return m.reply('URL YouTube ප්‍රතිඵලය ඇතුළත් නෑ!')
-				m.reply(mess.wait)
+				let _progressMsgKey4 = null;
+				const _sendProgress4 = async (txt, prevKey) => {
+					try {
+						const sent = await conn.sendMessage(m.chat, { text: txt }, { quoted: m });
+						return sent?.key || prevKey;
+					} catch { return prevKey; }
+				};
 				try {
-					const hasil = await ytMp4(text);
+					const hasil = await ytMp4(text, _sendProgress4);
 					// hasil.result can be Buffer or { url: '...' }
 					const isBuffer = Buffer.isBuffer(hasil.result);
 					const videoPayload = isBuffer ? hasil.result : { url: hasil.result.url || hasil.result };
