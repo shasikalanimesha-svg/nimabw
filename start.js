@@ -31,8 +31,8 @@ function detectOS() {
         return {
             type: 'termux',
             display: 'Termux (Android)',
-            pm: 'atp', // Termux package manager
-            pmAlternate: 'pkg'
+            pm: 'pkg', // Updated to pkg
+            pmAlternate: 'apt'
         };
     }
     
@@ -114,8 +114,8 @@ function commandExists(cmd) {
 function getInstallCommands(osInfo, packages) {
     const cmds = {
         termux: {
-            update: 'atp update',
-            install: `atp install ${packages.join(' ')}`
+            update: 'pkg update',
+            install: `pkg install -y ${packages.join(' ')}`
         },
         ubuntu: {
             update: 'apt update',
@@ -138,7 +138,7 @@ function getInstallCommands(osInfo, packages) {
     return cmds[osInfo.type] || cmds.linux;
 }
 
-// Auto install missing packages
+// Auto install missing packages with retry logic
 async function autoInstallDependencies() {
     const osInfo = detectOS();
     
@@ -150,12 +150,12 @@ async function autoInstallDependencies() {
         log.info(`කරුණාකර install Node.js ඉල්ලන්න.`);
         
         const commands = getInstallCommands(osInfo, ['nodejs', 'npm']);
-        log.info(`\nInstall commands:\n  ${commands.update}\n  ${commands.install}`);
+        log.info(`\nස්ථාපන විධාන:\n  ${commands.update}\n  ${commands.install}`);
         
         process.exit(1);
     }
 
-    log.success('npm found!');
+    log.success('npm හමු විය!');
 
     // Check package.json
     const packageJsonPath = path.join(__dirname, 'package.json');
@@ -196,37 +196,66 @@ async function autoInstallDependencies() {
 
     console.log(`\n${chalk.cyan('Installed:')} ${installedCount}/${dependencyNames.length}`);
 
-    // If missing packages found, install them
+    // If missing packages found, install them with multiple retry attempts
     if (missingPackages.length > 0) {
         log.warn(`${missingPackages.length} නැතිවූ NPM පැකේජ හමු උණි!`);
         console.log(`\nMissing:\n${missingPackages.map(p => `  • ${chalk.yellow(p)}`).join('\n')}\n`);
 
         log.info('ලබාගැනීම ආරම්භ කරයි...\n');
 
-        try {
-            log.header('📥 කරමින්: npm install');
-            
-            execSync('npm install', {
-                stdio: 'inherit',
-                cwd: __dirname
-            });
+        let installSuccess = false;
+        let attempts = 0;
+        const maxAttempts = 3;
 
-            log.success('සියළුම NPM පැකේජ ලබාගන්නා ලදි!');
-        } catch (e) {
-            log.error('npm ලබාගැනීම අසාර්ථකයි!');
-            log.info('Please try manual installation:\n  npm install');
-            process.exit(1);
+        while (!installSuccess && attempts < maxAttempts) {
+            attempts++;
+            try {
+                log.header(`📥 කරමින්: npm install (උත්සාහය ${attempts}/${maxAttempts})`);
+                
+                // Clear npm cache before install
+                if (attempts > 1) {
+                    try {
+                        execSync('npm cache clean --force', {
+                            stdio: 'pipe',
+                            cwd: __dirname
+                        });
+                        log.info('npm කෑෂ් ඉවත් කරන ලදී');
+                    } catch (e) {
+                        // Continue anyway
+                    }
+                }
+                
+                execSync('npm install --prefer-offline --no-audit', {
+                    stdio: 'inherit',
+                    cwd: __dirname
+                });
+
+                installSuccess = true;
+                log.success('සියළුම NPM පැකේජ ලබාගන්නා ලදි!');
+            } catch (e) {
+                log.error(`npm ලබාගැනීම අසාර්ථකයි! (උත්සාහය ${attempts}/${maxAttempts})`);
+                
+                if (attempts < maxAttempts) {
+                    log.info(`${3 - attempts} උත්සාහ ඉතිරි ඇත... 3 තත්පර කින්නෙ නැවත උත්සාහ කරමින්`);
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                } else {
+                    log.error('උපරිම ස්ථාපන උත්සාහ ඉවසා ගිහින්!');
+                    log.info('කරුණාකර manual ලෙස ස්ථාපනය උත්සාහ කරන්න:\n  npm install');
+                    process.exit(1);
+                }
+            }
         }
     } else {
         log.success('දැනටමත් සියලුම npm ලබාගෙන ඇත!');
     }
 
-    // Check system dependencies
+    // Check system dependencies and auto-install if missing
     log.header('🔧 system පරීක්ෂා කරමින්');
     
     const systemDeps = {
         'ffmpeg': 'media processing',
         'python': 'python scripts',
+        'python3': 'python3 scripts',
         'curl': 'http requests'
     };
 
@@ -241,22 +270,39 @@ async function autoInstallDependencies() {
         }
     }
 
+    // Auto-install missing system dependencies
     if (missingSystemDeps.length > 0) {
         log.warn(`Missing system dependencies: ${missingSystemDeps.join(', ')}`);
         
         const installCmds = getInstallCommands(osInfo, missingSystemDeps);
         
-        console.log(`\n${chalk.cyan(`${osInfo.display} - Installation commands:`)}`);
+        console.log(`\n${chalk.cyan(`${osInfo.display} - ස්ථාපන උත්සාහ කරමින්:`)}`);
         console.log(`  ${chalk.yellow(installCmds.update)}`);
-        console.log(`  ${chalk.yellow(installCmds.install)}`);
+        console.log(`  ${chalk.yellow(installCmds.install)}\n`);
         
-        if (osInfo.type === 'termux') {
-            log.warn('ඔබ manually install කරන්න අවශ්‍ය විය හැක (if atp fails)');
-            console.log(`  ${chalk.cyan('atp update')}`);
-            console.log(`  ${chalk.cyan(`atp install ${missingSystemDeps.join(' ')}`)}`);
+        try {
+            // Try to update and install
+            if (osInfo.type !== 'macos') {
+                execSync(installCmds.update, { stdio: 'inherit' });
+            }
+            
+            execSync(installCmds.install, { stdio: 'inherit' });
+            
+            log.success('පද්ධති අවශ්‍යතා සාර්ථකව ස්ථාපනය කරන ලදී!');
+        } catch (e) {
+            log.warn('පද්ධති අවශ්‍යතා ස්ථාපනය අසාර්ථකයි!');
+            log.info('කරුණාකර මෙම විධාන manual ලෙස ධාවනය කරන්න:');
+            console.log(`  ${chalk.cyan(installCmds.update)}`);
+            console.log(`  ${chalk.cyan(installCmds.install)}`);
+            
+            if (osInfo.type === 'termux') {
+                log.info('Termux සඳහා විශේෂයි:');
+                console.log(`  ${chalk.cyan('pkg update')}`);
+                console.log(`  ${chalk.cyan(`pkg install ${missingSystemDeps.join(' ')}`)}`);
+            }
         }
     } else {
-        log.success('All system dependencies found!');
+        log.success('සියලුම පද්ධති අවශ්‍යතා හමු විය!');
     }
 
     log.success('Setup verification complete!');
@@ -293,7 +339,7 @@ async function start() {
             }
         });
     } catch (e) {
-        log.error('Startup failed: ' + e.message);
+        log.error('ආරම්භ කිරීම අසාර්ථකයි: ' + e.message);
         console.error(e);
         process.exit(1);
     }
