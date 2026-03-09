@@ -2753,9 +2753,12 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					// YouTube search
 					const searchRes = await yts(text)
 					const video = searchRes?.videos?.[0] || searchRes?.all?.[0]
-					if (!video?.url) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
+					if (!video) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
 
-					const videoUrl = video.url
+					// watch?v= format ensure — scraper.js getVideoId() works
+					const _vid = video.videoId || video.url?.match(/(?:v=|youtu\.be\/)([^&?#]+)/)?.[1]
+					if (!_vid) return m.reply('❌ YouTube video ID හමු නොවිණි!')
+					const videoUrl = `https://www.youtube.com/watch?v=${_vid}`
 					const videoTitle = video.title || text
 
 					await conn.sendMessage(m.chat, {
@@ -2974,11 +2977,14 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					try {
 						const searchRes = await yts(text)
 						const video = searchRes?.videos?.[0] || searchRes?.all?.[0]
-						if (!video?.url) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
-						ytUrl = video.url
+						if (!video) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
+						// always use watch?v= format so scraper.js getVideoId() works
+						const videoId = video.videoId || video.url?.match(/(?:v=|youtu\.be\/)([^&?#]+)/)?.[1]
+						if (!videoId) return m.reply('❌ YouTube video ID හමු නොවිණි!')
+						ytUrl = `https://www.youtube.com/watch?v=${videoId}`
 						ytTitle = video.title || text
 						await conn.sendMessage(m.chat, {
-							text: `🎯 *හමු වුණා!*\n━━━━━━━━━━━━━━━━━━━━━━\n🎵 *ගීතය:* ${ytTitle}\n⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
+							text: `🎯 *හමු වුණා!*\n━━━━━━━━━━━━━━━━━━━━━━\n🎵 *ගීතය:* ${ytTitle}\n🔗 ${ytUrl}\n⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
 						}, { quoted: m, edit: statusMsg.key })
 					} catch (se) {
 						return m.reply('❌ YouTube සෙවීම අසාර්ථකයි: ' + se.message.substring(0, 80))
@@ -3050,11 +3056,14 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					try {
 						const searchRes = await yts(text)
 						const video = searchRes?.videos?.[0] || searchRes?.all?.[0]
-						if (!video?.url) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
-						ytUrl = video.url
+						if (!video) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
+						// always use watch?v= format so scraper.js getVideoId() works
+						const videoId = video.videoId || video.url?.match(/(?:v=|youtu\.be\/)([^&?#]+)/)?.[1]
+						if (!videoId) return m.reply('❌ YouTube video ID හමු නොවිණි!')
+						ytUrl = `https://www.youtube.com/watch?v=${videoId}`
 						ytTitle = video.title || text
 						await conn.sendMessage(m.chat, {
-							text: `🎯 *හමු වුණා!*\n━━━━━━━━━━━━━━━━━━━━━━\n🎵 *ගීතය:* ${ytTitle}\n⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
+							text: `🎯 *හමු වුණා!*\n━━━━━━━━━━━━━━━━━━━━━━\n🎵 *ගීතය:* ${ytTitle}\n🔗 ${ytUrl}\n⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
 						}, { quoted: m, edit: statusMsg.key })
 					} catch (se) {
 						return m.reply('❌ YouTube සෙවීම අසාර්ථකයි: ' + se.message.substring(0, 80))
