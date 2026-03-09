@@ -4212,7 +4212,9 @@ ${global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨'}`;
 │${setv} ${prefix}urban (වචන අර්ථ සෙවීම්)
 ╰─┬────❍
 ╭─┴❍「 *⬇️ බාගත කිරීම් | DOWNLOAD ⬇️* 」❍
-│${setv} ${prefix}song (ගීතයේ නම සෙවීම)
+│${setv} ${prefix}mp3 (ගීතයේ නම / YouTube URL)
+│${setv} ${prefix}song (ගීතයේ නම / YouTube URL)
+│${setv} ${prefix}play (ගීතයේ නම / YouTube URL)
 │${setv} ${prefix}ytmp3 (YouTube ගීත)
 │${setv} ${prefix}ytmp4 (YouTube වීඩියෝ)
 │${setv} ${prefix}instagram (ඉන්ස්ටග්‍රෑම් වීඩියෝ)
@@ -4500,7 +4502,9 @@ ${global.mess?.footer || '> 🌸 *MISS SHASIKALA* [BOT]✨'}`;
 			case 'downloadmenu': {
 				m.reply(`
 ╭──❍「 *බාගත කිරීම් (DOWNLOAD)* 」❍
-│${setv} ${prefix}song (ගීතයේ නම සෙවීම)
+│${setv} ${prefix}mp3 (ගීතයේ නම / YouTube URL)
+│${setv} ${prefix}song (ගීතයේ නම / YouTube URL)
+│${setv} ${prefix}play (ගීතයේ නම / YouTube URL)
 │${setv} ${prefix}ytmp3 (YouTube ගීත)
 │${setv} ${prefix}ytmp4 (YouTube වීඩියෝ)
 │${setv} ${prefix}instagram (Instagram වීඩියෝ)
