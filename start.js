@@ -909,7 +909,7 @@ async function autoInstallDependencies() {
     //   node-fetch  - (npm) lib/scraper API methods 17-53 (cobalt, invidious, etc.)
     // ════════════════════════════════════════════════════════════
     const mandatorySysDeps = ['ffmpeg', 'python3', 'yt-dlp'];
-    co    const optionalSysDeps = {
+    const optionalSysDeps = {
         'curl':        'HTTP streaming + API calls (shasikala & lib/scraper 50+ methods)',
         'wget':        'direct file download fallback (shasikala method 29)',
         'git':         'version control',
