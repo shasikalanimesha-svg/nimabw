@@ -140,14 +140,312 @@ function checkNpmInstalled() {
     }
 }
 
-// විධානය සිටින්නේ නම් පරීක්ෂා කරමින්
-function commandExists(cmd) {
-    try {
-        execSync(`which ${cmd}`, { stdio: 'pipe' });
-        return true;
-    } catch (e) {
-        return false;
+// ═══════════════════════════════════════════════════════════
+// 🔧 NODEJS සහ PYTHON AUTO-INSTALL/UPGRADE
+// ═══════════════════════════════════════════════════════════
+
+async function autoInstallNodeJS(osInfo) {
+    const methods = {
+        termux: [
+            'pkg update -y && pkg install -y nodejs',
+            'apt update -y && apt install -y nodejs',
+            'pkg install -y nodejs npm',
+            'apt install -y nodejs npm',
+        ],
+        ubuntu: [
+            'sudo apt update && sudo apt install -y nodejs npm',
+            'sudo apt-get update && sudo apt-get install -y nodejs npm',
+            'sudo snap install node --classic',
+            'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs',
+        ],
+        wsl: [
+            'sudo apt update && sudo apt install -y nodejs npm',
+            'sudo apt-get update && sudo apt-get install -y nodejs npm',
+            'winget install OpenJS.NodeJS',
+        ],
+        macos: [
+            'brew update && brew install node',
+            'brew upgrade node',
+            'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash',
+        ],
+        linux: [
+            'sudo apt update && sudo apt install -y nodejs npm',
+            'sudo yum install -y nodejs npm',
+            'sudo dnf install -y nodejs npm',
+            'sudo pacman -S --noconfirm nodejs npm',
+        ]
+    };
+
+    const cmdList = methods[osInfo.type] || methods.linux;
+    
+    for (let i = 0; i < cmdList.length; i++) {
+        try {
+            log.info(`[${i + 1}/${cmdList.length}] Node.js ස්ථාපනය උත්සාහ කරමින්: ${cmdList[i].substring(0, 60)}...`);
+            execSync(cmdList[i], { stdio: 'inherit', timeout: 180000 });
+            
+            if (checkNpmInstalled()) {
+                log.success('Node.js සාර්ථකව ස්ථාපනය වුණි!');
+                return true;
+            }
+        } catch (e) {
+            log.warn(`උත්සාහය ${i + 1} අසාර්ථකයි...`);
+        }
     }
+    return false;
+}
+
+async function autoInstallPython(osInfo) {
+    const methods = {
+        termux: [
+            'pkg update -y && pkg install -y python',
+            'pkg install -y python3',
+            'apt update -y && apt install -y python3',
+            'apt install -y python3-pip',
+        ],
+        ubuntu: [
+            'sudo apt update && sudo apt install -y python3',
+            'sudo apt-get update && sudo apt-get install -y python3',
+            'sudo apt install -y python3-pip',
+            'sudo apt-get install -y python3-pip',
+        ],
+        wsl: [
+            'sudo apt update && sudo apt install -y python3',
+            'winget install Python.Python.3.11',
+        ],
+        macos: [
+            'brew update && brew install python3',
+            'brew upgrade python3',
+        ],
+        linux: [
+            'sudo apt update && sudo apt install -y python3',
+            'sudo yum install -y python3',
+            'sudo dnf install -y python3',
+            'sudo pacman -S --noconfirm python',
+        ]
+    };
+
+    const cmdList = methods[osInfo.type] || methods.linux;
+    
+    for (let i = 0; i < cmdList.length; i++) {
+        try {
+            log.info(`[${i + 1}/${cmdList.length}] Python3 ස්ථාපනය උත්සාහ කරමින්: ${cmdList[i].substring(0, 60)}...`);
+            execSync(cmdList[i], { stdio: 'inherit', timeout: 180000 });
+            
+            if (commandExists('python3')) {
+                log.success('Python3 සාර්ථකව ස්ථාපනය වුණි!');
+                return true;
+            }
+        } catch (e) {
+            log.warn(`උත්සාහය ${i + 1} අසාර්ථකයි...`);
+        }
+    }
+    return false;
+}
+
+async function autoUpgradeSystemPackages(osInfo) {
+    log.header('📦 System පැකේජ upgrade කරමින්');
+    
+    const upgradeMethods = {
+        termux: [
+            'pkg update -y && pkg upgrade -y',
+            'apt update -y && apt upgrade -y',
+            'apt update && apt full-upgrade -y',
+        ],
+        ubuntu: [
+            'sudo apt update && sudo apt upgrade -y',
+            'sudo apt-get update && sudo apt-get upgrade -y',
+            'sudo apt update && sudo apt full-upgrade -y',
+        ],
+        wsl: [
+            'sudo apt update && sudo apt upgrade -y',
+            'sudo apt-get update && sudo apt-get upgrade -y',
+        ],
+        macos: [
+            'brew update && brew upgrade',
+            'softwareupdate -i -a',
+        ],
+        linux: [
+            'sudo apt update && sudo apt upgrade -y',
+            'sudo yum update -y',
+            'sudo dnf upgrade -y',
+            'sudo pacman -Syu --noconfirm',
+        ]
+    };
+
+    const cmdList = upgradeMethods[osInfo.type] || upgradeMethods.linux;
+    
+    for (let i = 0; i < cmdList.length; i++) {
+        try {
+            log.info(`[${i + 1}/${cmdList.length}] System upgrade උත්සාහය...`);
+            execSync(cmdList[i], { stdio: 'inherit', timeout: 300000 });
+            log.success('System පැකේජ upgrade සාර්ථකයි!');
+            return true;
+        } catch (e) {
+            log.warn(`උත්සාහය ${i + 1} අසාර්ථකයි...`);
+        }
+    }
+    return false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🎵 PACKAGE INSTALL WITH 10 ATTEMPTS FALLBACK
+// ═══════════════════════════════════════════════════════════
+
+async function installPackageWithFallback(osInfo, packageName, maxAttempts = 10) {
+    const installMethods = {
+        termux: [
+            () => `pkg update -y && pkg install -y ${packageName}`,
+            () => `apt update -y && apt install -y ${packageName}`,
+            () => `pip3 install ${packageName}`,
+            () => `pip install ${packageName}`,
+            () => `apt install -y ${packageName}`,
+            () => `pkg install -y ${packageName}`,
+            () => `apt upgrade -y && apt install -y ${packageName}`,
+            () => `pkg upgrade -y && pkg install -y ${packageName}`,
+            () => `apt full-upgrade -y && apt install -y ${packageName}`,
+            () => `pip3 install --upgrade ${packageName}`,
+        ],
+        ubuntu: [
+            () => `sudo apt update && sudo apt install -y ${packageName}`,
+            () => `sudo apt-get update && sudo apt-get install -y ${packageName}`,
+            () => `sudo apt upgrade -y && sudo apt install -y ${packageName}`,
+            () => `sudo apt-get upgrade -y && sudo apt-get install -y ${packageName}`,
+            () => `pip3 install ${packageName}`,
+            () => `sudo pip3 install ${packageName}`,
+            () => `pip install ${packageName}`,
+            () => `sudo snap install ${packageName}`,
+            () => `sudo apt full-upgrade -y && sudo apt install -y ${packageName}`,
+            () => `pip3 install --upgrade ${packageName}`,
+        ],
+        wsl: [
+            () => `sudo apt update && sudo apt install -y ${packageName}`,
+            () => `sudo apt-get update && sudo apt-get install -y ${packageName}`,
+            () => `sudo apt upgrade -y && sudo apt install -y ${packageName}`,
+            () => `pip3 install ${packageName}`,
+            () => `sudo pip3 install ${packageName}`,
+            () => `winget install -e --id ${packageName}`,
+            () => `sudo apt full-upgrade -y && sudo apt install -y ${packageName}`,
+            () => `pip install ${packageName}`,
+            () => `pip3 install --upgrade ${packageName}`,
+            () => `sudo dpkg --configure -a && sudo apt install -y ${packageName}`,
+        ],
+        macos: [
+            () => `brew update && brew install ${packageName}`,
+            () => `brew upgrade && brew install ${packageName}`,
+            () => `brew tap-new local/tools && brew install ${packageName}`,
+            () => `pip3 install ${packageName}`,
+            () => `pip install ${packageName}`,
+            () => `sudo pip3 install ${packageName}`,
+            () => `brew update && brew upgrade ${packageName}`,
+            () => `pip3 install --upgrade ${packageName}`,
+            () => `sudo port install ${packageName}`,
+            () => `curl -L https://package.manager | install ${packageName}`,
+        ],
+        linux: [
+            () => `sudo apt update && sudo apt install -y ${packageName}`,
+            () => `sudo yum install -y ${packageName}`,
+            () => `sudo dnf install -y ${packageName}`,
+            () => `sudo pacman -S --noconfirm ${packageName}`,
+            () => `pip3 install ${packageName}`,
+            () => `sudo apt upgrade -y && sudo apt install -y ${packageName}`,
+            () => `sudo yum upgrade -y && sudo yum install -y ${packageName}`,
+            () => `sudo dnf upgrade -y && sudo dnf install -y ${packageName}`,
+            () => `pip3 install --upgrade ${packageName}`,
+            () => `sudo -E pip3 install ${packageName}`,
+        ]
+    };
+
+    const methods = installMethods[osInfo.type] || installMethods.linux;
+    const attemptLimit = Math.min(maxAttempts, methods.length);
+
+    for (let attempt = 1; attempt <= attemptLimit; attempt++) {
+        try {
+            const cmd = methods[attempt - 1]();
+            log.info(`[${attempt}/${attemptLimit}] ${packageName} ස්ථාපනය උත්සාහය: ${cmd.substring(0, 70)}...`);
+            execSync(cmd, { stdio: 'inherit', timeout: 180000 });
+            log.success(`${packageName} සාර්ථකව ස්ථාපනය වුණි!`);
+            return true;
+        } catch (e) {
+            log.warn(`උත්සාහය ${attempt}/${attemptLimit} අසාර්ථකයි, ඉපිසිරුවමින්...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+
+    log.error(`${packageName} සියලුම ස්ථාපන උත්සාහ අසාර්ථකයි!`);
+    return false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🎯 CRITICAL PACKAGES AUTO-INSTALL/UPGRADE
+// ═══════════════════════════════════════════════════════════
+
+async function installCriticalPackages(osInfo, packages) {
+    log.header('🔧 Critical Package Installation (10 Attempts each)');
+    
+    let allSuccess = true;
+    
+    for (const pkg of packages) {
+        const success = await installPackageWithFallback(osInfo, pkg, 10);
+        if (!success) {
+            allSuccess = false;
+            log.error(`${pkg} ස්ථාපනය අසාර්ථකයි - ශ්‍රිතයන් සීමිතයි!`);
+        }
+    }
+
+    return allSuccess;
+}
+
+// 🎵 සිතුවම් tools සඳහා install commands
+function getMusicToolsInstallCommands(osInfo, packages) {
+    const cmds = {
+        termux: {
+            methods: [
+                { cmd: `apt update -y && apt install -y ${packages.join(' ')}`, desc: 'apt update + install' },
+                { cmd: `pkg update -y && pkg install -y ${packages.join(' ')}`, desc: 'pkg update + install' },
+                { cmd: `apt upgrade -y && apt install -y ${packages.join(' ')}`, desc: 'apt upgrade + install' }
+            ],
+            update: `apt update -y`,
+            install: `apt install -y ${packages.join(' ')}`
+        },
+        ubuntu: {
+            methods: [
+                { cmd: `sudo apt update -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt update + install' },
+                { cmd: `sudo apt upgrade -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt upgrade + install' },
+                { cmd: `sudo apt-get update -y && sudo apt-get install -y ${packages.join(' ')}`, desc: 'apt-get update + install' }
+            ],
+            update: `sudo apt update -y`,
+            install: `sudo apt install -y ${packages.join(' ')}`
+        },
+        wsl: {
+            methods: [
+                { cmd: `sudo apt update -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt update + install' },
+                { cmd: `sudo apt upgrade -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt upgrade + install' }
+            ],
+            update: `sudo apt update -y`,
+            install: `sudo apt install -y ${packages.join(' ')}`
+        },
+        macos: {
+            methods: [
+                { cmd: `brew update && brew install ${packages.join(' ')}`, desc: 'brew update + install' },
+                { cmd: `brew upgrade && brew install ${packages.join(' ')}`, desc: 'brew upgrade + install' },
+                { cmd: `pip3 install ${packages.join(' ')}`, desc: 'pip3 install' }
+            ],
+            update: `brew update`,
+            install: `brew install ${packages.join(' ')}`
+        },
+        linux: {
+            methods: [
+                { cmd: `sudo apt update -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt update + install' },
+                { cmd: `sudo apt upgrade -y && sudo apt install -y ${packages.join(' ')}`, desc: 'apt upgrade + install' },
+                { cmd: `sudo yum install -y ${packages.join(' ')}`, desc: 'yum install' },
+                { cmd: `sudo dnf install -y ${packages.join(' ')}`, desc: 'dnf install' }
+            ],
+            update: `sudo apt update -y`,
+            install: `sudo apt install -y ${packages.join(' ')}`
+        }
+    };
+    
+    return cmds[osInfo.type] || cmds.linux;
 }
 
 // 🎵 YouTube methods සඳහා install commands
@@ -398,16 +696,26 @@ function getInstallCommands(osInfo, packages) {
     return cmds[osInfo.type] || cmds.linux;
 }
 
-// නැතිවූ පැකේජ්ය ස්වයංක්‍රියව ස්ථාපනය කරමින් නැවත උත්සාහ තර්කය සමඟ
 async function autoInstallDependencies() {
     const osInfo = detectOS();
     
     log.header(`🤖 🌸MISS SHASIKALA START කරමින්\n${chalk.yellow(`Platform: ${osInfo.display}`)}`);
 
+    // 🔧 SYSTEM UPGRADE සහ CRITICAL PACKAGES
+    log.header('🔧 System Package Upgrade & Node.js/Python Installation');
+    
+    try {
+        await autoUpgradeSystemPackages(osInfo);
+        await autoInstallNodeJS(osInfo);
+        await autoInstallPython(osInfo);
+    } catch (e) {
+        log.warn('System upgrade/install අසාර්ථකයි, ඉපිසිරුවමින්...');
+    }
+
     // Check npm
     if (!checkNpmInstalled()) {
         log.error('npm හමු නොවුණි!');
-        log.info(`Node.js ස්ථාපනය කරමින්...\n`);
+        log.info(`Node.js නැවත ස්ථාපනය කරමින්...\n`);
         
         const nodeMethods = {
             termux: [
@@ -564,20 +872,19 @@ async function autoInstallDependencies() {
     // පද්ධති බිමට අවශ්‍යතා පරීක්ෂා කරමින් සහ නැතිවූ විට ස්වයංක්‍රියව ස්ථාපනය
     log.header('🔧 system පරීක්ෂා කරමින්');
     
-    // 🎵 YouTube සඳහා අනිවාර්ය: ffmpeg, yt-dlp
-    // 🎵 shasikala.js song feature සඳහා: {prefix}song "song name"
-    const mandatorySysDeps = ['ffmpeg', 'yt-dlp']; 
+    // 🎵 YouTube සඳහා අනිවාර්ය: ffmpeg, yt-dlp, python3
+    // 🎵 shasikala.js සිතුවම් download feature සඳහා: .song .spotify .soundcloud .play commands
+    const mandatorySysDeps = ['ffmpeg', 'yt-dlp', 'python3']; 
     const optionalSysDeps = {
-        'python3': 'python3 scripts / yt-dlp enhanced',
-        'curl': 'http requests / streaming',
-        'git': 'version control',
-        'spotifydl': 'spotify/song downloads (shasikala)',
-        'imagemagick': 'image conversions',
-        'ghostscript': 'PDF/document processing',
-        'youtube-dl': 'alternative YouTube download',
-        'wget': 'direct file download',
-        'aria2c': 'multi-thread download',
-        'ffprobe': 'media information'
+        'curl': 'HTTP ඉල්ලුම් / streaming (shasikala)',
+        'git': 'version control පද්ධතිය',
+        'spotifydl': 'Spotify ට්‍රැක download (shasikala .spotify)',
+        'imagemagick': 'ඡායාරූප පරිවර්තනය',
+        'ghostscript': 'PDF/document ක්‍රියාවලිය',
+        'youtube-dl': 'YouTube සිതුවම් download (shasikala fallback)',
+        'wget': 'direct ගොනුව download (shasikala fallback)',
+        'aria2c': 'බහු-thread download (shasikala fallback)',
+        'ffprobe': 'මීඩියා තොරතුරු'
     };
 
     let missingMandatory = [];
@@ -693,9 +1000,79 @@ async function autoInstallDependencies() {
             }
     }
 
-    // 🎵 YouTube packages auto install
-    if (missingOptional.includes('yt-dlp') || missingOptional.length > 0) {
-        log.warn(`\nවිකල්ප dependencies නැතිවුණි: ${missingOptional.join(', ')}`);
+    // 🎵 සිතුවම් tools auto install
+    const musicToolsToInstall = missingOptional.filter(tool => ['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c'].includes(tool));
+    
+    if (musicToolsToInstall.length > 0) {
+        log.warn(`\n🎵 සිතුවම් tools නැතිවුණි: ${musicToolsToInstall.join(', ')}`);
+        
+        let musicInstallSuccess = false;
+        let musicAttempts = 0;
+        const maxMusicAttempts = 3;
+        
+        while (!musicInstallSuccess && musicAttempts < maxMusicAttempts) {
+            musicAttempts++;
+            try {
+                log.header(`📥 සිතුවම් Tools ස්ථාපනය උත්සාහය ${musicAttempts}/${maxMusicAttempts}`);
+                
+                // Python tools yt-dlp, youtube-dl, spotifydl සඳහා
+                const pythonTools = musicToolsToInstall.filter(t => ['yt-dlp', 'youtube-dl', 'spotifydl'].includes(t));
+                const systemTools = musicToolsToInstall.filter(t => ['wget', 'aria2c'].includes(t));
+                
+                if (pythonTools.length > 0) {
+                    log.info(`Python tools ස්ථාපනය කරමින්: ${pythonTools.join(', ')}`);
+                    try {
+                        if (commandExists('pip3')) {
+                            execSync(`pip3 install --upgrade ${pythonTools.join(' ')}`, { stdio: 'inherit', timeout: 180000 });
+                            log.success('Python tools සාර්ථකව ස්ථාපනය කරන ලදී!');
+                        } else if (commandExists('pip')) {
+                            execSync(`pip install --upgrade ${pythonTools.join(' ')}`, { stdio: 'inherit', timeout: 180000 });
+                            log.success('Python tools සාර්ථකව ස්ථාපනය කරන ලදී!');
+                        }
+                    } catch (e) {
+                        log.warn('Python tools ස්ථාපනය අසාර්ථකයි, system tools උත්සාහ කරමින්...');
+                    }
+                }
+                
+                if (systemTools.length > 0) {
+                    log.info(`System tools ස්ථාපනය කරමින්: ${systemTools.join(', ')}`);
+                    const musicInstallCmds = getMusicToolsInstallCommands(osInfo, systemTools);
+                    
+                    if (osInfo.type !== 'macos') {
+                        try {
+                            execSync(musicInstallCmds.update, { stdio: 'pipe', timeout: 60000 });
+                        } catch (e) {}
+                    }
+                    
+                    execSync(musicInstallCmds.install, { stdio: 'inherit', timeout: 180000 });
+                    log.success('System tools සාර්ථකව ස්ථාපනය කරන ලදී!');
+                }
+                
+                musicInstallSuccess = true;
+            } catch (e) {
+                log.warn(`උත්සාහය ${musicAttempts} අසාර්ථකයි`);
+                
+                if (musicAttempts < maxMusicAttempts) {
+                    log.info(`${maxMusicAttempts - musicAttempts} උත්සාහ ඉතිරි ඇත...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+        }
+        
+        if (musicInstallSuccess) {
+            log.success('\n✅ සිතුවම් tools සාර්ථකව ස්ථාපනය කරන ලදී!');
+        } else {
+            log.warn('⚠️  සිතුවම් tools manual ස්ථාපනය උත්සාහ කරන්න:');
+            console.log(`  pip3 install ${pythonTools.join(' ')}`);
+            console.log(`  ${osInfo.type === 'macos' ? 'brew' : 'sudo apt'} install ${systemTools.join(' ')}\n`);
+        }
+    }
+
+    // වෙනත් විකල්ප tools
+    const otherOptionalTools = missingOptional.filter(tool => !['yt-dlp', 'youtube-dl', 'spotifydl', 'wget', 'aria2c'].includes(tool));
+    if (otherOptionalTools.length > 0) {
+        log.warn(`\nවෙනත් විකල්ප tools නැතිවුණි: ${otherOptionalTools.join(', ')}`);
+
         log.info('✅ ස්වයංක්‍රිය ස්ථාපනය උත්සාහ කරමින්...\n');
         
         let optionalInstallSuccess = false;
