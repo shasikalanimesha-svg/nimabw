@@ -220,12 +220,19 @@ async function autoInstallDependencies() {
                             cwd: __dirname
                         });
                         log.info('npm කෑෂ් ඉවත් කරන ලදී');
+                        
+                        // Remove lock file on retry
+                        const lockPath = path.join(__dirname, 'package-lock.json');
+                        if (fs.existsSync(lockPath)) {
+                            fs.unlinkSync(lockPath);
+                            log.info('package-lock.json ඉවත් කරන ලදී');
+                        }
                     } catch (e) {
                         // Continue anyway
                     }
                 }
                 
-                execSync('npm install --prefer-offline --no-audit', {
+                execSync('npm install --prefer-offline --no-audit --legacy-peer-deps --force', {
                     stdio: 'inherit',
                     cwd: __dirname
                 });
