@@ -3131,7 +3131,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 
 					// URL නොමැති නම් → YouTube search කරන්න
 					if (!text.includes('youtu')) {
-						let statusMsg = await m.reply(`🔍 *සොයමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *ඉල්ලුම:* ${text}\n⏳ YouTube හි සොයමින්...\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`)
+						let statusMsg = await m.reply(`🔍 *සොයමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *ඉල්ලුම:* ${text}\n⏳ YouTube හි සොයමින්...\n━━━━━━━━━━━━━━━━━━━━━━\n`)
 						const searchRes = await yts(text)
 						const video = searchRes?.videos?.[0] || searchRes?.all?.[0]
 						if (!video) return m.reply('❌ YouTube ප්‍රතිඵල හමු නොවිණි!')
@@ -3140,7 +3140,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						videoUrl = `https://www.youtube.com/watch?v=${_vid}`
 						videoTitle = video.title || text
 						await nimesha.sendMessage(m.chat, {
-							text: `⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *වීඩියෝ:* ${videoTitle}\n⏳ *URL:* ${videoUrl}\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
+							text: `⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *වීඩියෝ:* ${videoTitle}\n⏳ *URL:* ${videoUrl}\n━━━━━━━━━━━━━━━━━━━━━━\n`
 						}, { quoted: m, edit: statusMsg.key })
 					}
 
