@@ -3101,15 +3101,15 @@ _ස්තූතියි!_ 🌸`).then(() => {
 			case 'ytmp4': case 'ytvideo': case 'ytplayvideo': case 'video': case 'mp4': {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} YouTube URL හෝ Video නම`)
-				const _sendProgress4 = async (txt, prevKey) => {
-					try {
-						const sent = await nimesha.sendMessage(m.chat, { text: txt }, { quoted: m });
-						return sent?.key || prevKey;
-					} catch { return prevKey; }
-				};
 				try {
 					let videoUrl = text
 					let videoTitle = text
+
+					let statusMsg = await m.reply(`🔍 *සොයමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *෉ල්ලුම්:* ${text}\n⏳ YouTube හි සොයමින්...\n━━━━━━━━━━━━━━━━━━━━━━`)
+
+					const _sendProgress4 = async (txt) => {
+						try { await nimesha.sendMessage(m.chat, { text: txt }, { quoted: m, edit: statusMsg.key }) } catch {}
+					}
 
 					// URL නොමැති නම් → YouTube search කරන්න
 					if (!text.includes('youtu')) {
@@ -3131,6 +3131,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 					const isBuffer = Buffer.isBuffer(hasil.result);
 					const videoPayload = isBuffer ? hasil.result : { url: hasil.result.url || hasil.result };
 					await m.reply({ video: videoPayload, caption: `*📍Title:* ${hasil.title || videoTitle}\n*🚀Channel:* ${hasil.channel || ''}\n*🗓Upload at:* ${hasil.uploadDate || ''}` })
+					await nimesha.sendMessage(m.chat, { text: `✅ *සාර්තකයි!*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *වීඩියෝ:* ${hasil.title || videoTitle}\n━━━━━━━━━━━━━━━━━━━━━━` }, { quoted: m, edit: statusMsg.key })
 					setLimit(m, db)
 				} catch (e) {
 					try {
@@ -3157,8 +3158,8 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!isLimit) return m.reply(mess.limit)
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Instagram URL`)
 				if (!text.includes('instagram.com')) return m.reply('URL Instagram ප්‍රතිඵලය ඇතුළත් නෑ!')
-				m.reply(mess.wait)
 				try {
+					let statusMsg = await m.reply(`⬇ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n📷 *Instagram:* ${text.substring(0,50)}...\n━━━━━━━━━━━━━━━━━━━━━━`)
 					let hasil = await fetchApi('/download/instagram', { url: text })
 					if(hasil.result.urls.length > 1) {
 						await nimesha.sendAlbumMessage(m.chat, {
@@ -3232,12 +3233,14 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} Facebook URL`)
 				if (!text.includes('facebook.com')) return m.reply('URL Facebook ප්‍රතිඵලය ඇතුළත් නෑ!')
 				try {
+					let statusMsg = await m.reply(`⬇ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n📸 *Facebook:* ${text.substring(0,50)}...\n━━━━━━━━━━━━━━━━━━━━━━`)
 					const hasil = await fetchApi('/download/facebook', { url: text });
 					if (!hasil.result.hd && !hasil.result.sd) {
-						m.reply('Video හොයාගත නොහැකිය!')
+						await nimesha.sendMessage(m.chat, { text: '❌ Video හොයාගත නොහැකිය!' }, { quoted: m, edit: statusMsg.key })
 					} else {
-						m.reply(mess.wait)
+						await nimesha.sendMessage(m.chat, { text: `⬇️ *බාගනිමින්...*\n🎥 *${hasil.result.title || 'Facebook Video'}*` }, { quoted: m, edit: statusMsg.key })
 						await nimesha.sendFileUrl(m.chat, hasil.result.hd || hasil.result.sd, `*🎐Title:* ${hasil.result.title}`, m);
+						await nimesha.sendMessage(m.chat, { text: '✅ *සාර්තකයි!* Facebook Video බාගය හමුනලා.' }, { quoted: m, edit: statusMsg.key })
 					}
 					setLimit(m, db)
 				} catch (e) {
@@ -3263,9 +3266,10 @@ _ස්තූතියි!_ 🌸`).then(() => {
 				if (!text) return m.reply(`උදාහරණ: ${prefix + command} https://open.spotify.com/track/0JiVRyTJcJnmlwCZ854K4p`)
 				if (!isUrl(args[0]) && !args[0].includes('open.spotify.com/track')) return m.reply('URL වලංගු නොවේ!')
 				try {
+					let statusMsg = await m.reply(`⬇ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n💚 *Spotify:* ${text.substring(0,50)}...\n━━━━━━━━━━━━━━━━━━━━━━`)
 					const { result: hasil } = await fetchApi('/download/spotify', { url: text })
+					await nimesha.sendMessage(m.chat, { text: `⬇️ *බාගනිමින්...*\n🎵 *${hasil.artist} - ${hasil.title}*` }, { quoted: m, edit: statusMsg.key })
 					const buffer = await fetchApi('/download/spotify/audio', { url: text }, { buffer: true })
-					m.reply(mess.wait)
 					await m.reply({
 						audio: buffer,
 						mimetype: 'audio/mpeg',
@@ -3281,6 +3285,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 							}
 						}
 					})
+					await nimesha.sendMessage(m.chat, { text: '✅ *සාර්තකයි!* Spotify බාගය හමුනලා.' }, { quoted: m, edit: statusMsg.key })
 					setLimit(m, db)
 				} catch (e) {
 					console.log(e)
