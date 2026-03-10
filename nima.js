@@ -3140,7 +3140,7 @@ _ස්තූතියි!_ 🌸`).then(() => {
 						videoUrl = `https://www.youtube.com/watch?v=${_vid}`
 						videoTitle = video.title || text
 						await nimesha.sendMessage(m.chat, {
-							text: `⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *වීඩියෝ:* ${videoTitle}\n⏳ *URL:* ${videoUrl}\n━━━━━━━━━━━━━━━━━━━━━━\n`
+							text: `⬇️ *බාගනිමින්...*\n━━━━━━━━━━━━━━━━━━━━━━\n🎬 *වීඩියෝ:* ${videoTitle}\n⏳ *URL:* ${videoUrl}\n━━━━━━━━━━━━━━━━━━━━━━\n${footer}`
 						}, { quoted: m, edit: statusMsg.key })
 					}
 
