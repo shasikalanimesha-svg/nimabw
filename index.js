@@ -1,3 +1,90 @@
+// ═══════════════════════════════════════════════════════════
+// 🔄 Startup Git Pull Check (index.js direct start සඳහා)
+// ═══════════════════════════════════════════════════════════
+(async () => {
+    const { execSync } = require('child_process');
+    const fs = require('fs');
+    const path = require('path');
+
+    const REPO_URL = 'https://github.com/nimesha206/nimabw.git';
+
+    function _isGitRepo() {
+        try { execSync('git rev-parse --is-inside-work-tree', { stdio: 'pipe', cwd: __dirname, timeout: 5000 }); return true; } catch { return false; }
+    }
+    function _getCurrentCommit() {
+        try { return execSync('git rev-parse HEAD', { encoding: 'utf8', stdio: 'pipe', cwd: __dirname, timeout: 5000 }).trim(); } catch { return null; }
+    }
+    function _getRemoteCommit() {
+        try {
+            execSync('git fetch origin main --quiet', { stdio: 'pipe', cwd: __dirname, timeout: 30000 });
+            return execSync('git rev-parse origin/main', { encoding: 'utf8', stdio: 'pipe', cwd: __dirname, timeout: 5000 }).trim();
+        } catch { return null; }
+    }
+
+    // start.js හරහා run නම් skip (start.js දැනටමත් check කරලා ඇත)
+    const calledByStart = process.env._GIT_PULL_DONE === '1';
+    if (!calledByStart) {
+        console.log('\n🔄 [index.js] Startup git pull check...');
+        try {
+            if (!_isGitRepo()) {
+                execSync(`git init && git remote add origin ${REPO_URL}`, { stdio: 'pipe', cwd: __dirname, timeout: 15000 });
+                execSync('git fetch origin main --depth=1', { stdio: 'pipe', cwd: __dirname, timeout: 30000 });
+                execSync('git reset --hard origin/main', { stdio: 'pipe', cwd: __dirname, timeout: 15000 });
+            }
+            execSync('git config pull.rebase false', { stdio: 'pipe', cwd: __dirname, timeout: 5000 });
+            execSync(`git remote set-url origin ${REPO_URL}`, { stdio: 'pipe', cwd: __dirname, timeout: 5000 });
+
+            const local  = _getCurrentCommit();
+            const remote = _getRemoteCommit();
+
+            if (local && remote && local !== remote) {
+                console.log(`🔄 නව update හමු වුණා! local=${local.slice(0,7)} → remote=${remote.slice(0,7)}`);
+                console.log('🔄 Git pull කරමින්...');
+
+                const pullMethods = [
+                    'git pull origin main --rebase',
+                    'git pull origin main',
+                    'git pull --force origin main',
+                    'git fetch origin main && git reset --hard origin/main',
+                    'git fetch --all && git reset --hard origin/main',
+                ];
+
+                let pulled = false;
+                for (const cmd of pullMethods) {
+                    try {
+                        execSync(cmd, { stdio: 'inherit', cwd: __dirname, timeout: 60000, shell: '/bin/bash' });
+                        pulled = true;
+                        console.log('✅ Git pull සාර්ථකයි!');
+                        break;
+                    } catch { console.log(`✗ ${cmd}`); }
+                }
+
+                if (pulled) {
+                    try {
+                        execSync('npm install --prefer-offline --no-audit --legacy-peer-deps', { stdio: 'inherit', cwd: __dirname, timeout: 120000 });
+                    } catch {}
+
+                    console.log('🔄 Bot auto-restart කරමින් (නව version)...');
+                    const { spawn } = require('child_process');
+                    process.env._GIT_PULL_DONE = '1';
+                    const child = spawn(process.argv[0], process.argv.slice(1), {
+                        stdio: 'inherit',
+                        detached: false,
+                        env: { ...process.env, _GIT_PULL_DONE: '1' }
+                    });
+                    child.on('exit', (code) => process.exit(code ?? 0));
+                    return; // මෙතනදී exit — restart child handle කරයි
+                }
+            } else {
+                console.log('✅ දැනටමත් යාවත්කාලීනයි — bot ආරම්භ කරමින්...');
+            }
+        } catch (e) {
+            console.log('⚠️ Git check දෝෂය:', e.message, '— bot දිගටම...');
+        }
+    }
+})().then(() => {
+// ═══════════════════════════════════════════════════════════
+
 require('./settings');
 require('./protection');
 const os = require('os');
@@ -417,3 +504,5 @@ server.on('error', (error) => {
 });
 
 setInterval(() => {}, 1000 * 60 * 10);
+
+}); // ═══ End of startup git pull IIFE ═══

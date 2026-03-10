@@ -1639,9 +1639,95 @@ async function autoInstallDependencies() {
     log.success('✅ Setup සත්‍යාපනය සම්පූර්ණයි!');
 }
 
+// ═══════════════════════════════════════════════════════════
+// 🔄 Startup Git Pull — Bot ආරම්භයේදී update check
+// ═══════════════════════════════════════════════════════════
+
+async function startupGitPullCheck() {
+    log.header('🔄 Startup Git Pull Check');
+    try {
+        ensureGitSetup();
+    } catch { /* skip */ }
+
+    // git config
+    try {
+        execSync('git config pull.rebase false', { stdio: 'pipe', cwd: __dirname, timeout: 5000 });
+        execSync('git config credential.helper store', { stdio: 'pipe', cwd: __dirname, timeout: 5000 });
+        execSync(`git remote set-url origin ${REPO_URL}`, { stdio: 'pipe', cwd: __dirname, timeout: 5000 });
+    } catch { /* skip */ }
+
+    const local  = getCurrentCommit();
+    const remote = getRemoteCommit();
+
+    if (!local || !remote) {
+        log.warn('⚠️ Git commit check අසාර්ථකයි — bot දිගටම ආරම්භ කරමින්...');
+        return false; // already up-to-date ලෙස සලකා bot start
+    }
+
+    if (local === remote) {
+        log.success(`✅ දැනටමත් යාවත්කාලීනයි (${local.slice(0,7)}) — bot ආරම්භ කරමින්...`);
+        return false; // pull නෑ, bot start
+    }
+
+    log.warn(`🔄 නව update හමු වුණා! local=${local.slice(0,7)} → remote=${remote.slice(0,7)}`);
+    log.info('🔄 Git pull කරමින්...');
+
+    const pullMethods = [
+        'git pull origin main --rebase',
+        'git pull origin main',
+        'git pull --force origin main',
+        'git fetch origin main && git reset --hard origin/main',
+        'git fetch --all && git reset --hard origin/main',
+    ];
+
+    let pulled = false;
+    for (const cmd of pullMethods) {
+        try {
+            log.info(`උත්සාහ: ${cmd}`);
+            execSync(cmd, { stdio: 'inherit', cwd: __dirname, timeout: 60000, shell: '/bin/bash' });
+            pulled = true;
+            log.success('✅ Git pull සාර්ථකයි!');
+            break;
+        } catch (e) {
+            log.warn(`✗ ${cmd}`);
+        }
+    }
+
+    if (!pulled) {
+        log.warn('⚠️ Git pull ක්‍රම සියල්ල අසාර්ථකයි — bot දිගටම ආරම්භ කරමින්...');
+        return false;
+    }
+
+    // npm install
+    try {
+        log.info('📦 npm install කරමින්...');
+        execSync('npm install --prefer-offline --no-audit --legacy-peer-deps', {
+            stdio: 'inherit', cwd: __dirname, timeout: 120000
+        });
+        log.success('✅ npm install සාර්ථකයි!');
+    } catch (e) {
+        log.warn('npm install අවවාදය: ' + e.message);
+    }
+
+    return true; // pull වුණා, restart කළ යුතු
+}
+
 // ප්‍රධාන ක්‍රියාවලිය
 async function start() {
     try {
+        // ══ Startup Git Pull Check ══
+        const didPull = await startupGitPullCheck();
+        if (didPull) {
+            log.success('🔄 Update ලැබුණා! Bot auto-restart කරමින්...');
+            const { spawn: _spawn } = require('child_process');
+            const child = _spawn(process.argv[0], process.argv.slice(1), {
+                stdio: 'inherit',
+                detached: false,
+            });
+            child.on('exit', (code) => process.exit(code ?? 0));
+            return;
+        }
+
         // බිමට අවශ්‍යතා පරීක්ෂා කරමින් සහ ස්ථාපනය කරමින්
         await autoInstallDependencies();
 
@@ -1651,7 +1737,8 @@ async function start() {
         // ප්‍රධාන යෙදුම ආරම්භ කරමින්
         let args = [path.join(__dirname, 'index.js'), ...process.argv.slice(2)];
         let p = spawn(process.argv[0], args, {
-            stdio: ['inherit', 'inherit', 'inherit', 'ipc']
+            stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+            env: { ...process.env, _GIT_PULL_DONE: '1' }
         }).on('message', data => {
             if (data === 'reset') {
                 console.log(chalk.yellow.bold('[BOT] නැවත පණ ගන්වමින් පවතී...'));
